@@ -1,4 +1,5 @@
 detect: analyzing wildlife data with detection error
+==========
 
 The R package implements models to analyze
 site occupancy and count data models with detection error.
