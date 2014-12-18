@@ -166,7 +166,7 @@ link.det = "logit", link.zif = "logit", ...)
     phi <- NULL
     lLik <- -results$value
     if (sum(!id1) > 0 && zeroinfl) {
-        emlp <- exp(-lambda * delta)
+        emlp <- exp(-lambda * area * delta)
         zif.results <- suppressWarnings(optim(inits[(np.abu+np.det+1):np], 
             nll.ZIP0, emlp=emlp, id1=id1, method=method, hessian=TRUE, control=control))
         par.zif <- zif.results$par
