@@ -4,7 +4,7 @@ Simulation used in the paper
 ## Organization
 
 | Simulation | Results |
-----------------------------
+|--------------|--------------|
 | Simulation 1 | log1 identifiability |
 | Simulation 1 | Model selection |
 | Simulation 1 | Link function bias for log1 |
