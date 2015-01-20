@@ -22,6 +22,9 @@ The goal is to prove that N-mixture selects the correct model based on AIC
 and that the constrained log-link (log1) is identifiable under single-visit.
 
 ```
+## set wd only once: download files from the repo here
+set_wd <- "/set/your/working/directory/here/"
+
 ## number of locations
 n <- 500
 
@@ -29,7 +32,7 @@ n <- 500
 R <- 100
 
 ## set working directory here
-setwd("/set/your/working/directory/here/")
+setwd(set_wd)
 source("svabu_link.R")
 
 ## loading detect package
@@ -123,11 +126,9 @@ library(snow)
 cl <- makeCluster(10)
 
 clusterSetupRNG (cl, type = "RNGstream")
-#tmp <- clusterEvalQ(cl, setwd("c:/Dropbox/pkg/detect2/mee-rebuttal/gh/"))
-tmp <- clusterEvalQ(cl, setwd("c:/Users/Peter/Dropbox/pkg/detect2/mee-rebuttal/gh/"))
-tmp <- clusterEvalQ(cl, source("svabu_link.R"))
 tmp <- clusterEvalQ(cl, library(detect))
-clusterExport(cl, c("n","x1","x2","x","X","Z","log1","loglog","beta","theta","K","Links"))
+clusterExport(cl, c("n","x1","x2","x","X","Z","log1","loglog","beta","theta","K","Links",
+    "svabu_link", svabu.fit_link"))
 
 r_1 <- parLapply(cl, 1:R, estfun, link="logit")
 r_2 <- parLapply(cl, 1:R, estfun, link="probit")
@@ -345,7 +346,7 @@ R <- 100
 n <- 2000
 K <- 250
 
-setwd("/set/your/working/directory/here/")
+setwd(set_wd)
 source("svabuRD.R")
 
 set.seed(4321)
@@ -466,7 +467,7 @@ R <- 100
 
 library(detect)
 library(unmarked)
-setwd("/set/your/working/directory/here/")
+setwd(set_wd)
 source("svabu_link.R")
 
 ## link functions defined here
