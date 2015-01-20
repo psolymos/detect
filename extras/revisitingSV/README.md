@@ -457,12 +457,212 @@ dev.off()
 
 ## Simulation 3
 
-Here text
+We show the bias in multiple visit results when closure is violated, 
+contrast this bias to the single visit-bias when using the half logistic link.
+
+```
+n <- 200
+R <- 100
+
+library(detect)
+library(unmarked)
+setwd("/set/your/working/directory/here/")
+source("svabu_link.R")
+
+## link functions defined here
+p_max <- 0.5
+linkinv_p1 <- function(eta) 1 * binomial("logit")$linkinv(eta)
+linkinv_phalf <- function(eta) 0.5 * binomial("logit")$linkinv(eta)
+linkinv_p <- if (p_max < 1)
+    linkinv_phalf else linkinv_p1
+linkinv_N <- poisson("log")$linkinv
+
+beta <- c(2,-0.8)
+theta <- c(-1, 2)
+T <- 3 # from mallard example
+K <- 100
+
+set.seed(1234)
+x1 <- runif(n,0,1)
+x2 <- rnorm(n,0,1)
+
+X <- model.matrix(~ x1)
+Z <- model.matrix(~ x2)
+x <- data.frame(x1, x2)
+xstack <- rbind(x, x, x)
+
+p <- linkinv_p(drop(Z %*% theta))
+lambda <- linkinv_N(drop(X %*% beta))
+
+res4 <- list()
+
+for (i in 1:R) {
+
+cat(i, " halflogit\n");flush.console()
+
+N <- y0 <- y1 <- matrix(0, n, T)
+colnames(N) <- paste0("N_", 1:T)
+colnames(y0) <- paste0("y0_", 1:T)
+colnames(y1) <- paste0("y1_", 1:T)
+for (t in 1:T) {
+    N[,t] <- rpois(n, lambda)
+    y0[,t] <- rbinom(n, N[,1], p) # closure true
+    y1[,t] <- rbinom(n, N[,t], p) # closure false
+}
+y1[,1] <- y0[,1] # keep things as consistent as possible
+
+y1stack <- as.numeric(y1)
+
+## multiple visit
+visitMat <- matrix(as.character(1:T), n, T, byrow=TRUE)
+umf0 <- unmarkedFramePCount(y=y0, siteCovs=x, obsCovs=list(visit=visitMat))
+umf1 <- unmarkedFramePCount(y=y1, siteCovs=x, obsCovs=list(visit=visitMat))
+
+m_mv0 <- pcount(~ x2 ~ x1, umf0, K=K, mixture="P")
+m_mv1 <- pcount(~ x2 ~ x1, umf1, K=K, mixture="P")
+
+## generalized N-mixture
+umf1g <- unmarkedFramePCO(y=y1, siteCovs=x, obsCovs=list(visit=visitMat),
+    numPrimary=T)
+m_gmv1 <- pcountOpen(~ x1, ~ 1, ~ 1, ~ x2, umf1g, K=K, mixture="P",
+    dynamics="constant")
+
+## single visit with n obs
+m_sv_halflogit <- svabu_link(y0[,1] ~ x1 | x2, x, 
+    zeroinfl=FALSE, link.det=linkinv_phalf, N.max=K)
+m_sv_logit <- svabu_link(y0[,1] ~ x1 | x2, x, 
+    zeroinfl=FALSE, link.det=linkinv_p1, N.max=K)
+
+## single visit with n obs * T obs
+m_svstack_halflogit <- svabu_link(y1stack ~ x1 | x2, xstack, 
+    zeroinfl=FALSE, link.det=linkinv_phalf, N.max=K)
+m_svstack_logit <- svabu_link(y1stack ~ x1 | x2, xstack, 
+    zeroinfl=FALSE, link.det=linkinv_p1, N.max=K)
+
+cflam_mv0 <- coef(m_mv0)[grepl("lam\\(", names(coef(m_mv0)))]
+cfp_mv0 <- coef(m_mv0)[grepl("p\\(", names(coef(m_mv0)))]
+cflam_mv1 <- coef(m_mv1)[grepl("lam\\(", names(coef(m_mv1)))]
+cfp_mv1 <- coef(m_mv1)[grepl("p\\(", names(coef(m_mv1)))]
+
+cflam_gmv1 <- coef(m_gmv1)[grepl("lam\\(", names(coef(m_gmv1)))]
+cfp_gmv1 <- coef(m_gmv1)[grepl("p\\(", names(coef(m_gmv1)))]
+
+cflam_sv1 <- coef(m_sv_logit, "sta")
+cfp_sv1 <- coef(m_sv_logit, "det")
+cflam_svhalf <- coef(m_sv_halflogit, "sta")
+cfp_svhalf <- coef(m_sv_halflogit, "det")
+
+cflam_sv1stack <- coef(m_svstack_logit, "sta")
+cfp_sv1stack <- coef(m_svstack_logit, "det")
+cflam_svhalfstack <- coef(m_svstack_halflogit, "sta")
+cfp_svhalfstack <- coef(m_svstack_halflogit, "det")
+
+lam_hat <- cbind(cflam_true=beta, cflam_mv0, cflam_mv1, cflam_gmv1,
+    cflam_sv1, cflam_svhalf, cflam_sv1stack, cflam_svhalfstack)
+p_hat <- cbind(cfp_true=theta, cfp_mv0, cfp_mv1, cfp_gmv1, 
+    cfp_sv1, cfp_svhalf, cfp_sv1stack, cfp_svhalfstack)
+
+tmp <- rbind(lam_hat,p_hat)
+attr(tmp, "D-M") <- coef(m_gmv1)[c("gamConst(Int)", "omega(Int)")]
+res4[[i]] <- tmp
+
+}
+save.image("out-sim-3.Rdata")
+```
 
 ## Results from Simulation 3
 
+```
+load("out-sim-3.Rdata")
+```
+
 ### Half-logit bias
 
-Here text
+```
+#### producing output for publication
+
+True <- c(beta, theta)
+cf1 <- t(sapply(res4, function(z) z[,"cflam_mv0"]))
+bias1 <- t(sapply(res4, function(z) z[,"cflam_mv0"]) - True)
+cf2 <- t(sapply(res4, function(z) z[,"cflam_mv1"]))
+bias2 <- t(sapply(res4, function(z) z[,"cflam_mv1"]) - True)
+cf3 <- t(sapply(res4, function(z) z[,"cflam_sv1"])) # logit
+bias3 <- t(sapply(res4, function(z) z[,"cflam_sv1"]) - True)
+cf4 <- t(sapply(res4, function(z) z[,"cflam_svhalf"]))
+bias4 <- t(sapply(res4, function(z) z[,"cflam_svhalf"]) - True)
+
+cf5 <- t(sapply(res4, function(z) z[,"cflam_gmv1"]))
+bias5 <- t(sapply(res4, function(z) z[,"cflam_gmv1"]) - True)
+cf6 <- t(sapply(res4, function(z) z[,"cflam_sv1stack"])) # logit
+bias6 <- t(sapply(res4, function(z) z[,"cflam_sv1stack"]) - True)
+cf7 <- t(sapply(res4, function(z) z[,"cflam_svhalfstack"]))
+bias7 <- t(sapply(res4, function(z) z[,"cflam_svhalfstack"]) - True)
+
+## MV bias is related to wrong model specification
+## cannot separate 0.5 and p intercept
+
+pdf("halflogit-bias-coefs.pdf", width=12, height=6)
+par(mfrow=c(2,4))
+boxplot(bias1, ylim=c(-5,5), main="MV N-mix closed")
+abline(h=0, col=2)
+boxplot(bias2, ylim=c(-5,5), main="MV N-mix open")
+abline(h=0, col=2)
+boxplot(bias5, ylim=c(-5,5), main="GMV N-mix open")
+abline(h=0, col=2)
+plot.new()
+boxplot(bias3, ylim=c(-5,5), main="SV N-mix logit")
+abline(h=0, col=2)
+boxplot(bias4, ylim=c(-5,5), main="SV N-mix half-logit")
+abline(h=0, col=2)
+boxplot(bias6, ylim=c(-5,5), main="SV N-mix logit stack")
+abline(h=0, col=2)
+boxplot(bias7, ylim=c(-5,5), main="SV N-mix half-logit stack")
+abline(h=0, col=2)
+dev.off()
+
+## estimate lam and p
+lam1 <- apply(cf1, 1, function(z) mean(exp(X %*% z[1:2])))
+lam2 <- apply(cf2, 1, function(z) mean(exp(X %*% z[1:2])))
+lam3 <- apply(cf3, 1, function(z) mean(exp(X %*% z[1:2])))
+lam4 <- apply(cf4, 1, function(z) mean(exp(X %*% z[1:2])))
+lam5 <- apply(cf5, 1, function(z) mean(exp(X %*% z[1:2])))
+lam6 <- apply(cf6, 1, function(z) mean(exp(X %*% z[1:2])))
+lam7 <- apply(cf7, 1, function(z) mean(exp(X %*% z[1:2])))
+p1 <- apply(cf1, 1, function(z) mean(plogis(X %*% z[3:4])))
+p2 <- apply(cf2, 1, function(z) mean(plogis(X %*% z[3:4])))
+p3 <- apply(cf3, 1, function(z) mean(plogis(X %*% z[3:4])))
+p4 <- apply(cf4, 1, function(z) mean(0.5 * plogis(X %*% z[3:4])))
+p5 <- apply(cf5, 1, function(z) mean(plogis(X %*% z[3:4])))
+p6 <- apply(cf6, 1, function(z) mean(plogis(X %*% z[3:4])))
+p7 <- apply(cf7, 1, function(z) mean(0.5 * plogis(X %*% z[3:4])))
+lamTrue <- mean(exp(X %*% beta))
+pTrue <- mean(plogis(X %*% theta))
+
+SHOW <- c(1,2,6,7) # results dropped from publication
+
+NAM <- c("MV\nclosed","MV\nopen","GMV\nopen",
+"SV\nlogit","SV\nhalf-logit", "SV\nlogit","SV\nhalf-logit")[SHOW]
+pdf("halflogit-bias-preds.pdf", width=6, height=10)
+par(mfrow=c(2,1), mar=c(2, 5, 1, 2))
+boxplot(cbind(MV0=lam1,MV1=lam2,GMV1=lam5,
+    SVlogit=lam3,SVhalf=lam4,SSVlogit=lam6,SSVhalf=lam7)[,SHOW], 
+    ylab=expression(hat(lambda)), names=NAM,
+    ylim=c(0, max(lam2)), col="grey", axes=FALSE)
+axis(2)
+box()
+abline(h=lamTrue, col=1, lty=2)
+text(2, lamTrue*0.9, expression(bar(lambda)))
+mtext(NAM, side=1, at=1:length(NAM), line=1.5)
+par(mar=c(2, 5, 1, 2))
+boxplot(cbind(MV0=p1,MV1=p2,GMV1=p5,
+    SVlogit=p3,SVhalf=p4,SSVlogit=p6,SSVhalf=p7)[,SHOW], 
+    ylab=expression(hat(p)), names=NAM, col="grey", axes=FALSE)
+axis(2)
+box()
+abline(h=c(1, 0.5)*pTrue, col=1, lty=2)
+text(2, pTrue*1.05, expression(bar(p)))
+text(2, pTrue*0.5*1.1, expression(bar(p)*p[max]))
+dev.off()
+```
 
 
