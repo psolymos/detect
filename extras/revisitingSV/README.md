@@ -374,7 +374,6 @@ D <- exp(drop(X %*% beta))
 lambda <- D * pi*r^2
 
 p <- linkinvfun.det(drop(ZR %*% thetaR))
-#srate <- -log(1-deltaR) / t
 
 summary(D)
 summary(p)
@@ -384,8 +383,7 @@ res2 <- list()
 for (i in 1:R) {
 cat(i, "\n");flush.console()
 
-## using the marginal distribution, so that we can simulate unlimited counts
-Y <- rpois(n, lambda * p * q) # A here refers to ZI
+Y <- rpois(n, lambda * p * q)
 
 m <- svabuRD.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=FALSE, r=r, N.max=K,
     inits=c(beta, thetaR, log(edr))+rnorm(5, 0, 0.2))
