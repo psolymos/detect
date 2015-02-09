@@ -128,7 +128,7 @@ cl <- makeCluster(10)
 clusterSetupRNG (cl, type = "RNGstream")
 tmp <- clusterEvalQ(cl, library(detect))
 clusterExport(cl, c("n","x1","x2","x","X","Z","log1","loglog","beta","theta","K","Links",
-    "svabu_link", svabu.fit_link"))
+    "svabu_link", "svabu.fit_link"))
 
 r_1 <- parLapply(cl, 1:R, estfun, link="logit")
 r_2 <- parLapply(cl, 1:R, estfun, link="probit")
