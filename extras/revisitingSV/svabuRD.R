@@ -1,6 +1,6 @@
 ## single visit B-B-ZIP abundance model 
 ## with distance sampling 
-## r is PC radius, we **DO NOT** allow r=Inf is unlimited radius
+## r is PC radius, we **DO NOT** allow r=Inf unlimited radius
 
 svabuRD.fit <-
 function(Y, X, ZR=NULL, ZD=NULL, Q=NULL, zeroinfl=TRUE, 
