@@ -6,7 +6,7 @@ Revisiting the single-visit method for occupancy and abundance studies: A rebutt
 Supporting Information for CITATION GOES HERE.
 
 Here we give rationale and code for the simulation used in the rebuttal paper.
-The organization of this archve is as follows:
+The organization of this archive is as follows:
 
 | Simulation | Results |
 |--------------|--------------|
