@@ -1,3 +1,5 @@
+## this function allows the user to define arbitrary (inverse) link functions
+## for single-visit N-mixture models
 svabu_link <- 
 function (formula, data, zeroinfl = TRUE, area = 1, N.max = NULL, 
     inits, link.det = "logit", link.zif = "logit", model = TRUE, 
