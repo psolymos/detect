@@ -14,6 +14,172 @@ The organization of this archive is as follows:
 ## Examples for the RSPF condition
 
 
+## 1)
+## figure demosntrating that the RSPF condition
+## defines a class of functions that are fairly flexible
+
+
+m <- 5 # how many lines to draw
+x <- seq(-1, 1, by=0.01) # predictor
+col <- 1:m
+
+## Regression coefficients. 
+## Here we are generating them randomly but user can supply their own. 
+set.seed(12345)
+cf <- sapply(1:m, function(i) 
+    c(rnorm(1, 0, 1), rnorm(1, 0, 1+i/2),
+    rnorm(1, 0, 2), rnorm(1, 0, 4)))
+
+## plot the response curves: 
+## Linear or Quadratic or Cubic terms included 
+## in the link (logit or cloglog).
+
+op <- par(mfrow=c(3,2))
+
+plot(0, type="n", ylim=c(0,1), xlim=c(-1,1),
+    xlab="x", ylab="p", main="logit, linear")
+for (i in 1:m)
+    lines(x, plogis(cf[1,i]+cf[2,i]*x), col=col[i])
+
+plot(0, type="n", ylim=c(0,1), xlim=c(-1,1),
+    xlab="x", ylab="p", main="cloglog, linear")
+for (i in 1:m)
+    lines(x, binomial("cloglog")$linkinv(cf[1,i]+cf[2,i]*x), col=col[i])
+
+plot(0, type="n", ylim=c(0,1), xlim=c(-1,1),
+    xlab="x", ylab="p", main="logit, quadratic")
+for (i in 1:m)
+    lines(x, plogis(cf[1,i]+cf[2,i]*x+cf[3,i]*x^2), col=col[i])
+
+plot(0, type="n", ylim=c(0,1), xlim=c(-1,1),
+    xlab="x", ylab="p", main="cloglog, quadratic")
+for (i in 1:m)
+    lines(x, binomial("cloglog")$linkinv(cf[1,i]+cf[2,i]*x+cf[3,i]*x^2), col=col[i])
+
+plot(0, type="n", ylim=c(0,1), xlim=c(-1,1),
+    xlab="x", ylab="p", main="logit, cubic")
+for (i in 1:m)
+    lines(x, plogis(cf[1,i]+cf[2,i]*x+cf[3,i]*x^2+cf[4,i]*x^3), col=col[i])
+
+plot(0, type="n", ylim=c(0,1), xlim=c(-1,1),
+    xlab="x", ylab="p", main="cloglog, cubic")
+for (i in 1:m)
+    lines(x, binomial("cloglog")$linkinv(cf[1,i]+cf[2,i]*x+cf[3,i]*x^2+cf[4,i]*x^3), col=col[i])
+
+par(op)
+
+
+## 2) In the following, we illustrate the estimation of the abundance 
+## and probability of detection when the logit link has cubic terms 
+## included in the model. The probability of detection 
+## does not reach 1 for any covariate value. 
+## This illustrates that the critical condition is that the 
+## model satisfy the RSPF condition and not that probability 
+## of detection is 1 for some combination of the covariates. 
+
+## simulate data under BP N-mixture with logit 
+## link for detection with cubic terms. 
+
+n <- 1000
+k <- 3 # order of polynomial
+link <- "logit"
+beta <- c(1,1)
+theta <- cf[1:(1+k),3]
+
+x1 <- rnorm(n, 0, 1)
+X <- model.matrix(~ x1)
+lambda <- exp(X %*% beta)
+
+z1 <- sort(runif(n, -1, 0.75))
+z2 <- z1^2
+z3 <- z1^3
+Z <- model.matrix(~ z1 + z2 + z3)[,1:(1+k)]
+p <- binomial(link)$linkinv(Z %*% theta)
+summary(p)    # This shows that the probability of detection does not reach 1 for any covariate value. 
+N <- rpois(n, lambda)
+Y <- rbinom(n, N, p)
+table(Y)
+
+## 3)
+## estimate coefficients for BP N-mixture
+
+library(detect)
+m1 <- svabu(Y ~ x1 | z1, zeroinfl=FALSE, link.det=link)
+m2 <- svabu(Y ~ x1 | z1 + z2, zeroinfl=FALSE, link.det=link)
+m3 <- svabu(Y ~ x1 | z1 + z2 + z3, zeroinfl=FALSE, link.det=link)
+maic <- AIC(m1, m2, m3)
+maic$dAIC <- maic$AIC - min(maic$AIC)
+maic   # AIC for the true model is the lowest, as it should be. 
+
+## How do the fitted probabilities of detection compare 
+## with the true ones? The best fitting model approximates 
+## the true probabilities of detection quite well. 
+
+plot(z1, p, type="l", ylim=c(0,1))
+lines(z1, m1$detection.probabilities, col=2)
+lines(z1, m2$detection.probabilities, col=3)
+lines(z1, m3$detection.probabilities, col=4)
+legend("bottomright", lty=1, col=1:4,
+    legend=paste(c("truth", "linear", "quadratic", "cubic"),
+        "AIC =", c("NA",round(maic$AIC, 2))))
+
+## 4)
+
+## Can we estimate the absolute probability of selection if the 
+## RSPF condition is satisfied? We generate the Use-Available 
+## data under a cubic model (same as the probability of 
+## detection model above). User can use any other model 
+## that satisfies the RSPF condition. 
+
+## simulate data under RSPF model
+
+library(ResourceSelection)
+
+n <- 3000
+k <- 3 # order of polynomial
+link <- "logit"
+beta <- c(1,1)
+theta <- cf[1:(1+k),3]
+
+x1 <- rnorm(n, 0, 1)
+X <- model.matrix(~ x1)
+lambda <- exp(X %*% beta)
+
+z1 <- sort(runif(n, -1, 0.75))
+z2 <- z1^2
+z3 <- z1^3
+
+Z <- model.matrix(~ z1 + z2 + z3)[,1:(1+k)]
+p <- binomial(link)$linkinv(Z %*% theta)
+summary(p)     # Notice that the probability of selection never reaches 1. 
+
+z <- data.frame(z1=z1, z2=z2, z3=z3)[,1:k]   # This is the distribution of the covariates: The available distribution. 
+
+dat <- simulateUsedAvail(z, theta, n, m=10, link=link)  # This function generates the used points  under probability sampling with replacement. The data frame also includes a sample of available points that is obtained using simple random sampling with replacement. (See Lele and Keim 2006: Animal as a sampler description in the discussion)
+
+## 5)
+## estimate coefficients for RSPF
+
+r1 <- rspf(status ~ z1, dat, m=0, B=0, link=link)
+r2 <- rspf(status ~ z1 + z2, dat, m=0, B=0, link=link)
+r3 <- rspf(status ~ z1 + z2 + z3, dat, m=0, B=0, link=link)
+raic <- AIC(r1, r2, r3)
+raic$dAIC <- raic$AIC - min(raic$AIC)
+raic   # The best fitting model is the cubic model as it should be. 
+
+# How do the estimated probability of selection compare with the true probabilities of selection? The best fitting model approximates the true probabilities quite well. As usual, larger the sample size, better will be the fit.
+
+plot(z1, p, type="l", ylim=c(0,1))
+points(dat$z1, fitted(r1), col=2, pch=".")
+points(dat$z1, fitted(r2), col=3, pch=".")
+points(dat$z1, fitted(r3), col=4, pch=".")
+legend("bottomright", lty=1, col=1:4,
+    legend=paste(c("truth", "linear", "quadratic", "cubic"),
+        "AIC =", c("NA",round(raic$AIC, 2))))
+
+
+
+
 ## B-B-ZIP CL identifiability
 
 The goal is to establish identifiability for svabuRD models:
@@ -26,7 +192,7 @@ if there is a mechanism that causes that.
 
 ### B-B-ZIP simulation
 
-```
+```R
 R <- 100
 n <- 2000
 K <- 250
@@ -81,7 +247,7 @@ save.image("out-sim-2.Rdata")
 
 ### Results from B-B-ZIP simulation
 
-```
+```R
 load("out-sim-2.Rdata")
 
 True2 <- c(beta, thetaR, "logedr"=log(edr))
