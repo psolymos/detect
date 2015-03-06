@@ -191,16 +191,13 @@ legend("bottomright", lty=1, col=1:4,
 
 ```R
 library(dclone)
-library(boot)
+library(rjags)
 
-
-OccData.fun = function(psi,p1){
-	
-	N = length(p1)
-	Y = rbinom(N,1,psi)
-	W = rbinom(N,1,Y*p1)
-	out = list(Y=Y,W=W)
-return(out)
+OccData.fun = function(psi, p1){
+    N <- length(p1)
+    Y = rbinom(N, 1, psi)
+    W = rbinom(N, 1, Y * p1)
+    list(Y=Y, W=W)
 }
 ```
 
@@ -220,22 +217,20 @@ We want to keep it close to this estimator unless the
 information in the data forces us to move. 
 
 ```R
-OccPenal.est = function(){
-
 # Data list includes: W, beta.naive, penalty,X1,Z1,nS
-	
-	for (i in 1:nS){
-		W[i] ~ dbin(p1[i]*Y[i],1)
-		p1[i] <- exp(inprod(Z1[i,],theta))/(1+exp(inprod(Z1[i,],theta)))	
-		Y[i] ~ dbin(psi[i],1)
-		psi[i] <- exp(inprod(X1[i,],beta))/(1+exp(inprod(X1[i,],beta)))
-	}
-for (i in 1:c1){
-		beta[i] ~ dnorm(beta.naive[i],penalty)     
-	}	
-	for (i in 1:c2){
-		theta[i] ~ dnorm(0,0.01)
-	}	
+OccPenal.est = function(){
+    for (i in 1:nS){
+        W[i] ~ dbin(p1[i] * Y[i], 1)
+	logit(p1[i]) <- inprod(Z1[i,], theta)
+	Y[i] ~ dbin(psi[i], 1)
+	logit(psi[i]) <- inprod(X1[i,], beta)
+    }
+    for (i in 1:c1){
+	beta[i] ~ dnorm(beta.naive[i], penalty)     
+    }	
+    for (i in 1:c2){
+	theta[i] ~ dnorm(0, 0.01)
+    }	
 }
 ```
 
@@ -250,25 +245,25 @@ regression setting:
 The other is much more cost effective and is under the control of the researcher.
 
 ```R
-N = 1000
-beta = c(1,2)   # Occupancy parameters
-theta = c(-1,0.6)  # Detection parameters
+N <- 1000
+beta <- c(1,2)      # Occupancy parameters
+theta <- c(-1,0.6)  # Detection parameters
 
-X = runif(N,-2,2)  # Occupancy covariate
-Z = runif(N,-2,2)  # Detection covariate
+X <- runif(N, -2,2)  # Occupancy covariate
+Z <- runif(N, -2,2)  # Detection covariate
 
-X1 = model.matrix(~X)
-Z1 = model.matrix(~Z)
+X1 <- model.matrix(~X)
+Z1 <- model.matrix(~Z)
 
-psi = inv.logit(X1 %*% beta)
-p1 = inv.logit(Z1 %*% theta)
+psi <- plogis(X1 %*% beta)
+p1 <- plogis(Z1 %*% theta)
 
 mean(psi)   # Check the average occupancy probability
 mean(p1)    # Check the average detection probability
 
-occ.data = OccData.fun(psi,p1)
+occ.data <- OccData.fun(psi, p1)
 
-occ.data = list (Y = occ.data$Y, W = occ.data$W, X1 = X1, Z1= Z1)
+occ.data <- list (Y = occ.data$Y, W = occ.data$W, X1 = X1, Z1 = Z1)
 ```
 
 ### Using only the regularized likelihood function
