@@ -9,6 +9,7 @@ Here we give rationale and code for the simulation used in the paper.
 The organization of this archive is as follows:
 
 * [Examples for the RSPF condition](#examples-for-the-rspf-condition)
+* [Quasi-Bayesian single-visit occupancy model](#quasi-bayesian-single-visit-occupancy-model)
 * [B-B-ZIP CL identifiability](#b-b-zip-cl-identifiability)
 
 ## Examples for the RSPF condition
@@ -181,6 +182,134 @@ points(dat$z1, fitted(r3), col=4, pch=".")
 legend("bottomright", lty=1, col=1:4,
     legend=paste(c("truth", "linear", "quadratic", "cubic"),
         "AIC =", c("NA",round(raic$AIC, 2))))
+```
+
+## Quasi-Bayesian single-visit occupancy model
+
+### Generate data 
+
+
+```R
+library(dclone)
+library(boot)
+
+
+OccData.fun = function(psi,p1){
+	
+	N = length(p1)
+	Y = rbinom(N,1,psi)
+	W = rbinom(N,1,Y*p1)
+	out = list(Y=Y,W=W)
+return(out)
+}
+```
+
+### Penalized estimation
+
+This is basically a Bayesian approach but prior is based on the 
+currently observed data. The prior on beta is centered at the 
+naive estimator. This forces the estimator to not veer off 
+too far from the naive estimator. This penalty function is 
+somewhat easier and simpler than the convoluted penalty 
+function used in Lele et al. (2012). We write it using the 
+conditional distribution form. These estimators are stable 
+but biased for small samples (as are all other estimators used here).
+
+`beta.naive` are from the naive estimator. 
+We want to keep it close to this estimator unless the 
+information in the data forces us to move. 
+
+```R
+OccPenal.est = function(){
+
+# Data list includes: W, beta.naive, penalty,X1,Z1,nS
+	
+	for (i in 1:nS){
+		W[i] ~ dbin(p1[i]*Y[i],1)
+		p1[i] <- exp(inprod(Z1[i,],theta))/(1+exp(inprod(Z1[i,],theta)))	
+		Y[i] ~ dbin(psi[i],1)
+		psi[i] <- exp(inprod(X1[i,],beta))/(1+exp(inprod(X1[i,],beta)))
+	}
+for (i in 1:c1){
+		beta[i] ~ dnorm(beta.naive[i],penalty)     
+	}	
+	for (i in 1:c2){
+		theta[i] ~ dnorm(0,0.01)
+	}	
+}
+```
+
+### Data generation and analysis
+
+There are two ways to increase the information in the data under the 
+regression setting: 
+
+* by increasing the sample size, 
+* and by increasing the variability on the covariate space. 
+
+The other is much more cost effective and is under the control of the researcher.
+
+```R
+N = 1000
+beta = c(1,2)   # Occupancy parameters
+theta = c(-1,0.6)  # Detection parameters
+
+X = runif(N,-2,2)  # Occupancy covariate
+Z = runif(N,-2,2)  # Detection covariate
+
+X1 = model.matrix(~X)
+Z1 = model.matrix(~Z)
+
+psi = inv.logit(X1 %*% beta)
+p1 = inv.logit(Z1 %*% theta)
+
+mean(psi)   # Check the average occupancy probability
+mean(p1)    # Check the average detection probability
+
+occ.data = OccData.fun(psi,p1)
+
+occ.data = list (Y = occ.data$Y, W = occ.data$W, X1 = X1, Z1= Z1)
+```
+
+### Using only the regularized likelihood function
+
+
+```R
+S = 10      # Number of simulations
+out1 = matrix(0,S,5)   # Parameter estimates
+out2 = matrix(0,S,3)
+
+for (s in 1:S){
+
+nS = 400    # Sample size from the population
+sample.index = sample(seq(1:N),nS,replace=F)
+
+beta.naive = glm(occ.data$W[sample.index] ~ X1[sample.index,2], family="binomial")
+penalty = 0.5    # This is the precision for the beta parameters. This should be at least as small as the 1/SE for beta.naive but it could be substantially smaller than that (but not too small). 
+
+dat = list(W = occ.data$W[sample.index], X1 = occ.data$X1[sample.index,], Z1 = occ.data$Z1[sample.index,], c1 = ncol(occ.data$X1), c2 = ncol(occ.data$Z1),nS=nS, beta.naive = beta.naive$coef, penalty=penalty)
+inits = list(Y = rep(1,nS))
+
+OccPenalty.fit = jags.fit(dat,c("beta","theta"),OccPenal.est, inits=inits, n.adapt=10000, n.update=10000, n.iter=1000)
+
+diag = gelman.diag(OccPenalty.fit)  # Check for convergence.  
+
+parms.est = summary(OccPenalty.fit)$quantiles[,c(1,3,5)]  # Median value and the 95% credible interval. 
+
+OccPenalty.fit = jags.fit(dat,c("p1","psi"),OccPenal.est, inits=inits, n.adapt=10000, n.update=10000, n.iter=1000)
+
+tmp = summary(OccPenalty.fit)
+naive.medianOcc = summary(beta.naive$fitted)[3]
+true.medianOcc = summary(psi[sample.index])[3]
+Adj.medianOcc = summary(tmp$quantiles[(nS+1):(2*nS),3])[3]
+
+out1[s,] = c(parms.est[,2],diag$mpsrf)   # Only spits out the median for simulation study.
+out2[s,] = c(naive.medianOcc,true.medianOcc,Adj.medianOcc)
+
+}
+
+out1
+out2
 ```
 
 ## B-B-ZIP CL identifiability
