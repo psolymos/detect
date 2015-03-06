@@ -128,6 +128,27 @@ legend("bottomright", lty=1, col=1:4,
         "AIC =", c("NA",round(maic$AIC, 2))))
 ```
 
+Based on this single run, we can also do simulations to plot
+response curves based on model selection.
+
+```R
+S <- 100
+theta_hat <- matrix(0, 4, S)
+p_hat <- matrix(0, n, S)
+for (i in 1:S) {
+    cat(i, "\n");flush.console()
+    Y <- rbinom(n, N, p)
+    m <- list(m1 = svabu(Y ~ x1 | z1, zeroinfl=FALSE, link.det=link),
+        m2 = svabu(Y ~ x1 | z1 + z2, zeroinfl=FALSE, link.det=link),
+        m3 = svabu(Y ~ x1 | z1 + z2 + z3, zeroinfl=FALSE, link.det=link))
+    m_best <- m[[which.min(sapply(m, AIC))]]
+    theta_hat[1:length(coef(m_best, "det")), i] <- coef(m_best, "det")
+    p_hat[,i] <- m_best$detection.probabilities
+}
+z1_Nmix <- z1
+p_Nmix <- p
+```
+
 Now let us see if we can estimate the absolute probability of selection if the 
 RSPF condition is satisfied. We generate the use-available 
 data under a cubic model (same as the probability of 
@@ -135,8 +156,12 @@ detection model above). User can use any other model
 that satisfies the RSPF condition. 
 
 We simulate data under RSPF model.
-The `simulateUsedAvail` function generates the used points  under probability sampling with replacement. 
-The data frame `dat` also includes a sample of available points that is obtained using simple random sampling with replacement. (See Lele and Keim 2006: Animal as a sampler description in the discussion).
+The `simulateUsedAvail` function generates the used points  under probability 
+sampling with replacement. 
+The data frame `dat` also includes a sample of available points that is 
+obtained using simple random sampling with replacement. 
+(See Lele and Keim 2006: Animal as a sampler description in the discussion).
+
 
 ```R
 library(ResourceSelection)
@@ -185,6 +210,52 @@ points(dat$z1, fitted(r3), col=4, pch=".")
 legend("bottomright", lty=1, col=1:4,
     legend=paste(c("truth", "linear", "quadratic", "cubic"),
         "AIC =", c("NA",round(raic$AIC, 2))))
+```
+
+Now we write simulation after the single run, but keeping the available
+distribution identical:
+
+```R
+theta_hat2 <- matrix(0, 4, S)
+p_hat2 <- matrix(0, sum(dat$status==0), S)
+for (i in 1:S) {
+    cat(i, "\n");flush.console()
+    dat1 <- simulateUsedAvail(z, theta, n, m=10, link=link)
+    dat <- rbind(dat1[dat1$status==1,], dat[dat$status==0,])
+    m <- list(m1 = rspf(status ~ z1, dat, m=0, B=0, link=link),
+        m2 = rspf(status ~ z1 + z2, dat, m=0, B=0, link=link),
+        m3 = rspf(status ~ z1 + z2 + z3, dat, m=0, B=0, link=link))
+    m_best <- m[[which.min(sapply(m, AIC))]]
+    theta_hat2[1:length(coef(m_best)), i] <- coef(m_best)
+    p_hat2[,i] <- fitted(m_best, "avail")
+}
+z1_rspf <- z1
+p_rspf <- p
+```
+
+Now let's plot both the N-mixture and RSPF simulation results
+with the true response curve that was used
+
+
+```R
+## model selection frequencies for N-mixture
+table(colSums(abs(theta_hat) > 0))
+## model selection frequencies for RSPF
+table(colSums(abs(theta_hat2) > 0))
+
+op <- par(mfrow=c(1,2))
+
+plot(z1_Nmix, p_Nmix, type="n", ylim=c(0,1))
+matlines(z1_Nmix, p_hat, type="l", lty=1, col="grey")
+lines(z1_Nmix, p_Nmix, lwd=2)
+
+ii <- which(!duplicated(dat$z1[dat$status==0]))
+ii <- ii[order(dat$z1[dat$status==0][ii])]
+plot(z1_rspf, p_rspf, type="n", ylim=c(0,1))
+matlines(dat$z1[dat$status==0][ii], p_hat2[ii,], type="l", lty=1, col="grey")
+lines(z1_rspf, p_rspf, lwd=2)
+
+par(op)
 ```
 
 ## Quasi-Bayesian single-visit occupancy model
