@@ -95,7 +95,9 @@ z2 <- z1^2
 z3 <- z1^3
 Z <- model.matrix(~ z1 + z2 + z3)[,1:(1+k)]
 p <- binomial(link)$linkinv(Z %*% theta)
-summary(p)    # This shows that the probability of detection does not reach 1 for any covariate value. 
+## This shows that the probability of detection 
+## does not reach 1 for any covariate value. 
+summary(p)    
 N <- rpois(n, lambda)
 Y <- rbinom(n, N, p)
 table(Y)
@@ -157,7 +159,8 @@ Z <- model.matrix(~ z1 + z2 + z3)[,1:(1+k)]
 p <- binomial(link)$linkinv(Z %*% theta)
 summary(p)     # Notice that the probability of selection never reaches 1. 
 
-z <- data.frame(z1=z1, z2=z2, z3=z3)[,1:k]   # This is the distribution of the covariates: The available distribution. 
+## This is the distribution of the covariates: The available distribution. 
+z <- data.frame(z1=z1, z2=z2, z3=z3)[,1:k]   
 
 dat <- simulateUsedAvail(z, theta, n, m=10, link=link)  
 ```
@@ -217,7 +220,7 @@ We want to keep it close to this estimator unless the
 information in the data forces us to move. 
 
 ```R
-# Data list includes: W, beta.naive, penalty,X1,Z1,nS
+## Data list includes: W, beta.naive, penalty,X1,Z1,nS
 OccPenal.est = function(){
     for (i in 1:nS){
         W[i] ~ dbin(p1[i] * Y[i], 1)
@@ -268,38 +271,51 @@ occ.data <- list (Y = occ.data$Y, W = occ.data$W, X1 = X1, Z1 = Z1)
 
 ### Using only the regularized likelihood function
 
+Penalty is the precision for the `beta` parameters. This should be at least as small as the 
+1/SE^2 for `beta.naive` but it could be substantially smaller than that (but not too small). 
 
 ```R
-S = 10      # Number of simulations
-out1 = matrix(0,S,5)   # Parameter estimates
-out2 = matrix(0,S,3)
+S <- 10  # Number of simulations
+out1 <- matrix(0, S, 5)   # Parameter estimates
+out2 <- matrix(0, S, 3)
 
-for (s in 1:S){
+nS <- 400    # Sample size from the population
 
-nS = 400    # Sample size from the population
-sample.index = sample(seq(1:N),nS,replace=F)
+penalty <- 0.5    
 
-beta.naive = glm(occ.data$W[sample.index] ~ X1[sample.index,2], family="binomial")
-penalty = 0.5    # This is the precision for the beta parameters. This should be at least as small as the 1/SE for beta.naive but it could be substantially smaller than that (but not too small). 
+for (s in 1:S) {
 
-dat = list(W = occ.data$W[sample.index], X1 = occ.data$X1[sample.index,], Z1 = occ.data$Z1[sample.index,], c1 = ncol(occ.data$X1), c2 = ncol(occ.data$Z1),nS=nS, beta.naive = beta.naive$coef, penalty=penalty)
-inits = list(Y = rep(1,nS))
+    sample.index <- sample(seq(1:N), nS, replace = FALSE)
+    beta.naive <- glm(occ.data$W[sample.index] ~ X1[sample.index,2], family="binomial")
 
-OccPenalty.fit = jags.fit(dat,c("beta","theta"),OccPenal.est, inits=inits, n.adapt=10000, n.update=10000, n.iter=1000)
+    dat <- list(W = occ.data$W[sample.index], 
+	X1 = occ.data$X1[sample.index,], 
+	Z1 = occ.data$Z1[sample.index,], 
+	c1 = ncol(occ.data$X1), 
+	c2 = ncol(occ.data$Z1),
+	nS = nS, 
+	beta.naive = beta.naive$coef, 
+	penalty = penalty)
+    inits <- list(Y = rep(1, nS))
+	
+    OccPenalty.fit <- jags.fit(dat, c("beta","theta"), OccPenal.est, 
+	inits=inits, n.adapt=10000, n.update=10000, n.iter=1000)
+    diag <- gelman.diag(OccPenalty.fit)  # Check for convergence.  
+	
+    # Median value and the 95% credible interval.
+    parms.est <- summary(OccPenalty.fit)$quantiles[,c(1,3,5)]   
 
-diag = gelman.diag(OccPenalty.fit)  # Check for convergence.  
-
-parms.est = summary(OccPenalty.fit)$quantiles[,c(1,3,5)]  # Median value and the 95% credible interval. 
-
-OccPenalty.fit = jags.fit(dat,c("p1","psi"),OccPenal.est, inits=inits, n.adapt=10000, n.update=10000, n.iter=1000)
-
-tmp = summary(OccPenalty.fit)
-naive.medianOcc = summary(beta.naive$fitted)[3]
-true.medianOcc = summary(psi[sample.index])[3]
-Adj.medianOcc = summary(tmp$quantiles[(nS+1):(2*nS),3])[3]
-
-out1[s,] = c(parms.est[,2],diag$mpsrf)   # Only spits out the median for simulation study.
-out2[s,] = c(naive.medianOcc,true.medianOcc,Adj.medianOcc)
+    OccPenalty.fit <- jags.fit(dat, c("p1","psi"), OccPenal.est, 
+	inits=inits, n.adapt=10000, n.update=10000, n.iter=1000)
+	
+	tmp <- summary(OccPenalty.fit)
+	naive.medianOcc <- summary(beta.naive$fitted)[3]
+	true.medianOcc <- summary(psi[sample.index])[3]
+	Adj.medianOcc <- summary(tmp$quantiles[(nS+1):(2*nS), 3])[3]
+	
+	# Only spits out the median for simulation study.
+	out1[s,] <- c(parms.est[,2],diag$mpsrf)   
+	out2[s,] <- c(naive.medianOcc, true.medianOcc, Adj.medianOcc)
 
 }
 
