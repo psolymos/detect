@@ -33,7 +33,7 @@ cf <- sapply(1:m, function(i)
 ## Linear or Quadratic or Cubic terms included 
 ## in the link (logit or cloglog).
 
-op <- par(mfrow=c(3,2))
+op <- par(mfrow=c(3,2), las=1)
 
 plot(0, type="n", ylim=c(0,1), xlim=c(-1,1),
     xlab="x", ylab="p", main="logit, linear")
@@ -243,17 +243,21 @@ table(colSums(abs(theta_hat) > 0))
 ## model selection frequencies for RSPF
 table(colSums(abs(theta_hat2) > 0))
 
-op <- par(mfrow=c(1,2))
+op <- par(mfrow=c(1,2), las=1)
 
-plot(z1_Nmix, p_Nmix, type="n", ylim=c(0,1))
+plot(z1_Nmix, p_Nmix, type="n", ylim=c(0,1),
+    xlab="Predictor", ylab="Probability of detection",
+    main="Single-visit N-mixture")
 matlines(z1_Nmix, p_hat, type="l", lty=1, col="grey")
-lines(z1_Nmix, p_Nmix, lwd=2)
+lines(z1_Nmix, p_Nmix, lwd=3)
 
 ii <- which(!duplicated(dat$z1[dat$status==0]))
 ii <- ii[order(dat$z1[dat$status==0][ii])]
-plot(z1_rspf, p_rspf, type="n", ylim=c(0,1))
+plot(z1_rspf, p_rspf, type="n", ylim=c(0,1),
+    xlab="Predictor", ylab="Probability of selection",
+    main="RSPF")
 matlines(dat$z1[dat$status==0][ii], p_hat2[ii,], type="l", lty=1, col="grey")
-lines(z1_rspf, p_rspf, lwd=2)
+lines(z1_rspf, p_rspf, lwd=3)
 
 par(op)
 ```
