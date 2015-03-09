@@ -33,39 +33,45 @@ cf <- sapply(1:m, function(i)
 ## Linear or Quadratic or Cubic terms included 
 ## in the link (logit or cloglog).
 
-op <- par(mfrow=c(3,2), las=1)
+pdf("fig-poly-123.pdf", width=8, height=12)
+xlim <- 0.75
+op <- par(mfrow=c(3,2), las=1, cex=1.2, mar=c(3,4,4,2)+0.1)
 
-plot(0, type="n", ylim=c(0,1), xlim=c(-1,1),
-    xlab="x", ylab="p", main="logit, linear")
+plot(0, type="n", ylim=c(0,1), xlim=c(-xlim,xlim),
+    xlab="Predictor", ylab="Probability", main="logit, linear")
 for (i in 1:m)
-    lines(x, plogis(cf[1,i]+cf[2,i]*x), col=col[i])
+    lines(x, plogis(cf[1,i]+cf[2,i]*x), col=col[i], lwd=3)
 
-plot(0, type="n", ylim=c(0,1), xlim=c(-1,1),
-    xlab="x", ylab="p", main="cloglog, linear")
+plot(0, type="n", ylim=c(0,1), xlim=c(-xlim,xlim),
+    xlab="Predictor", ylab="Probability", main="cloglog, linear")
 for (i in 1:m)
-    lines(x, binomial("cloglog")$linkinv(cf[1,i]+cf[2,i]*x), col=col[i])
+    lines(x, binomial("cloglog")$linkinv(cf[1,i]+cf[2,i]*x), col=col[i], lwd=3)
 
-plot(0, type="n", ylim=c(0,1), xlim=c(-1,1),
-    xlab="x", ylab="p", main="logit, quadratic")
+plot(0, type="n", ylim=c(0,1), xlim=c(-xlim,xlim),
+    xlab="Predictor", ylab="Probability", main="logit, quadratic")
 for (i in 1:m)
-    lines(x, plogis(cf[1,i]+cf[2,i]*x+cf[3,i]*x^2), col=col[i])
+    lines(x, plogis(cf[1,i]+cf[2,i]*x+cf[3,i]*x^2), col=col[i], lwd=3)
 
-plot(0, type="n", ylim=c(0,1), xlim=c(-1,1),
-    xlab="x", ylab="p", main="cloglog, quadratic")
+plot(0, type="n", ylim=c(0,1), xlim=c(-xlim,xlim),
+    xlab="Predictor", ylab="Probability", main="cloglog, quadratic")
 for (i in 1:m)
-    lines(x, binomial("cloglog")$linkinv(cf[1,i]+cf[2,i]*x+cf[3,i]*x^2), col=col[i])
+    lines(x, binomial("cloglog")$linkinv(cf[1,i]+cf[2,i]*x+cf[3,i]*x^2), 
+        col=col[i], lwd=3)
 
-plot(0, type="n", ylim=c(0,1), xlim=c(-1,1),
-    xlab="x", ylab="p", main="logit, cubic")
+plot(0, type="n", ylim=c(0,1), xlim=c(-xlim,xlim),
+    xlab="Predictor", ylab="Probability", main="logit, cubic")
 for (i in 1:m)
-    lines(x, plogis(cf[1,i]+cf[2,i]*x+cf[3,i]*x^2+cf[4,i]*x^3), col=col[i])
+    lines(x, plogis(cf[1,i]+cf[2,i]*x+cf[3,i]*x^2+cf[4,i]*x^3), 
+        col=col[i], lwd=3)
 
-plot(0, type="n", ylim=c(0,1), xlim=c(-1,1),
-    xlab="x", ylab="p", main="cloglog, cubic")
+plot(0, type="n", ylim=c(0,1), xlim=c(-xlim,xlim),
+    xlab="Predictor", ylab="Probability", main="cloglog, cubic")
 for (i in 1:m)
-    lines(x, binomial("cloglog")$linkinv(cf[1,i]+cf[2,i]*x+cf[3,i]*x^2+cf[4,i]*x^3), col=col[i])
+    lines(x, binomial("cloglog")$linkinv(cf[1,i]+cf[2,i]*x+cf[3,i]*x^2+cf[4,i]*x^3), 
+        col=col[i], lwd=3)
 
 par(op)
+dev.off()
 ```
 
 In the following, we illustrate the estimation of the abundance 
@@ -243,13 +249,8 @@ table(colSums(abs(theta_hat) > 0))
 ## model selection frequencies for RSPF
 table(colSums(abs(theta_hat2) > 0))
 
+pdf("fig-poly-fit.pdf", width=10, height=5)
 op <- par(mfrow=c(1,2), las=1)
-
-plot(z1_Nmix, p_Nmix, type="n", ylim=c(0,1),
-    xlab="Predictor", ylab="Probability of detection",
-    main="Single-visit N-mixture")
-matlines(z1_Nmix, p_hat, type="l", lty=1, col="grey")
-lines(z1_Nmix, p_Nmix, lwd=3)
 
 ii <- which(!duplicated(dat$z1[dat$status==0]))
 ii <- ii[order(dat$z1[dat$status==0][ii])]
@@ -259,7 +260,14 @@ plot(z1_rspf, p_rspf, type="n", ylim=c(0,1),
 matlines(dat$z1[dat$status==0][ii], p_hat2[ii,], type="l", lty=1, col="grey")
 lines(z1_rspf, p_rspf, lwd=3)
 
+plot(z1_Nmix, p_Nmix, type="n", ylim=c(0,1),
+    xlab="Predictor", ylab="Probability of detection",
+    main="Single-visit N-mixture")
+matlines(z1_Nmix, p_hat, type="l", lty=1, col="grey")
+lines(z1_Nmix, p_Nmix, lwd=3)
+
 par(op)
+dev.off()
 ```
 
 ## Quasi-Bayesian single-visit occupancy model
