@@ -1,3 +1,4 @@
+extras
 \.md
 .git*
 .DS_Store

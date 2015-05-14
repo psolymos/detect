@@ -15,9 +15,13 @@ version of the BAM QPAD estimates. List of selection is
 provided if missing.
 }
 }
+\details{
+The \code{load_BAM_QPAD} function in the 'detect' package is deprecated.
+Use the \code{load_BAM_QPAD} function 'QPAD' package instead.
+See \url{https://github.com/psolymos/QPAD} for more information.
+}
 \value{
-The function is called for its side effects: it sources the
-BAM QPAD parameter estimates and support functions.
+It returns a message.
 }
 \references{
 Solymos, P., Matsuoka, S. M., Bayne, E. M., Lele, S. R., Fontaine, P., 
@@ -31,10 +35,5 @@ Supporting info, including a tutorial for the above paper:
 }
 \author{
 Peter Solymos
-}
-\examples{
-\dontrun{
-load_BAM_QPAD(version = 1)
-}
 }
 \keyword{ misc }
