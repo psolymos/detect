@@ -23,8 +23,9 @@ function(groups, strata, B = 199)
             w0 <- table(g)
             w <- w0[match(g, names(w0))]
             w <- w / sum(w)
-            out[[j]] <- sample(ni[strata==j], length(g), 
-                replace=TRUE, prob=w)
+            vec <- ni[strata == j]
+            out[[j]] <- if (length(vec) < 2)
+                vec else sample(vec, length(g), replace = TRUE, prob = w)
         }
         out <- unlist(out)
         sample(out, length(out), replace=FALSE)
