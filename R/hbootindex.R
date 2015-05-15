@@ -30,8 +30,8 @@ function(groups, strata, B = 199)
         out <- unlist(out)
         sample(out, length(out), replace=FALSE)
     }
-    if (require(pbapply)) {
-        pbsapply(1:(B+1), xyclboot)
+    if (requireNamespace("pbapply")) {
+        pbapply::pbsapply(1:(B+1), xyclboot)
     } else {
         sapply(1:(B+1), xyclboot)
     }
