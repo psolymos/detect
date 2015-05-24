@@ -10,6 +10,7 @@ The organization of this archive is as follows:
 
 * [Examples for the RSPF condition](#examples-for-the-rspf-condition)
 * [Quasi-Bayesian single-visit occupancy model](#quasi-bayesian-single-visit-occupancy-model)
+* [Bias in generalized N-mixture model](#bias-in-generalized-n-mixture-model)
 * [B-B-ZIP CL identifiability](#b-b-zip-cl-identifiability)
 
 ## Examples for the RSPF condition
@@ -405,6 +406,87 @@ for (s in 1:S) {
 out1
 out2
 ```
+
+## Bias in generalized N-mixture model
+
+### Simulation setup
+
+The simulations were conducted using MPI cluster on WestGrid (http://www.westgrid.ca).
+The `simuls6.R` file was run using the portable batch system by running
+the file `mee6.pbs`. The end result is an `Rdata` file that is used below.
+
+### Summarizing results
+
+```R
+options("CLUSTER_ACTIVE" = FALSE)
+library(lattice)
+library(MASS)
+
+load("MEE-rev2-simul-4-constant.Rdata")
+res1 <- res[!vals$overlap]
+res2 <- res[vals$overlap]
+
+vals <- vals[!vals$overlap,]
+vals$overlap <- NULL
+vals$cinv <- round(1/vals$cvalue, 1)
+vals$omega <- round(vals$omega, 1)
+
+## bias in lambda
+ff <- function(zz) {
+    tr <- zz[c("lam1","lam2","lam3"), "truth"]
+    dm <- zz[c("lam1","lam2","lam3"), "DM"]
+    sv <- zz[c("lam1","lam2","lam3"), "SV"]
+    c(DM=(dm - tr) / tr, SV=(sv - tr) / tr)
+}
+fun_blam <- function(z, fun=mean) {
+    apply(sapply(z, ff), 1, fun)
+}
+
+bias1 <- t(sapply(res1, fun_blam, fun=mean))
+bias2 <- t(sapply(res2, fun_blam, fun=mean))
+
+ylim <- c(-1, 2)
+xlim <- c(0,1)
+Cols <- c("DM.lam1","SV.lam1") #colnames(bias1)
+om <- sort(unique(vals$omega))
+
+fPal <- colorRampPalette(c("red", "blue"))
+Col <- fPal(length(unique(vals$omega)))
+
+op <- par(mfrow=c(2,2), mar=c(4,5,2,2)+0.1, las=1)
+for (j in 1:2) { # setup
+    for (i in 1:length(Cols)) { # method
+        bias <- switch(as.character(j),
+            "1" = bias1,
+            "2" = bias2)
+        main0 <- switch(as.character(j),
+            "1" = "no overlap",
+            "2" = "overlap")
+        CC <- switch(Cols[i],
+            "DM.lam1" = "DM (T=3, t=1)",
+            "SV.lam1" = "SV (t=1)")
+        main <- paste0(CC, " - ", main0)
+        plot(vals$cinv, bias[, Cols[i]], type="n",
+            main=main, ylim=ylim, xlim=xlim,
+            xlab="1/c", ylab="Relative bias")
+        abline(h=0, lty=1, col="grey")
+        for (k in seq_len(length(om))) {
+            ii <- vals$omega == om[k]
+            lines(vals[ii, "cinv"], bias[ii, Cols[i]], col=Col[k],
+            lwd=2)
+        }
+    }
+}
+for (jj in 1:100) {
+    lines(c(0, 0.1), rep(0.5 + 0.01*jj, 2),
+        col=fPal(100)[jj])
+}
+text(0.15, 1.75, expression(omega), cex=1.5)
+text(rep(0.15, 6), 0.5 + c(0, 0.5, 1),
+c("0.0","0.5","1.0"), cex=0.8)
+par(op)
+```
+
 
 ## B-B-ZIP CL identifiability
 
