@@ -249,7 +249,7 @@ link.det = "logit", link.zif = "logit", ...)
         names(se.zif) <- nam.zif
     }
     ## assembling return object
-    Converged <- if (zeroinfl) {
+    Converged <- if (sum(!id1) > 0 && zeroinfl) {
         results$convergence == 0 && zif.results$convergence == 0
     } else results$convergence == 0
     out <- list(coefficients = list(sta = par.state, det = par.det),

@@ -1,5 +1,5 @@
 svabu.fit <-
-function(Y, X, Z, Q=NULL, zeroinfl=TRUE, area=1, N.max=NULL, inits, 
+function(Y, X, Z, Q=NULL, zeroinfl=TRUE, area=1, N.max=NULL, inits,
 link.det = "logit", link.zif = "logit", ...)
 {
     nll.P <- function(parms) {
@@ -167,7 +167,7 @@ link.det = "logit", link.zif = "logit", ...)
     lLik <- -results$value
     if (sum(!id1) > 0 && zeroinfl) {
         emlp <- exp(-lambda * area * delta)
-        zif.results <- suppressWarnings(optim(inits[(np.abu+np.det+1):np], 
+        zif.results <- suppressWarnings(optim(inits[(np.abu+np.det+1):np],
             nll.ZIP0, emlp=emlp, id1=id1, method=method, hessian=TRUE, control=control))
         par.zif <- zif.results$par
         names(par.zif) <- nam.zif
@@ -188,21 +188,21 @@ link.det = "logit", link.zif = "logit", ...)
         names(se.zif) <- nam.zif
     }
     ## assembling return object
-    Converged <- if (zeroinfl) {
+    Converged <- if (sum(!id1) > 0 && zeroinfl) {
         results$convergence == 0 && zif.results$convergence == 0
     } else results$convergence == 0
     out <- list(coefficients = list(sta = par.state, det = par.det),
-        std.error = list(sta = se.state, det = se.det), 
-        fitted.values = lambda, 
+        std.error = list(sta = se.state, det = se.det),
+        fitted.values = lambda,
         detection.probabilities = delta,
         zif.probabilities = phi,
         zeroinfl = zeroinfl,
-        nobs = n, 
+        nobs = n,
         N.max = N.max,
         link = list(sta="log", det=link.det, zif=link.zif),
         df.null = n - 2,
-        df.residual = n - np, 
-        inits = inits, 
+        df.residual = n - np,
+        inits = inits,
         loglik = lLik,
         results = list(count=results, zero=zif.results),
         converged = Converged,
