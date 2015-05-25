@@ -1,10 +1,10 @@
-## single visit B-B-ZIP abundance model 
-## with distance sampling 
+## single visit B-B-ZIP abundance model
+## with distance sampling
 ## r is PC radius, we **DO NOT** allow r=Inf unlimited radius
 
 svabuRD.fit <-
-function(Y, X, ZR=NULL, ZD=NULL, Q=NULL, zeroinfl=TRUE, 
-r=1, N.max=NULL, inits, 
+function(Y, X, ZR=NULL, ZD=NULL, Q=NULL, zeroinfl=TRUE,
+r=1, N.max=NULL, inits,
 link.det = "logit", link.zif = "logit", ...)
 {
     nll.P <- function(parms) {
@@ -30,7 +30,7 @@ link.det = "logit", link.zif = "logit", ...)
     nll.ZIP1 <- function(parms) {
         edr1 <- exp(drop(ZD1 %*% parms[(np.abu+np.detR+1):(np.abu+np.detR+np.detD)]))
         deltaD1 <- (edr1 / r1)^2 * (1 - exp(-(r1 / edr1)^2))
-        lambda.rep <- rep(drop(exp(X1 %*% parms[1:np.abu])), each=N.max+1) * area1.rep
+        lambda1.rep <- rep(drop(exp(X1 %*% parms[1:np.abu])), each=N.max+1) * area1.rep
         #srate1 <- exp(drop(ZR1 %*% parms[(np.abu+1):(np.abu+np.detR)]))
         #deltaR1 <- 1 - exp(-srate1 * t1)
         deltaR1 <- drop(linkinvfun.det(ZR1 %*% parms[(np.abu+1):(np.abu+np.detR)]))
@@ -39,7 +39,7 @@ link.det = "logit", link.zif = "logit", ...)
         dp1 <- dpois(N1.rep, lambda1.rep)
         db1 <- dbinom(Y1.rep, N1.rep, delta1.rep)
         part1 <- colSums(matrix(dp1 * db1, nrow=N.max+1))
-        part2 <- 1 / (1 - exp(-lambda1 * delta1))
+        part2 <- 1 / (1 - exp(-lambda1.rep * delta1))
         out <- -sum(log(part1*part2))
         out <- ifelse(abs(out) == Inf, good.num.limit[2], out)
         out <- ifelse(is.na(out), good.num.limit[2], out)
@@ -124,7 +124,7 @@ link.det = "logit", link.zif = "logit", ...)
 #        inits <- rep(0, np)
         inits <- if (zeroinfl) {
             c(glm.fit(X,Y,family=poisson())$coef,
-                glm.fit(ZR,Y,family=poisson())$coef, 
+                glm.fit(ZR,Y,family=poisson())$coef,
                 glm.fit(ZD,Y,family=poisson())$coef, # glm.fit(Z,ifelse(Y>0,1,0),family=binomial())$coef
                 glm.fit(Q,ifelse(Y>0,0,1),family=binomial())$coef)
         } else {
@@ -181,12 +181,12 @@ link.det = "logit", link.zif = "logit", ...)
             r else r[id1]
 #        t1 <- if (length(t) == 1)
 #            t else t[id1]
-        results <- optim(inits[1:(np.abu + np.detR + np.detD)], 
+        results <- optim(inits[1:(np.abu + np.detR + np.detD)],
             nll.ZIP1, method=method, hessian=TRUE, control=control)
     } else {
         id1 <- Y >= 0
         id1.rep <- rep(id1, each=N.max+1)
-        results <- optim(inits[1:(np.abu + np.detR + np.detD)], 
+        results <- optim(inits[1:(np.abu + np.detR + np.detD)],
             nll.P, method=method, hessian=TRUE, control=control)
     }
     estimates <- results$par
@@ -228,7 +228,7 @@ link.det = "logit", link.zif = "logit", ...)
     lLik <- -results$value
     if (sum(!id1) > 0 && zeroinfl) {
         emlp <- exp(-lambda * area * delta)
-        zif.results <- suppressWarnings(optim(inits[(np.abu+np.detR+np.detD+1):np], 
+        zif.results <- suppressWarnings(optim(inits[(np.abu+np.detR+np.detD+1):np],
             nll.ZIP0, emlp=emlp, id1=id1, method=method, hessian=TRUE, control=control))
         par.zif <- zif.results$par
         names(par.zif) <- nam.zif
@@ -253,19 +253,19 @@ link.det = "logit", link.zif = "logit", ...)
         results$convergence == 0 && zif.results$convergence == 0
     } else results$convergence == 0
     out <- list(coefficients = list(sta = par.state, det = par.det),
-        std.error = list(sta = se.state, det = se.det), 
-        fitted.values = lambda, 
+        std.error = list(sta = se.state, det = se.det),
+        fitted.values = lambda,
         detection.probabilities = delta,
 #        singing.rate = singrate,
         edr = edr,
         zif.probabilities = phi,
         zeroinfl = zeroinfl,
-        nobs = n, 
+        nobs = n,
         N.max = N.max,
         link = list(sta="log", det=link.det, zif=link.zif),
         df.null = n - 2,
-        df.residual = n - np, 
-        inits = inits, 
+        df.residual = n - np,
+        inits = inits,
         loglik = lLik,
         results = list(count=results, zero=zif.results),
         converged = Converged,
@@ -406,13 +406,13 @@ summary(Y/(p*q))
 summary(D)
 summary(p)
 summary(q)
-#summary(pi*r^2)
-table(Y[,1])
+table(Y)
 
 
 m <- svabuRD.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=FALSE, t=t, r=r, N.max=K)
-
 cbind(est=unlist(coef(m)), true=c(beta, thetaR, log(edr)))
 
+m <- svabuRD.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=TRUE, t=t, r=r, N.max=K)
+cbind(est=unlist(coef(m))[-length(unlist(coef(m)))], true=c(beta, thetaR, log(edr)))
 
 }
