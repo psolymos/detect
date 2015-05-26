@@ -99,7 +99,8 @@ link.det = "logit", link.zif = "logit", ...)
         ## unobserved (pi_0)
         delta0 <- 1 - rowSums(delta, na.rm=TRUE)
 
-        delta.rep <- rep(delta, each=N.max+1)
+        delta.rep <- delta[i.rep,]
+        delta0.rep <- rep(delta0, each=N.max+1)
         phi.rep <- rep(drop(linkinvfun.zif(Q %*% parms[(np.abu+np.detR+np.detD+1):length(parms)])), each=N.max+1)
         loglik0 <- log(phi.rep + exp(log(1 - phi.rep) - lambda.rep))
         loglik1 <- log(1 - phi.rep) + dpois(N.rep, lambda=lambda.rep, log=TRUE)
@@ -214,6 +215,7 @@ link.det = "logit", link.zif = "logit", ...)
     ## estimate the count part
     if (zeroinfl) {
         id1 <- Y > 0
+        id1.rep <- rep(id1, each=N.max+1)
         id1.repx <- rep(which(Y > 0), each=N.max+1)
         Y1 <- Y[id1]
         r1 <- r[id1]
@@ -435,17 +437,19 @@ for (i in 1:B) {
         rmultinom(1, N[i], delta[i,])))
     Y <- Y10[,-ncol(Y10)]
 
+    zi <- FALSE
+
     cat("mn_p,\t");flush.console()
-    m0 <- svabuRDm.fit(Y, X, NULL, NULL, Q=NULL, zeroinfl=FALSE, D=Dm, N.max=K)
+    m0 <- svabuRDm.fit(Y, X, NULL, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K)
     res3mn0[[i]] <- cbind(est=unlist(coef(m0)), true=c(beta, mean(qlogis(p)), log(edr)))
 
     cat("mn_pi,\t");flush.console()
-    m1 <- svabuRDm.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=FALSE, D=Dm, N.max=K)
+    m1 <- svabuRDm.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K)
     res3mn[[i]] <- cbind(est=unlist(coef(m1)), true=c(beta, thetaR, log(edr)))
 
     cat("b_pi.\n")
     yy <- rowSums(Y)
-    m2 <- svabu.fit(yy, X, ZR, Q=NULL, zeroinfl=FALSE, N.max=K)
+    m2 <- svabu.fit(yy, X, ZR, Q=NULL, zeroinfl=zi, N.max=K)
     res3sv[[i]] <- cbind(est=unlist(coef(m2)), true=c(beta, thetaR))
 
 }
