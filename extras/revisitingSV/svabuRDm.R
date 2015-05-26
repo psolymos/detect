@@ -343,7 +343,7 @@ if (FALSE) {
 set.seed(1234)
 library(detect)
 source("~/repos/detect/extras/revisitingSV/svabuRDm.R")
-n <- 200
+n <- 1000
 T <- 3
 K <- 50
 B <- 100
@@ -393,7 +393,8 @@ for (i in 1:B) {
     m <- svabuRDm.fit(Y, X, NULL, NULL, Q=NULL, zeroinfl=FALSE, D=Dm, N.max=K)
     res1[[i]] <- cbind(est=unlist(coef(m)), true=c(beta, qlogis(p), log(edr)))
 }
-save(res1, file="~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom1.Rdata")
+save(res1, file=paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom1_",
+  n, ".Rdata"))
 
 ## variable p
 res2 <- list()
@@ -417,7 +418,8 @@ for (i in 1:B) {
     m <- svabuRDm.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=FALSE, D=Dm, N.max=K)
     res2[[i]] <- cbind(est=unlist(coef(m)), true=c(beta, thetaR, log(edr)))
 }
-save(res2, file="~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom2.Rdata")
+save(res2, file=paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom2_",
+  n, ".Rdata"))
 
 ## unmarked script -- scaling biases lambda estimates
 
