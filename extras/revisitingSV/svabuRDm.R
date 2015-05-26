@@ -485,4 +485,13 @@ mean(lambda)
 mean(lambda*p)
 mean(exp(drop(X %*% coef(m)[1:2])))
 
+load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom1.Rdata")
+true1 <- res1[[1]][,"true"]
+est1 <- sapply(res1, function(z) z[,"est"])
+bias1 <- t(est1 - true1)
+boxplot(bias1);abline(h=0, col=2)
+
+
+
+
 }
