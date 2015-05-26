@@ -20,8 +20,8 @@ link.det = "logit", link.zif = "logit", ...)
 
         ## this is p*pi cell probs
         delta <- deltaR * deltaD
-        ## unobserved
-        delta0 <- deltaR * (1 - rowSums(deltaD, na.rm=TRUE))
+        ## unobserved (pi_0)
+        delta0 <- 1 - rowSums(delta, na.rm=TRUE)
 
         dp <- dpois(N.rep, lambda.rep)
 
@@ -35,7 +35,7 @@ link.det = "logit", link.zif = "logit", ...)
             dmultinom(yvec, N.rep[i],
                 c(delta.rep[i,Yok.rep[i,]], delta0.rep[i]))})
 
-        intsum <- colSums(matrix(dp * db, nrow=N.max+1))
+        intsum <- colSums(matrix(dp * db, nrow=N.max+1), na.rm=TRUE)
         out <- -sum(log(intsum))
         out <- ifelse(abs(out) == Inf, good.num.limit[2], out)
         out <- ifelse(is.na(out), good.num.limit[2], out)
@@ -53,7 +53,7 @@ link.det = "logit", link.zif = "logit", ...)
         ## this is p*pi cell probs
         delta <- deltaR * deltaD
         ## unobserved
-        delta0 <- deltaR * pmax(0, 1 - rowSums(deltaD, na.rm=TRUE))
+        delta0 <- 1 - rowSums(delta, na.rm=TRUE)
         delta1 <- rowSums(delta, na.rm=TRUE)[id1]
         delta1.rep <- delta[id1.repx,]
         delta01.rep <- delta0[id1.repx]
@@ -86,20 +86,33 @@ link.det = "logit", link.zif = "logit", ...)
     }
     nll.ZIP <- function(parms) {
         edr <- exp(drop(ZD %*% parms[(np.abu+np.detR+1):(np.abu+np.detR+np.detD)]))
-        deltaD <- (edr / r)^2 * (1 - exp(-(r / edr)^2))
+        deltaD <- (edr / r)^2 * (1 - exp(-(D / edr)^2))
+        deltaD <- deltaD - cbind(0, deltaD[, -ncol(deltaD), drop=FALSE])
+
         lambda.rep <- rep(drop(exp(X %*% parms[1:np.abu])), each=N.max+1) * area.rep
         #srate <- exp(drop(ZR %*% parms[(np.abu+1):(np.abu+np.detR)]))
         #deltaR <- 1 - exp(-srate * t)
         deltaR <- drop(linkinvfun.det(ZR %*% parms[(np.abu+1):(np.abu+np.detR)]))
+
+        ## this is p*pi cell probs
         delta <- deltaR * deltaD
+        ## unobserved (pi_0)
+        delta0 <- 1 - rowSums(delta, na.rm=TRUE)
+
         delta.rep <- rep(delta, each=N.max+1)
         phi.rep <- rep(drop(linkinvfun.zif(Q %*% parms[(np.abu+np.detR+np.detD+1):length(parms)])), each=N.max+1)
         loglik0 <- log(phi.rep + exp(log(1 - phi.rep) - lambda.rep))
         loglik1 <- log(1 - phi.rep) + dpois(N.rep, lambda=lambda.rep, log=TRUE)
         dp <- exp(ifelse(id1.rep, loglik1, loglik0))
 #        dp <- exp(ifelse(N1full.rep, loglik1, loglik0))
-        db <- dbinom(Y.rep, N.rep, delta.rep)
-        intsum <- colSums(matrix(dp * db, nrow=N.max+1))
+#        db <- dbinom(Y.rep, N.rep, delta.rep)
+        db <- sapply(1:length(N.rep), function(i) {
+            yvec <- c(YY.rep[i,Yok.rep[i,]], YY0.rep[i])
+            if (N.rep[i] < sum(yvec))
+                return(NA)
+            dmultinom(yvec, N.rep[i],
+                c(delta.rep[i,Yok.rep[i,]], delta0.rep[i]))})
+        intsum <- colSums(matrix(dp * db, nrow=N.max+1), na.rm=TRUE)
         out <- -sum(log(intsum))
         out <- ifelse(abs(out) == Inf, good.num.limit[2], out)
         out <- ifelse(is.na(out), good.num.limit[2], out)
@@ -325,15 +338,15 @@ link.det = "logit", link.zif = "logit", ...)
 
 if (FALSE) {
 
-#library(detect)
-#source("c:/Dropbox/pkg/detect/R/svabusra.R")
-#source("c:/Dropbox/pkg/detect/R/svabusra.fit.R")
-#svisitFormula <- detect:::svisitFormula
+## this is constant EDR model
 
-set.seed(4321)
-n <- 2000
+set.seed(1234)
+library(detect)
+source("~/repos/detect/extras/revisitingSV/svabuRDm.R")
+n <- 200
 T <- 3
-K <- 250
+K <- 50
+B <- 100
 link <- "logit"
 linkinvfun.det <- binomial(link=make.link(link))$linkinv
 
@@ -350,59 +363,67 @@ ZR <- model.matrix(~ x3)
 ZD <- model.matrix(~ x2)
 Q <- model.matrix(~ x7)
 
-beta <- c(-1,1)
+beta <- c(0,1)
 thetaR <- c(0.2, -2) # for singing rate
-thetaD <- c(-0.3, 0.3) # for EDR
-phi <- 0
+thetaD <- c(-0.5, 1.2) # for EDR
 
-r <- sample(c(0.5,1), n, replace=TRUE)
-#t <- sample(c(3,5,4,5,6,7,8,9,10), n, replace=TRUE)
-
-edr <- exp(drop(ZD %*% thetaD))
-#edr.tr <- edr*sqrt(1-exp(-r^2/edr^2))
-#Area <- ifelse(is.finite(r), pi*edr.tr^2, pi*edr^2)
-Area <- ifelse(is.finite(r), pi*r^2, pi*edr^2)
-q <- ifelse(is.finite(r), (edr / r)^2 * (1 - exp(-(r / edr)^2)), 1)
+edr <- 0.8 # exp(drop(ZD %*% thetaD))
+Dm <- matrix(c(0.5, 1), n, 2, byrow=TRUE)
+## truncation distance must be finite
+r <- apply(Dm, 1, max, na.rm=TRUE)
+Area <- pi*r^2
+q <- (edr / r)^2 * (1 - exp(-(Dm / edr)^2))
+q <- q - cbind(0, q[,-ncol(Dm), drop=FALSE])
 
 D <- exp(drop(X %*% beta))
 lambda <- D * Area
 
+## constant p
+res1 <- list()
+p <- 0.5
+delta <- cbind(p * q, 1-rowSums(p * q))
+for (i in 1:B) {
+    cat("constant p, run", i, "of", B, "\n");flush.console()
+
+    N <- rpois(n, lambda)
+    Y10 <- t(sapply(1:n, function(i)
+        rmultinom(1, N[i], delta[i,])))
+    Y <- Y10[,-ncol(Y10)]
+
+    m <- svabuRDm.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=FALSE, D=Dm, N.max=K)
+    res1[[i]] <- cbind(est=unlist(coef(m)), true=c(beta, thetaR, log(edr)))
+}
+save(res1, file="~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom1.Rdata")
+
+## variable p
+res2 <- list()
 p <- linkinvfun.det(drop(ZR %*% thetaR))
-#srate <- -log(1-deltaR) / t
+delta <- cbind(p * q, 1-rowSums(p * q))
+for (i in 1:B) {
+    cat("variable p, run", i, "of", B, "\n");flush.console()
 
-## using the marginal distribution, so that we can simulate unlimited counts
-## the interest is in D
+    N <- rpois(n, lambda)
+    Y10 <- t(sapply(1:n, function(i)
+        rmultinom(1, N[i], delta[i,])))
+    Y <- Y10[,-ncol(Y10)]
 
-Y <- rpois(n, lambda * p * q)
+    #summary(N)
+    #summary(Y)
+    #summary(p)
+    #summary(delta)
+    #summary(rowSums(Y)/N)
+    #summary(rowSums(delta[,-3]))
 
-#x <- data.frame(x1, x2, x3, x4, x5, x6)
-summary(Y)
-summary(Y/(p*q))
-summary(D)
-summary(p)
-summary(q)
-#summary(pi*r^2)
-table(Y)
+    m <- svabuRDm.fit(Y, X, NULL, NULL, Q=NULL, zeroinfl=FALSE, D=Dm, N.max=K)
+    res2[[i]] <- cbind(est=unlist(coef(m)), true=c(beta, qlogis(p), log(edr)))
+}
+save(res2, file="~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom2.Rdata")
 
+## unmarked script -- scaling biases lambda estimates
 
-m <- svabuRD.fit(Y, X, ZR, ZD, Q=NULL, zeroinfl=phi!=0, r=r, N.max=K)
-
-cbind(est=unlist(coef(m)), true=c(beta, thetaR, thetaD))
-
-#                         est true
-#sta.(Intercept)   -0.9205812 -1.0
-#sta.x1             0.7472176  1.0
-#det.R_(Intercept)  0.3954751  0.2
-#det.R_x3          -2.5397480 -2.0
-#det.D_(Intercept) -0.5145289 -0.5
-#det.D_x2           1.2768396  1.2
-
-
-## this is constant EDR model
-
-set.seed(4321)
-library(detect)
-n <- 1000
+set.seed(1234)
+library(unmarked)
+n <- 200
 T <- 3
 K <- 50
 link <- "logit"
@@ -422,33 +443,18 @@ ZD <- model.matrix(~ x2)
 Q <- model.matrix(~ x7)
 
 beta <- c(1,1)
-thetaR <- c(0.2, -2) # for singing rate
-thetaD <- c(-0.5, 1.2) # for EDR
-phi <- 0
+p <- 0.2
+edr <- 50
 
-#r <- sample(c(0.5,1), n, replace=TRUE)
-#t <- sample(c(3,5,4,5,6,7,8,9,10), n, replace=TRUE)
-
-edr <- 0.65 # exp(drop(ZD %*% thetaD))
-Dm <- matrix(c(0.5, 1), n, 2, byrow=TRUE)
+Dm <- matrix(c(50, 100), n, 2, byrow=TRUE)
 ## truncation distance must be finite
 r <- apply(Dm, 1, max, na.rm=TRUE)
-Area <- pi*r^2
 q <- (edr / r)^2 * (1 - exp(-(Dm / edr)^2))
 q <- q - cbind(0, q[,-ncol(Dm), drop=FALSE])
 ## unobserved
-q0 <- 1 - rowSums(q, na.rm=TRUE)
+delta <- cbind(p * q, 1-rowSums(p * q))
+lambda <- exp(drop(X %*% beta))
 
-D <- exp(drop(X %*% beta))
-lambda <- D * Area
-
-p <- linkinvfun.det(drop(ZR %*% thetaR))
-p <- 0.5
-#srate <- -log(1-deltaR) / t
-delta <- p * cbind(q, q0)
-
-## using the marginal distribution, so that we can simulate unlimited counts
-## the interest is in D
 
 N <- rpois(n, lambda)
 Y10 <- t(sapply(1:n, function(i)
@@ -457,19 +463,24 @@ Y <- Y10[,-ncol(Y10)]
 
 summary(N)
 summary(Y)
-summary(D)
-summary(p)
-summary(q)
-summary(rowSums(q))
 summary(delta)
-#summary(pi*r^2)
+summary(rowSums(Y)/N)
+summary(rowSums(delta[,-3]))
 
+umf <- unmarkedFrameDS(y=Y,
+ siteCovs=data.frame(x1=x1,x2=x2,x3=x3),
+ dist.breaks=c(0,50,100), unitsIn="m", survey="point")
 
-m <- svabuRDm.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=FALSE, D=Dm, N.max=K)
+m <- distsamp(~1 ~x1, umf, output="abund")
+summary(m)
 
-cbind(est=unlist(coef(m)), true=c(beta, thetaR, log(edr)))
-
-m <- svabuRDm.fit(Y, X, NULL, NULL, Q=NULL, zeroinfl=FALSE, D=Dm, N.max=K)
-cbind(est=unlist(coef(m)), true=c(beta, qlogis(p), log(edr)))
+## effective radius
+sig <- exp(coef(m, type="det"))
+ea <- 2*pi * integrate(grhn, 0, 100, sigma=sig)$value # effective area
+edr
+sqrt(ea / pi) # effective radius
+mean(lambda)
+mean(lambda*p)
+mean(exp(drop(X %*% coef(m)[1:2])))
 
 }
