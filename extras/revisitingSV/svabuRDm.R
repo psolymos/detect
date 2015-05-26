@@ -390,8 +390,8 @@ for (i in 1:B) {
         rmultinom(1, N[i], delta[i,])))
     Y <- Y10[,-ncol(Y10)]
 
-    m <- svabuRDm.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=FALSE, D=Dm, N.max=K)
-    res1[[i]] <- cbind(est=unlist(coef(m)), true=c(beta, thetaR, log(edr)))
+    m <- svabuRDm.fit(Y, X, NULL, NULL, Q=NULL, zeroinfl=FALSE, D=Dm, N.max=K)
+    res1[[i]] <- cbind(est=unlist(coef(m)), true=c(beta, qlogis(p), log(edr)))
 }
 save(res1, file="~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom1.Rdata")
 
@@ -414,8 +414,8 @@ for (i in 1:B) {
     #summary(rowSums(Y)/N)
     #summary(rowSums(delta[,-3]))
 
-    m <- svabuRDm.fit(Y, X, NULL, NULL, Q=NULL, zeroinfl=FALSE, D=Dm, N.max=K)
-    res2[[i]] <- cbind(est=unlist(coef(m)), true=c(beta, qlogis(p), log(edr)))
+    m <- svabuRDm.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=FALSE, D=Dm, N.max=K)
+    res2[[i]] <- cbind(est=unlist(coef(m)), true=c(beta, thetaR, log(edr)))
 }
 save(res2, file="~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom2.Rdata")
 
