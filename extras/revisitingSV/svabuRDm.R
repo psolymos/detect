@@ -343,7 +343,7 @@ if (FALSE) {
 set.seed(1234)
 library(detect)
 source("~/repos/detect/extras/revisitingSV/svabuRDm.R")
-n <- 1000
+n <- 200
 T <- 3
 K <- 50
 B <- 100
@@ -394,7 +394,7 @@ for (i in 1:B) {
     res1[[i]] <- cbind(est=unlist(coef(m)), true=c(beta, qlogis(p), log(edr)))
 }
 save(res1, file=paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom1_",
-  n, ".Rdata"))
+    n, ".Rdata"))
 
 ## variable p
 res2 <- list()
@@ -419,7 +419,40 @@ for (i in 1:B) {
     res2[[i]] <- cbind(est=unlist(coef(m)), true=c(beta, thetaR, log(edr)))
 }
 save(res2, file=paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom2_",
-  n, ".Rdata"))
+    n, ".Rdata"))
+
+## test case
+res3mn0 <- list()
+res3mn <- list()
+res3sv <- list()
+p <- linkinvfun.det(drop(ZR %*% thetaR))
+delta <- cbind(p * q, 1-rowSums(p * q))
+for (i in 1:B) {
+    cat("variable p, run", i, "of", B, ":\t");flush.console()
+
+    N <- rpois(n, lambda)
+    Y10 <- t(sapply(1:n, function(i)
+        rmultinom(1, N[i], delta[i,])))
+    Y <- Y10[,-ncol(Y10)]
+
+    cat("mn_p,\t");flush.console()
+    m0 <- svabuRDm.fit(Y, X, NULL, NULL, Q=NULL, zeroinfl=FALSE, D=Dm, N.max=K)
+    res3mn0[[i]] <- cbind(est=unlist(coef(m0)), true=c(beta, mean(qlogis(p)), log(edr)))
+
+    cat("mn_pi,\t");flush.console()
+    m1 <- svabuRDm.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=FALSE, D=Dm, N.max=K)
+    res3mn[[i]] <- cbind(est=unlist(coef(m1)), true=c(beta, thetaR, log(edr)))
+
+    cat("b_pi.\n")
+    yy <- rowSums(Y)
+    m2 <- svabu.fit(yy, X, ZR, Q=NULL, zeroinfl=FALSE, N.max=K)
+    res3sv[[i]] <- cbind(est=unlist(coef(m2)), true=c(beta, thetaR))
+
+}
+save(res3mn0, res3mn, res3sv, 
+    file=paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom3_",
+    n, ".Rdata"))
+
 
 ## unmarked script -- scaling biases lambda estimates
 
