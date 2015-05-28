@@ -453,7 +453,7 @@ for (i in 1:B) {
     res3sv[[i]] <- cbind(est=unlist(coef(m2)), true=c(beta, thetaR))
 
 }
-save(res3mn0, res3mn, res3sv, 
+save(res3mn0, res3mn, res3sv,
     file=paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom3_",
     n, ".Rdata"))
 
@@ -522,13 +522,42 @@ mean(lambda)
 mean(lambda*p)
 mean(exp(drop(X %*% coef(m)[1:2])))
 
+load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom2.Rdata")
+load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom1_1000.Rdata")
+res1000 <- res1
 load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom1.Rdata")
-true1 <- res1[[1]][,"true"]
-est1 <- sapply(res1, function(z) z[,"est"])
-bias1 <- t(est1 - true1)
-boxplot(bias1);abline(h=0, col=2)
+load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom3_200.Rdata")
 
+f <- function(res) {
+    true <- res[[1]][,"true"]
+    est <- t(sapply(res, function(z) z[,"est"]))
+    bias <- t(t(est) - true)
+    list(true=true, est=est, bias=bias)
+}
 
+## bias in parameters
+par(mfrow=c(2,3))
+boxplot(f(res1)$bias, main="const p n=200");abline(h=0, col=2)
+boxplot(f(res1000)$bias, main="const p n=1000");abline(h=0, col=2)
+boxplot(f(res2)$bias, main="var p n=200");abline(h=0, col=2)
+boxplot(f(res3mn0)$bias, main="p_i: MN p");abline(h=0, col=2)
+boxplot(f(res3mn)$bias, main="p_i: MN p_i");abline(h=0, col=2)
+boxplot(f(res3sv)$bias, main="p_i: SV p_i");abline(h=0, col=2)
 
+## bias in lambda
+lam <- mean(exp(X %*% z[1:2,"true"]))
+g0 <- function(z) {
+    lam.hat <- mean(exp(X %*% z[1:2,"est"]))
+    (lam.hat - lam) / lam
+}
+g <- function(res)
+    sapply(res, g0)
+
+bLam1 <- cbind(p=g(res1), p_i=g(res2))
+bLam2 <- cbind(mn0=g(res3mn0), mn=g(res3mn), sv=g(res3sv))
+
+par(mfrow=c(1,2))
+boxplot(bLam1, ylim=c(-0.5,2));abline(h=0)
+boxplot(bLam2, ylim=c(-0.5,2));abline(h=0)
 
 }
