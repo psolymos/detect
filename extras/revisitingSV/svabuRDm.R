@@ -381,7 +381,7 @@ q <- q - cbind(0, q[,-ncol(Dm), drop=FALSE])
 D <- exp(drop(X %*% beta))
 lambda <- D * Area
 
-## test case
+## test case 1
 res_mn0 <- list()
 res_mnp <- list()
 res_sv <- list()
@@ -425,6 +425,71 @@ for (i in 1:B) {
 save.image(paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom_all4_",
     n, ".Rdata"))
 
+## test case 2
+res2_mn0 <- list()
+res2_mn <- list()
+p <- 1
+delta <- cbind(p * q, 1-rowSums(p * q))
+for (i in 1:B) {
+    cat("variable p, 2, run", i, "of", B, ":\t");flush.console()
+
+    N <- rpois(n, lambda)
+    Y10 <- t(sapply(1:n, function(i)
+        rmultinom(1, N[i], delta[i,])))
+    Y <- Y10[,-ncol(Y10)]
+
+    zi <- FALSE
+
+    cat("mn_p,  ");flush.console()
+    m0 <- svabuRDm.fit(Y, X, NULL, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K)
+    res2_mn0[[i]] <- cbind(est=unlist(coef(m0)), true=c(beta, mean(qlogis(p)), log(edr)))
+
+    cat("mn,  ");flush.console()
+    umf <- unmarkedFrameDS(y=Y,
+        siteCovs=data.frame(x1=x1,x2=x2,x3=x3),
+        dist.breaks=c(0,50,100), unitsIn="m", survey="point")
+    m <- distsamp(~1 ~x1, umf, output="abund")
+    sig <- exp(coef(m, type="det"))
+    ea <- 2*pi * integrate(grhn, 0, 100, sigma=sig)$value # effective area
+    logedr <- log(sqrt(ea / pi)/100) # effective radius
+    res2_mn[[i]] <- cbind(est=c(coef(m)[1:2], logedr), true=c(beta, log(edr)))
+
+}
+save.image(paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom_all4_",
+    n, ".Rdata"))
+
+## test case 3
+res3_mn0 <- list()
+res3_mn <- list()
+p <- 0.5
+delta <- cbind(p * q, 1-rowSums(p * q))
+for (i in 1:B) {
+    cat("variable p, 3, run", i, "of", B, ":\t");flush.console()
+
+    N <- rpois(n, lambda)
+    Y10 <- t(sapply(1:n, function(i)
+        rmultinom(1, N[i], delta[i,])))
+    Y <- Y10[,-ncol(Y10)]
+
+    zi <- FALSE
+
+    cat("mn_p,  ");flush.console()
+    m0 <- svabuRDm.fit(Y, X, NULL, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K)
+    res3_mn0[[i]] <- cbind(est=unlist(coef(m0)), true=c(beta, mean(qlogis(p)), log(edr)))
+
+    cat("mn,  ");flush.console()
+    umf <- unmarkedFrameDS(y=Y,
+        siteCovs=data.frame(x1=x1,x2=x2,x3=x3),
+        dist.breaks=c(0,50,100), unitsIn="m", survey="point")
+    m <- distsamp(~1 ~x1, umf, output="abund")
+    sig <- exp(coef(m, type="det"))
+    ea <- 2*pi * integrate(grhn, 0, 100, sigma=sig)$value # effective area
+    logedr <- log(sqrt(ea / pi)/100) # effective radius
+    res3_mn[[i]] <- cbind(est=c(coef(m)[1:2], logedr), true=c(beta, log(edr)))
+
+}
+save.image(paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom_all4_",
+    n, ".Rdata"))
 
 ## unmarked script -- scaling biases lambda estimates
 
