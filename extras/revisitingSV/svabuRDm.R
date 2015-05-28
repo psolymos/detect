@@ -344,6 +344,7 @@ if (FALSE) {
 
 set.seed(1234)
 library(detect)
+library(unmarked)
 source("~/repos/detect/extras/revisitingSV/svabuRDm.R")
 n <- 200
 T <- 3
@@ -425,8 +426,9 @@ save(res2, file=paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom2_",
 
 ## test case
 res3mn0 <- list()
-res3mn <- list()
+res3mnp <- list()
 res3sv <- list()
+res3mn <- list()
 p <- linkinvfun.det(drop(ZR %*% thetaR))
 delta <- cbind(p * q, 1-rowSums(p * q))
 for (i in 1:B) {
@@ -439,13 +441,24 @@ for (i in 1:B) {
 
     zi <- FALSE
 
-    cat("mn_p,\t");flush.console()
+    cat("mn_p,  ");flush.console()
     m0 <- svabuRDm.fit(Y, X, NULL, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K)
     res3mn0[[i]] <- cbind(est=unlist(coef(m0)), true=c(beta, mean(qlogis(p)), log(edr)))
 
-    cat("mn_pi,\t");flush.console()
+    cat("mn_pi,  ");flush.console()
     m1 <- svabuRDm.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K)
-    res3mn[[i]] <- cbind(est=unlist(coef(m1)), true=c(beta, thetaR, log(edr)))
+    res3mnp[[i]] <- cbind(est=unlist(coef(m1)), true=c(beta, thetaR, log(edr)))
+
+    cat("mn,  ");flush.console()
+    umf <- unmarkedFrameDS(y=Y,
+        siteCovs=data.frame(x1=x1,x2=x2,x3=x3),
+        dist.breaks=c(0,50,100), unitsIn="m", survey="point")
+    m <- distsamp(~1 ~x1, umf, output="abund")
+    ## effective radius
+    sig <- exp(coef(m, type="det"))
+    ea <- 2*pi * integrate(grhn, 0, 100, sigma=sig)$value # effective area
+    logedr <- log(sqrt(ea / pi)/100) # effective radius
+    res3mn[[i]] <- cbind(est=c(coef(m)[1:2], logedr), true=c(beta, log(edr)))
 
     cat("b_pi.\n")
     yy <- rowSums(Y)
@@ -453,7 +466,7 @@ for (i in 1:B) {
     res3sv[[i]] <- cbind(est=unlist(coef(m2)), true=c(beta, thetaR))
 
 }
-save(res3mn0, res3mn, res3sv, 
+save(res3mn0, res3mnp, res3sv, res3mn,
     file=paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom3_",
     n, ".Rdata"))
 
