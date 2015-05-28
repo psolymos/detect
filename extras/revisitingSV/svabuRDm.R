@@ -381,54 +381,11 @@ q <- q - cbind(0, q[,-ncol(Dm), drop=FALSE])
 D <- exp(drop(X %*% beta))
 lambda <- D * Area
 
-## constant p
-res1 <- list()
-p <- 0.5
-delta <- cbind(p * q, 1-rowSums(p * q))
-for (i in 1:B) {
-    cat("constant p, run", i, "of", B, "\n");flush.console()
-
-    N <- rpois(n, lambda)
-    Y10 <- t(sapply(1:n, function(i)
-        rmultinom(1, N[i], delta[i,])))
-    Y <- Y10[,-ncol(Y10)]
-
-    m <- svabuRDm.fit(Y, X, NULL, NULL, Q=NULL, zeroinfl=FALSE, D=Dm, N.max=K)
-    res1[[i]] <- cbind(est=unlist(coef(m)), true=c(beta, qlogis(p), log(edr)))
-}
-save(res1, file=paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom1_",
-    n, ".Rdata"))
-
-## variable p
-res2 <- list()
-p <- linkinvfun.det(drop(ZR %*% thetaR))
-delta <- cbind(p * q, 1-rowSums(p * q))
-for (i in 1:B) {
-    cat("variable p, run", i, "of", B, "\n");flush.console()
-
-    N <- rpois(n, lambda)
-    Y10 <- t(sapply(1:n, function(i)
-        rmultinom(1, N[i], delta[i,])))
-    Y <- Y10[,-ncol(Y10)]
-
-    #summary(N)
-    #summary(Y)
-    #summary(p)
-    #summary(delta)
-    #summary(rowSums(Y)/N)
-    #summary(rowSums(delta[,-3]))
-
-    m <- svabuRDm.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=FALSE, D=Dm, N.max=K)
-    res2[[i]] <- cbind(est=unlist(coef(m)), true=c(beta, thetaR, log(edr)))
-}
-save(res2, file=paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom2_",
-    n, ".Rdata"))
-
 ## test case
-res3mn0 <- list()
-res3mnp <- list()
-res3sv <- list()
-res3mn <- list()
+res_mn0 <- list()
+res_mnp <- list()
+res_sv <- list()
+res_mn <- list()
 p <- linkinvfun.det(drop(ZR %*% thetaR))
 delta <- cbind(p * q, 1-rowSums(p * q))
 for (i in 1:B) {
@@ -443,31 +400,29 @@ for (i in 1:B) {
 
     cat("mn_p,  ");flush.console()
     m0 <- svabuRDm.fit(Y, X, NULL, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K)
-    res3mn0[[i]] <- cbind(est=unlist(coef(m0)), true=c(beta, mean(qlogis(p)), log(edr)))
+    res_mn0[[i]] <- cbind(est=unlist(coef(m0)), true=c(beta, mean(qlogis(p)), log(edr)))
 
     cat("mn_pi,  ");flush.console()
     m1 <- svabuRDm.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K)
-    res3mnp[[i]] <- cbind(est=unlist(coef(m1)), true=c(beta, thetaR, log(edr)))
+    res_mnp[[i]] <- cbind(est=unlist(coef(m1)), true=c(beta, thetaR, log(edr)))
 
     cat("mn,  ");flush.console()
     umf <- unmarkedFrameDS(y=Y,
         siteCovs=data.frame(x1=x1,x2=x2,x3=x3),
         dist.breaks=c(0,50,100), unitsIn="m", survey="point")
     m <- distsamp(~1 ~x1, umf, output="abund")
-    ## effective radius
     sig <- exp(coef(m, type="det"))
     ea <- 2*pi * integrate(grhn, 0, 100, sigma=sig)$value # effective area
     logedr <- log(sqrt(ea / pi)/100) # effective radius
-    res3mn[[i]] <- cbind(est=c(coef(m)[1:2], logedr), true=c(beta, log(edr)))
+    res_mn[[i]] <- cbind(est=c(coef(m)[1:2], logedr), true=c(beta, log(edr)))
 
     cat("b_pi.\n")
     yy <- rowSums(Y)
     m2 <- svabu.fit(yy, X, ZR, Q=NULL, zeroinfl=zi, N.max=K)
-    res3sv[[i]] <- cbind(est=unlist(coef(m2)), true=c(beta, thetaR))
+    res_sv[[i]] <- cbind(est=unlist(coef(m2)), true=c(beta, thetaR))
 
 }
-save(res3mn0, res3mnp, res3sv, res3mn,
-    file=paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom3_",
+save.image(paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom_all4_",
     n, ".Rdata"))
 
 
