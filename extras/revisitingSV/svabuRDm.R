@@ -444,7 +444,7 @@ for (i in 1:B) {
     m0 <- svabuRDm.fit(Y, X, NULL, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K)
     res2_mn0[[i]] <- cbind(est=unlist(coef(m0)), true=c(beta, mean(qlogis(p)), log(edr)))
 
-    cat("mn,  ");flush.console()
+    cat("mn\n");flush.console()
     umf <- unmarkedFrameDS(y=Y,
         siteCovs=data.frame(x1=x1,x2=x2,x3=x3),
         dist.breaks=c(0,50,100), unitsIn="m", survey="point")
@@ -477,7 +477,7 @@ for (i in 1:B) {
     m0 <- svabuRDm.fit(Y, X, NULL, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K)
     res3_mn0[[i]] <- cbind(est=unlist(coef(m0)), true=c(beta, mean(qlogis(p)), log(edr)))
 
-    cat("mn,  ");flush.console()
+    cat("mn\n");flush.console()
     umf <- unmarkedFrameDS(y=Y,
         siteCovs=data.frame(x1=x1,x2=x2,x3=x3),
         dist.breaks=c(0,50,100), unitsIn="m", survey="point")
@@ -555,42 +555,81 @@ mean(lambda)
 mean(lambda*p)
 mean(exp(drop(X %*% coef(m)[1:2])))
 
-load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom2.Rdata")
-load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom1_1000.Rdata")
-res1000 <- res1
-load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom1.Rdata")
-load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom3_200.Rdata")
+## plot the results
+
+load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom_all4_200.Rdata")
+
+#"res_mn"         "res_mn0"        "res_mnp"        "res_sv"        
+#"res2_mn"        "res2_mn0"       
+#"res3_mn"        "res3_mn0"
 
 f <- function(res) {
     true <- res[[1]][,"true"]
+    true[!is.finite(true)] <- 0
     est <- t(sapply(res, function(z) z[,"est"]))
     bias <- t(t(est) - true)
     list(true=true, est=est, bias=bias)
 }
 
 ## bias in parameters
-par(mfrow=c(2,3))
-boxplot(f(res1)$bias, main="const p n=200");abline(h=0, col=2)
-boxplot(f(res1000)$bias, main="const p n=1000");abline(h=0, col=2)
-boxplot(f(res2)$bias, main="var p n=200");abline(h=0, col=2)
-boxplot(f(res3mn0)$bias, main="p_i: MN p");abline(h=0, col=2)
-boxplot(f(res3mn)$bias, main="p_i: MN p_i");abline(h=0, col=2)
-boxplot(f(res3sv)$bias, main="p_i: SV p_i");abline(h=0, col=2)
+par(mfrow=c(2,2))
+ylim <- c(-2,2)
+boxplot(f(res_mn0)$bias, ylim=ylim);abline(h=0, col=2)
+boxplot(f(res_mnp)$bias, ylim=ylim);abline(h=0, col=2)
+boxplot(f(res_sv)$bias, ylim=ylim);abline(h=0, col=2)
+boxplot(f(res_mn)$bias, ylim=ylim);abline(h=0, col=2)
+
+par(mfrow=c(2,2))
+ylim <- c(-2,2)
+boxplot(f(res2_mn)$bias, ylim=ylim);abline(h=0, col=2)
+boxplot(f(res2_mn0)$bias, ylim=ylim);abline(h=0, col=2)
+boxplot(f(res3_mn)$bias, ylim=ylim);abline(h=0, col=2)
+boxplot(f(res3_mn0)$bias, ylim=ylim);abline(h=0, col=2)
 
 ## bias in lambda
-lam <- mean(exp(X %*% z[1:2,"true"]))
-g0 <- function(z) {
-    lam.hat <- mean(exp(X %*% z[1:2,"est"]))
+#lam <- mean(exp(X %*% z[1:2,"true"]))
+lam <- mean(lambda)
+g0 <- function(z, A=1) {
+    lam.hat <- mean(A * exp(X %*% z[1:2,"est"]))
     (lam.hat - lam) / lam
+    #lam.hat / lam
 }
-g <- function(res)
-    sapply(res, g0)
+g <- function(res, ...)
+    sapply(res, g0, ...)
 
-bLam1 <- cbind(p=g(res1), p_i=g(res2))
-bLam2 <- cbind(mn0=g(res3mn0), mn=g(res3mn), sv=g(res3sv))
+## Royle & SV abundance, MN is density (D * 1^2*pi)
+bLam <- cbind(Royle=g(res_mn), 
+    MN0=g(res_mn0, pi), MNi=g(res_mnp, pi), SV=g(res_sv))
+bLam2 <- cbind(Royle=g(res2_mn), MN0=g(res2_mn0, pi))
+bLam3 <- cbind(Royle=g(res3_mn), MN0=g(res3_mn0, pi))
 
-par(mfrow=c(1,2))
-boxplot(bLam1, ylim=c(-0.5,2));abline(h=0)
-boxplot(bLam2, ylim=c(-0.5,2));abline(h=0)
+par(mfrow=c(1,3))
+ylim <- c(-1,1)
+boxplot(bLam, ylim=ylim);abline(h=0)
+boxplot(bLam2, ylim=ylim);abline(h=0)
+boxplot(bLam3, ylim=ylim);abline(h=0)
+
+ylim <- c(-1,0.5)
+toPlot <- bLam[,c(2,4,1)]
+colnames(toPlot) <- c("Multinomial", "SV", "Distsamp")
+boxplot(toPlot, ylim=ylim, col="grey", ylab="Relative bias")
+abline(h=0)
+
+ylim <- c(-1,0.5)
+toPlot <- bLam[,c(2,3,4,1)]
+colnames(toPlot) <- c("Multinomial, p", "Multinom, p_i", "SV", "Distsamp")
+boxplot(toPlot, ylim=ylim, col="grey", ylab="Relative bias")
+abline(h=0)
+
+ylim <- c(-1.5,0.5)
+toPlot <- cbind(f(res_mn0)$est[,1],
+    f(res_sv)$est[,1]-log(pi),
+    f(res_mn)$est[,1]-log(pi))
+colnames(toPlot) <- c("Multinomial", "SV", "Distsamp")
+boxplot(toPlot, ylim=ylim, col="grey", ylab="Bias")
+abline(h=0)
+abline(h=log(1/2), lty=2)
+
+
 
 }
