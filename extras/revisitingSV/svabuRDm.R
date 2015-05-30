@@ -382,12 +382,13 @@ D <- exp(drop(X %*% beta))
 lambda <- D * Area
 
 ## test case 1
+cval <- 2
 res_mn0 <- list()
 res_mnp <- list()
 res_sv <- list()
 res_mn <- list()
 p <- linkinvfun.det(drop(ZR %*% thetaR))
-delta <- cbind(p * q, 1-rowSums(p * q))
+delta <- (1/cval) * cbind(p * q, 1-rowSums(p * q))
 for (i in 1:B) {
     cat("variable p, run", i, "of", B, ":\t");flush.console()
 
@@ -422,7 +423,7 @@ for (i in 1:B) {
     res_sv[[i]] <- cbind(est=unlist(coef(m2)), true=c(beta, thetaR))
 
 }
-save.image(paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom_all4_",
+save.image(paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom-cval_all4_",
     n, ".Rdata"))
 
 ## test case 2
