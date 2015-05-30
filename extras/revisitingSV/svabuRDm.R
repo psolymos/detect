@@ -387,8 +387,8 @@ res_mn0 <- list()
 res_mnp <- list()
 res_sv <- list()
 res_mn <- list()
-p <- linkinvfun.det(drop(ZR %*% thetaR))
-delta <- (1/cval) * cbind(p * q, 1-rowSums(p * q))
+p <- (1/cval) * linkinvfun.det(drop(ZR %*% thetaR))
+delta <- cbind(p * q, 1-rowSums(p * q))
 for (i in 1:B) {
     cat("variable p, run", i, "of", B, ":\t");flush.console()
 
