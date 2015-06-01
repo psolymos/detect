@@ -375,7 +375,7 @@ beta <- c(0,1)
 thetaR <- c(2.5, -1.2) # for singing rate
 #thetaD <- c(-0.5, 1.2) # for EDR
 
-edr <- 2 # exp(drop(ZD %*% thetaD))
+edr <- 1.2 # exp(drop(ZD %*% thetaD))
 Dm <- matrix(c(0.5, 1), n, 2, byrow=TRUE)
 ## truncation distance must be finite
 r <- apply(Dm, 1, max, na.rm=TRUE)
@@ -405,12 +405,12 @@ for (i in 1:B) {
     zi <- FALSE
 
     cat("mn_p,  ");flush.console()
-    m0 <- svabuRDm.fit(Y, X, NULL, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K)
-    res_mn0[[i]] <- cbind(est=unlist(coef(m0)), true=c(beta, mean(qlogis(p)), log(edr)))
+    m0 <- try(svabuRDm.fit(Y, X, NULL, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K))
+    res_mn0[[i]] <- try(cbind(est=unlist(coef(m0)), true=c(beta, mean(qlogis(p)), log(edr))))
 
     cat("mn_pi,  ");flush.console()
-    m1 <- svabuRDm.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K)
-    res_mnp[[i]] <- cbind(est=unlist(coef(m1)), true=c(beta, thetaR, log(edr)))
+    m1 <- try(svabuRDm.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K))
+    res_mnp[[i]] <- try(cbind(est=unlist(coef(m1)), true=c(beta, thetaR, log(edr))))
 
     cat("mn,  ");flush.console()
     umf <- unmarkedFrameDS(y=Y,
