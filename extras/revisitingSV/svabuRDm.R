@@ -403,9 +403,9 @@ for (i in 1:B) {
     m0 <- svabuRDm.fit(Y, X, NULL, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K)
     res_mn0[[i]] <- cbind(est=unlist(coef(m0)), true=c(beta, mean(qlogis(p)), log(edr)))
 
-    cat("mn_pi,  ");flush.console()
-    m1 <- svabuRDm.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K)
-    res_mnp[[i]] <- cbind(est=unlist(coef(m1)), true=c(beta, thetaR, log(edr)))
+    #cat("mn_pi,  ");flush.console()
+    #m1 <- svabuRDm.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K)
+    #res_mnp[[i]] <- cbind(est=unlist(coef(m1)), true=c(beta, thetaR, log(edr)))
 
     cat("mn,  ");flush.console()
     umf <- unmarkedFrameDS(y=Y,
