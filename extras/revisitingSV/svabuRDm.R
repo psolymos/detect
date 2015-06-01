@@ -572,7 +572,8 @@ load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom-cval_all4_200.Rdata")
 f <- function(res) {
     true <- res[[1]][,"true"]
     true[!is.finite(true)] <- 0
-    est <- t(sapply(res, function(z) z[,"est"]))
+    est <- t(sapply(res, function(z) 
+        if (inherits(z, "try-error")) rep(NA, length(true)) else z[,"est"]))
     bias <- t(t(est) - true)
     list(true=true, est=est, bias=bias)
 }
@@ -629,9 +630,10 @@ abline(h=0)
 
 ylim <- c(-2,0.5)
 toPlot <- cbind(f(res_mn0)$est[,1],
+    f(res_mnp)$est[,1],
     f(res_sv)$est[,1]-log(pi),
     f(res_mn)$est[,1]-log(pi))
-colnames(toPlot) <- c("Multinomial", "SV", "Distsamp")
+colnames(toPlot) <- c("Multinomial", "Multinomial_p", "SV", "Distsamp")
 boxplot(toPlot, ylim=ylim, col="grey", ylab="Bias")
 abline(h=0)
 abline(h=log(1/2), lty=2)
