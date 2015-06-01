@@ -140,8 +140,6 @@ link.det = "logit", link.zif = "logit", ...)
     Y <- rowSums(Y, na.rm=TRUE)
     if (any(!is.finite(rowSums(D, na.rm=TRUE))))
         stop("unlimited distances not supported")
-    ## check YY and D pattern
-    ledr <- cmulti.fit(YY, D, NULL, "dis")
 
     n <- length(Y)
     if (is.null(ZR)) {
@@ -158,6 +156,13 @@ link.det = "logit", link.zif = "logit", ...)
     np.abu <- NCOL(X)
     np.detR <- NCOL(ZR)
     np.detD <- NCOL(ZD)
+
+    ## check YY and D pattern
+    cmx <- if (ncol(ZD) < 2)
+        NULL else ZD
+    ledr <- try(cmulti.fit(YY, D, cmx, "dis"))
+    edr.hat <- if (!inherits(ledr, "try-error"))
+        ledr$coefficients else rep(0, ncol(ZD))
 
     ## zeroinfl and site specific phi
     if (zeroinfl && is.null(Q)) {
@@ -181,12 +186,12 @@ link.det = "logit", link.zif = "logit", ...)
         inits <- if (zeroinfl) {
             c(glm.fit(X,Y,family=poisson())$coef,
                 glm.fit(ZR,Y,family=poisson())$coef,
-                ledr$coefficients, # glm.fit(Z,ifelse(Y>0,1,0),family=binomial())$coef
+                edr.hat, # glm.fit(Z,ifelse(Y>0,1,0),family=binomial())$coef
                 glm.fit(Q,ifelse(Y>0,0,1),family=binomial())$coef)
         } else {
             c(glm.fit(X,Y,family=poisson())$coef,
                 glm.fit(ZR,Y,family=poisson())$coef,
-                ledr$coefficients) # glm.fit(Z,ifelse(Y>0,1,0),family=binomial())$coef
+                edr.hat) # glm.fit(Z,ifelse(Y>0,1,0),family=binomial())$coef
         }
         inits[is.na(inits)] <- 0
     }
