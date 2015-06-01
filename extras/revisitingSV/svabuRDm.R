@@ -367,10 +367,10 @@ ZD <- model.matrix(~ x2)
 Q <- model.matrix(~ x7)
 
 beta <- c(0,1)
-thetaR <- c(0.2, -2) # for singing rate
-thetaD <- c(-0.5, 1.2) # for EDR
+thetaR <- c(2.5, -1.2) # for singing rate
+#thetaD <- c(-0.5, 1.2) # for EDR
 
-edr <- 0.8 # exp(drop(ZD %*% thetaD))
+edr <- 2 # exp(drop(ZD %*% thetaD))
 Dm <- matrix(c(0.5, 1), n, 2, byrow=TRUE)
 ## truncation distance must be finite
 r <- apply(Dm, 1, max, na.rm=TRUE)
@@ -558,10 +558,10 @@ mean(exp(drop(X %*% coef(m)[1:2])))
 
 ## plot the results
 
-load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom_all4_200.Rdata")
+load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom-cval_all4_200.Rdata")
 
-#"res_mn"         "res_mn0"        "res_mnp"        "res_sv"        
-#"res2_mn"        "res2_mn0"       
+#"res_mn"         "res_mn0"        "res_mnp"        "res_sv"
+#"res2_mn"        "res2_mn0"
 #"res3_mn"        "res3_mn0"
 
 f <- function(res) {
@@ -599,7 +599,7 @@ g <- function(res, ...)
     sapply(res, g0, ...)
 
 ## Royle & SV abundance, MN is density (D * 1^2*pi)
-bLam <- cbind(Royle=g(res_mn), 
+bLam <- cbind(Royle=g(res_mn),
     MN0=g(res_mn0, pi), MNi=g(res_mnp, pi), SV=g(res_sv))
 bLam2 <- cbind(Royle=g(res2_mn), MN0=g(res2_mn0, pi))
 bLam3 <- cbind(Royle=g(res3_mn), MN0=g(res3_mn0, pi))
@@ -622,7 +622,7 @@ colnames(toPlot) <- c("Multinomial, p", "Multinom, p_i", "SV", "Distsamp")
 boxplot(toPlot, ylim=ylim, col="grey", ylab="Relative bias")
 abline(h=0)
 
-ylim <- c(-1.5,0.5)
+ylim <- c(-2,0.5)
 toPlot <- cbind(f(res_mn0)$est[,1],
     f(res_sv)$est[,1]-log(pi),
     f(res_mn)$est[,1]-log(pi))
