@@ -387,7 +387,7 @@ D <- exp(drop(X %*% beta))
 lambda <- D * Area
 
 ## test case 1
-cval <- 2
+cval <- 1
 res_mn0 <- list()
 res_mnp <- list()
 res_sv <- list()
@@ -408,9 +408,9 @@ for (i in 1:B) {
     m0 <- try(svabuRDm.fit(Y, X, NULL, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K))
     res_mn0[[i]] <- try(cbind(est=unlist(coef(m0)), true=c(beta, mean(qlogis(p)), log(edr))))
 
-    cat("mn_pi,  ");flush.console()
-    m1 <- try(svabuRDm.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K))
-    res_mnp[[i]] <- try(cbind(est=unlist(coef(m1)), true=c(beta, thetaR, log(edr))))
+    #cat("mn_pi,  ");flush.console()
+    #m1 <- try(svabuRDm.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K))
+    #res_mnp[[i]] <- try(cbind(est=unlist(coef(m1)), true=c(beta, thetaR, log(edr))))
 
     cat("mn,  ");flush.console()
     umf <- unmarkedFrameDS(y=Y,
@@ -428,8 +428,8 @@ for (i in 1:B) {
     res_sv[[i]] <- cbind(est=unlist(coef(m2)), true=c(beta, thetaR))
 
 }
-save.image(paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom-cval_all4_",
-    n, ".Rdata"))
+save.image(paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom-cval-",
+    cval, "_all4_n-", n, ".Rdata"))
 
 ## test case 2
 res2_mn0 <- list()
