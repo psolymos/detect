@@ -372,10 +372,10 @@ ZD <- model.matrix(~ x2)
 Q <- model.matrix(~ x7)
 
 beta <- c(0,1)
-thetaR <- c(2.5, -1.2) # for singing rate
+thetaR <- c(1, -1) # for singing rate
 #thetaD <- c(-0.5, 1.2) # for EDR
 
-edr <- 1.2 # exp(drop(ZD %*% thetaD))
+edr <- 0.8 # exp(drop(ZD %*% thetaD))
 Dm <- matrix(c(0.5, 1), n, 2, byrow=TRUE)
 ## truncation distance must be finite
 r <- apply(Dm, 1, max, na.rm=TRUE)
@@ -383,17 +383,19 @@ Area <- pi*r^2
 q <- (edr / r)^2 * (1 - exp(-(Dm / edr)^2))
 q <- q - cbind(0, q[,-ncol(Dm), drop=FALSE])
 
-D <- exp(drop(X %*% beta))
-lambda <- D * Area
-
 ## test case 1
-cval <- 1
+cvalue <- 2
+D <- exp(drop(X %*% beta))
+lambda <- cvalue * D * Area
+p <- linkinvfun.det(drop(ZR %*% thetaR)) / cvalue
+delta <- cbind(p * q, 1-rowSums(p * q))
+summary(delta)
+summary(lambda)
+
 res_mn0 <- list()
 res_mnp <- list()
 res_sv <- list()
 res_mn <- list()
-p <- (1/cval) * linkinvfun.det(drop(ZR %*% thetaR))
-delta <- cbind(p * q, 1-rowSums(p * q))
 for (i in 1:B) {
     cat("variable p, run", i, "of", B, ":\t");flush.console()
 
@@ -428,8 +430,8 @@ for (i in 1:B) {
     res_sv[[i]] <- cbind(est=unlist(coef(m2)), true=c(beta, thetaR))
 
 }
-save.image(paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom-cval-",
-    cval, "_all4_n-", n, ".Rdata"))
+save.image(paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom_c-",
+    cvalue, "_n-", n, ".Rdata"))
 
 ## test case 2
 res2_mn0 <- list()
