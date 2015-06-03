@@ -372,7 +372,7 @@ ZD <- model.matrix(~ x2)
 Q <- model.matrix(~ x7)
 
 beta <- c(0,1)
-thetaR <- c(1, -1) # for singing rate
+thetaR <- c(1, -1.5) # for singing rate
 #thetaD <- c(-0.5, 1.2) # for EDR
 
 edr <- 0.8 # exp(drop(ZD %*% thetaD))
@@ -384,13 +384,14 @@ q <- (edr / r)^2 * (1 - exp(-(Dm / edr)^2))
 q <- q - cbind(0, q[,-ncol(Dm), drop=FALSE])
 
 ## test case 1
-cvalue <- 2
 D <- exp(drop(X %*% beta))
-lambda <- cvalue * D * Area
-p <- linkinvfun.det(drop(ZR %*% thetaR)) / cvalue
+lambda <- D * Area
+p <- linkinvfun.det(drop(ZR %*% thetaR))
 delta <- cbind(p * q, 1-rowSums(p * q))
 summary(delta)
 summary(lambda)
+summary(rowSums(q))
+summary(p)
 
 res_mn0 <- list()
 res_mnp <- list()
@@ -410,9 +411,9 @@ for (i in 1:B) {
     m0 <- try(svabuRDm.fit(Y, X, NULL, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K))
     res_mn0[[i]] <- try(cbind(est=unlist(coef(m0)), true=c(beta, mean(qlogis(p)), log(edr))))
 
-    #cat("mn_pi,  ");flush.console()
-    #m1 <- try(svabuRDm.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K))
-    #res_mnp[[i]] <- try(cbind(est=unlist(coef(m1)), true=c(beta, thetaR, log(edr))))
+    cat("mn_pi,  ");flush.console()
+    m1 <- try(svabuRDm.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K))
+    res_mnp[[i]] <- try(cbind(est=unlist(coef(m1)), true=c(beta, thetaR, log(edr))))
 
     cat("mn,  ");flush.console()
     umf <- unmarkedFrameDS(y=Y,
@@ -430,8 +431,7 @@ for (i in 1:B) {
     res_sv[[i]] <- cbind(est=unlist(coef(m2)), true=c(beta, thetaR))
 
 }
-save.image(paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom_c-",
-    cvalue, "_n-", n, ".Rdata"))
+save.image(paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom_final.Rdata"))
 
 ## test case 2
 res2_mn0 <- list()
@@ -566,7 +566,7 @@ mean(exp(drop(X %*% coef(m)[1:2])))
 ## plot the results
 
 load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom-cval_all4_200.Rdata")
-
+load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom_c-2_n-200.Rdata")
 #"res_mn"         "res_mn0"        "res_mnp"        "res_sv"
 #"res2_mn"        "res2_mn0"
 #"res3_mn"        "res3_mn0"
@@ -632,10 +632,11 @@ abline(h=0)
 
 ylim <- c(-2,0.5)
 toPlot <- cbind(f(res_mn0)$est[,1],
-    f(res_mnp)$est[,1],
+    #f(res_mnp)$est[,1],
     f(res_sv)$est[,1]-log(pi),
     f(res_mn)$est[,1]-log(pi))
-colnames(toPlot) <- c("Multinomial", "Multinomial_p", "SV", "Distsamp")
+colnames(toPlot) <- c("Multinomial", #"Multinomial_p", 
+    "SV", "Distsamp")
 boxplot(toPlot, ylim=ylim, col="grey", ylab="Bias")
 abline(h=0)
 abline(h=log(1/2), lty=2)
