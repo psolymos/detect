@@ -571,6 +571,7 @@ load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom_c-2_n-200.Rdata")
 #"res2_mn"        "res2_mn0"
 #"res3_mn"        "res3_mn0"
 
+load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom_final.Rdata")
 f <- function(res) {
     true <- res[[1]][,"true"]
     true[!is.finite(true)] <- 0
@@ -633,13 +634,14 @@ abline(h=0)
 ylim <- c(-2,0.5)
 toPlot <- cbind(f(res_mn0)$est[,1],
     #f(res_mnp)$est[,1],
-    f(res_sv)$est[,1]-log(pi),
-    f(res_mn)$est[,1]-log(pi))
+    f(res_sv)$est[,1]-log(pi))#,
+    #f(res_mn)$est[,1]-log(pi))
 colnames(toPlot) <- c("Multinomial", #"Multinomial_p", 
-    "SV", "Distsamp")
-boxplot(toPlot, ylim=ylim, col="grey", ylab="Bias")
+    "SV")#, "Distsamp")
+boxplot(toPlot, col="grey", ylab="Bias")
 abline(h=0)
 abline(h=log(1/2), lty=2)
+text(0.6, log(1/2)+0.08, "log(q)", cex=0.8)
 
 
 
