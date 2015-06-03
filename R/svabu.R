@@ -5,7 +5,7 @@ function (formula, data, zeroinfl=TRUE, area=1, N.max=NULL, inits,
     distr = c("P", "NB"), 
     ...)
 {
-#    distr <- match.arg(distr)
+    distr <- match.arg(distr)
     ## parsing the formula
     if (missing(data))
         data <- NULL
@@ -66,9 +66,15 @@ function (formula, data, zeroinfl=TRUE, area=1, N.max=NULL, inits,
     }
     if (distr == "NB") {
         stop("NB not yet implemented")
+<<<<<<< HEAD
         fit <- svabu_nb.fit(Y, X, Z, Q, zeroinfl=zeroinfl, area, N.max, inits, 
             link.det, link.zif, ...)
         sclass <- "svabu_nb"
+=======
+#        fit <- svabu_nb.fit(Y, X, Z, Q, zeroinfl=zeroinfl, area, N.max, inits, 
+#            link.det, link.zif, ...)
+#        sclass <- "svabu_nb"
+>>>>>>> scaled-NB
     }
     ## return value
     out <- c(fit, out)
