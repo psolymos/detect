@@ -67,9 +67,15 @@ function (formula, data, zeroinfl=TRUE, area=1, N.max=NULL, inits,
     if (distr == "NB") {
         stop("NB not yet implemented")
 <<<<<<< HEAD
+<<<<<<< HEAD
         fit <- svabu_nb.fit(Y, X, Z, Q, zeroinfl=zeroinfl, area, N.max, inits, 
             link.det, link.zif, ...)
         sclass <- "svabu_nb"
+=======
+#        fit <- svabu_nb.fit(Y, X, Z, Q, zeroinfl=zeroinfl, area, N.max, inits, 
+#            link.det, link.zif, ...)
+#        sclass <- "svabu_nb"
+>>>>>>> scaled-NB
 =======
 #        fit <- svabu_nb.fit(Y, X, Z, Q, zeroinfl=zeroinfl, area, N.max, inits, 
 #            link.det, link.zif, ...)
