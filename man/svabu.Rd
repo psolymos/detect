@@ -14,7 +14,7 @@ Binomial-Poisson and Binomial-ZIP models with single visit
 \usage{
 svabu(formula, data, zeroinfl = TRUE, area = 1, N.max = NULL, 
     inits, link.det = "logit", link.zif = "logit", 
-    model = TRUE, x = FALSE, ...)
+    model = TRUE, x = FALSE, distr = c("P", "NB"), ...)
 
 svabu.fit(Y, X, Z, Q = NULL, zeroinfl = TRUE, area = 1, N.max = NULL, 
     inits, link.det = "logit", link.zif = "logit", ...)
@@ -85,6 +85,10 @@ penalty to be used with AIC
 }
   \item{control}{
 controls for optimization, if missing taken from object
+}
+  \item{distr}{
+character, abundance distribution: \code{"P"} for Poisson,
+\code{"NB"} for Negative Binomial.
 }
   \item{\dots}{
 other arguments passed to the functions
