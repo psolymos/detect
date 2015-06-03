@@ -565,8 +565,10 @@ mean(exp(drop(X %*% coef(m)[1:2])))
 
 ## plot the results
 
-load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom-cval_all4_200.Rdata")
-load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom_c-2_n-200.Rdata")
+#load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom-cval_all4_200.Rdata")
+#load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom_c-2_n-200.Rdata")
+load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom_final.Rdata")
+
 #"res_mn"         "res_mn0"        "res_mnp"        "res_sv"
 #"res2_mn"        "res2_mn0"
 #"res3_mn"        "res3_mn0"
@@ -575,7 +577,7 @@ load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/multinom_final.Rdata")
 f <- function(res) {
     true <- res[[1]][,"true"]
     true[!is.finite(true)] <- 0
-    est <- t(sapply(res, function(z) 
+    est <- t(sapply(res, function(z)
         if (inherits(z, "try-error")) rep(NA, length(true)) else z[,"est"]))
     bias <- t(t(est) - true)
     list(true=true, est=est, bias=bias)
@@ -631,11 +633,11 @@ colnames(toPlot) <- c("Multinomial, p", "Multinom, p_i", "SV", "Distsamp")
 boxplot(toPlot, ylim=ylim, col="grey", ylab="Relative bias")
 abline(h=0)
 
-ylim <- c(-2,0.5)
-toPlot <- cbind(f(res_mn0)$est[,1],
-    #f(res_mnp)$est[,1],
-    f(res_sv)$est[,1]-log(pi))#,
-    #f(res_mn)$est[,1]-log(pi))
+ylim <- c(-1.5,1.5)
+toPlot <- cbind(f(res_mn0)$bias[,1],
+    #f(res_mnp)$bias[,1],
+    f(res_sv)$bias[,1]-log(pi))#,
+    #f(res_mn)$bias[,1]-log(pi))
 colnames(toPlot) <- c("Multinomial", #"Multinomial_p", 
     "SV")#, "Distsamp")
 boxplot(toPlot, col="grey", ylab="Bias")
