@@ -354,5 +354,9 @@ for (j in 1:200) {
 }
 save.image(paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/KuK-est.Rdata"))
 
+bcv <- 1/plogis(sapply(cf, "[[", 5))
+plot(density(bcv))
+abline(v=cval)
+quantile(bcv, c(0.05, 0.95))
 
 }
