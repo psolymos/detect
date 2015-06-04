@@ -98,7 +98,7 @@ link.det = "logit", link.zif = "logit", ...)
 #        inits <- rep(0, np)
         inits <- if (zeroinfl) {
             c(glm.fit(X,Y,family=poisson())$coef,
-                glm.fit(Z,Y,family=poisson())$coef, -5, 
+                glm.fit(Z,Y,family=poisson())$coef, -5,
                 glm.fit(Q,ifelse(Y>0,0,1),family=binomial())$coef)
         } else {
             c(glm.fit(X,Y,family=poisson())$coef,
@@ -165,7 +165,7 @@ link.det = "logit", link.zif = "logit", ...)
     names(se.state) <- nam.abu
     names(se.det) <- nam.det
     lambda <- drop(exp(X %*% par.state))
-    delta <- drop(linkinvfun.det(Z %*% par.det[-np.det])) * 
+    delta <- drop(linkinvfun.det(Z %*% par.det[-np.det])) *
         linkinvfun.det(par.det[-np.det])
     ## estimate the zero part
     zif.results <- NULL
@@ -272,16 +272,16 @@ Y <- rbinom(n, N, delta)
 
 cat(i, "\n");flush.console()
 
-mod1 <- svabu2.fit(Y, X, ZR, Q = NULL, 
-    zeroinfl = FALSE, area = 1, N.max = K, 
+mod1 <- svabu2.fit(Y, X, ZR, Q = NULL,
+    zeroinfl = FALSE, area = 1, N.max = K,
     link.det = "logit", link.zif = "logit")
 
 pres[[i]] <- cbind(truth=structure(c(beta, thetaR, qlogis(p_scaling)),
     names=c("beta0","beta1","theta0","theta1","logit_scaling")),
     scaledP=unlist(coef(mod1)))
 
-mod2 <- svabu_nb2.fit(Y, X, ZR, Q = NULL, 
-    zeroinfl = FALSE, area = 1, N.max = K, 
+mod2 <- svabu_nb2.fit(Y, X, ZR, Q = NULL,
+    zeroinfl = FALSE, area = 1, N.max = K,
     link.det = "logit", link.zif = "logit")
 
 nbres[[i]] <- cbind(truth=structure(c(beta, thetaR, qlogis(p_scaling)),
@@ -293,23 +293,27 @@ save.image(paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/svp-check.Rdata"))
 load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/svp-check.Rdata")
 
 f <- function(res) {
-    true <- res[[1]][,"truth"]
+    true <- res[[1]][,1]
     true[!is.finite(true)] <- 0
-    est <- t(sapply(res, function(z) 
-        if (inherits(z, "try-error")) rep(NA, length(true)) else z[,"scaledP"]))
+    est <- t(sapply(res, function(z)
+        if (inherits(z, "try-error")) rep(NA, length(true)) else z[,2]))
     bias <- t(t(est) - true)
     list(true=true, est=est, bias=bias)
 }
 
+#res <- nbres
+op <- par(mfrow=c(2,1))
+for (res in list(pres, nbres)) {
+
 mlam <- mean(lambda)
 mdelta <- mean(delta)
-lamhat <- sapply(pres, function(z) mean(exp(drop(ZR %*% z[1:2,2]))))
-deltahat <- sapply(pres, function(z) mean(linkinvfun.det(z[5,2]) *
+lamhat <- sapply(res, function(z) mean(exp(drop(ZR %*% z[1:2,2]))))
+deltahat <- sapply(res, function(z) mean(linkinvfun.det(z[5,2]) *
     linkinvfun.det(drop(ZR %*% z[3:4,2]))))
 
-toPlot <- cbind(f(pres)$bias, lambda=(lamhat-mlam)/mlam, p=deltahat-mdelta)
-toPlot <- cbind(f(pres)$bias, 
-    log_lam=log(lamhat)-log(mlam), 
+toPlot <- cbind(f(res)$bias, lambda=(lamhat-mlam)/mlam, p=deltahat-mdelta)
+toPlot <- cbind(f(res)$bias,
+    log_lam=log(lamhat)-log(mlam),
     logit_pq=qlogis(deltahat)-qlogis(mdelta))
 ylim <- c(-5, 5)
 boxplot(toPlot, ylim=ylim, col="grey", ylab="Bias",
@@ -322,5 +326,33 @@ boxplot(toPlot, ylim=ylim, col="grey", ylab="Bias",
       expression(log(lambda)),
       expression(ilogit(pq))))
 abline(h=0)
+}
+par(op)
+
+d0 <- read.csv("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/simDatUnknownc.csv")
+
+mm <- svabu_nb2.fit(d0$y, model.matrix(~x1, d0),
+    model.matrix(~x2, d0), Q = NULL,
+    zeroinfl = FALSE, area = 1, N.max = 100,
+    link.det = "logit", link.zif = "logit")
+unlist(coef(mm))
+(cval <- 1 / plogis(unlist(coef(mm))[5]))
+
+## let's do boostrap
+cf <- list()
+d0 <- d
+set.seed(100)
+for (j in 1:200) {
+    cat(j, "\n");flush.console()
+    d <- if (j == 1)
+        d0 else d0[sample.int(nrow(d0), replace=TRUE),]
+    mm <- svabu_nb2.fit(d$y, model.matrix(~x1, d),
+                        model.matrix(~x2, d), Q = NULL,
+                        zeroinfl = FALSE, area = 1, N.max = 100,
+                        link.det = "logit", link.zif = "logit")
+    cf[[j]] <- unlist(coef(mm))
+}
+save.image(paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/KuK-est.Rdata"))
+
 
 }
