@@ -1,6 +1,6 @@
 ## single-visit estimation
 library(detect)
-library(parallel)
+library(snow)
 library(rlecuyer)
 
 ## for the sake of reproducibility
@@ -75,14 +75,14 @@ function(runid=NA, q=1, overlap=FALSE)
 
 ## parallel stuff
 qval <- c(1, 0.75, 0.5, 0.25)
-ncl <- 5
-cl <- makeCluster(ncl)
+ncl <- 10
+cl <- makeSOCKcluster(ncl)
 
 ## load pkgs on workers
 clusterEvalQ(cl, library(detect))
 ## push data to workers
 clusterExport(cl, c("n","x","X","Z1","Z2","K","T","B","beta","theta",
-    "gval", "svabu_nb2.fit"))
+    "gvar", "svabu_nb2.fit"))
 ## set RNGs
 clusterSetupRNG (cl, type = "RNGstream")
 
@@ -107,9 +107,7 @@ for (qv in qval) {
 }
 
 ## save results
-save.image(file="MEE-rev2-simul-4-constant.Rdata")
+save.image(file="MEE-rev2-simul-nbs.Rdata")
 
 ## shutting down safely
 stopCluster(cl)
-options("CLUSTER_ACTIVE" = FALSE)
-mpi.quit("no")
