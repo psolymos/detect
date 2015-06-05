@@ -91,6 +91,8 @@ function(runid=NA, q=1, distr="P", overlap=FALSE)
 #aa1 <- pblapply(c(1, 0.75, 0.5, 0.25), function(qv) fun(q=qv, overlap=FALSE))
 #aa2 <- pblapply(c(1, 0.75, 0.5, 0.25), function(qv) fun(q=qv, overlap=TRUE))
 
+system.time(aa <- fun(q=1, distr="NB", overlap=FALSE))
+system.time(bb <- fun(q=0.25, distr="NB", overlap=FALSE))
 
 ## parallel stuff
 qval <- c(1, 0.75, 0.5, 0.25)
