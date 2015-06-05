@@ -6,7 +6,7 @@ library(rlecuyer)
 ## for the sake of reproducibility
 set.seed(1234)
 B <- 100 # number of replicates
-n <- 1000 # number of sites
+n <- 200 # number of sites
 x1 <- runif(n,0,1) # random predictors
 x2 <- rnorm(n,0,1)
 x3 <- runif(n,0,1)
