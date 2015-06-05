@@ -5,7 +5,7 @@ library(rlecuyer)
 
 ## for the sake of reproducibility
 set.seed(1234)
-B <- 120 # number of replicates
+B <- 100 # number of replicates
 n <- 200 # number of sites
 x1 <- runif(n,0,1) # random predictors
 x2 <- rnorm(n,0,1)
@@ -47,7 +47,7 @@ function(runid=NA, q=1, overlap=FALSE)
     Y <- rbinom(n, N, delta)
 
     m1 <- svabu_nb2.fit(Y, X, Z, Q = NULL,
-        zeroinfl = FALSE, area = 1, N.max = K,
+        zeroinfl = FALSE, area = 1, N.max = max(K, max(N)+50),
         link.det = "logit", link.zif = "logit")
 
     cf1 <- unlist(coef(m1))
