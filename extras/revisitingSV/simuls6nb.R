@@ -6,7 +6,7 @@ library(rlecuyer)
 ## for the sake of reproducibility
 set.seed(1234)
 B <- 100 # number of replicates
-n <- 200 # number of sites
+n <- 1000 # number of sites
 x1 <- runif(n,0,1) # random predictors
 x2 <- rnorm(n,0,1)
 x3 <- runif(n,0,1)
@@ -107,7 +107,34 @@ for (qv in qval) {
 }
 
 ## save results
-save.image(file="MEE-rev2-simul-nbs.Rdata")
+save.image(file=paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/",
+    "MEE-rev2-simul-nbs-n", n, ".Rdata"))
 
 ## shutting down safely
 stopCluster(cl)
+
+load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/MEE-rev2-simul-nbs.Rdata")
+
+f <- function(xx)
+    t(sapply(xx, function(z) z[,2] - z[,1]))
+
+aa <- lapply(resF, f)
+bb <- lapply(resT, f)
+
+pf <- function(tp) {
+    boxplot(tp, col="grey", ylim=c(-5,5))
+    abline(h=0)
+}
+pf(aa[[1]])
+
+g <- function(xx)
+    sapply(xx, function(z) (z["lam",2]-z["lam",1]) / z["lam",1])
+
+op <- par(mfrow=c(1,2))
+boxplot(sapply(resF, g), col="grey", main="no overlap",
+        names=c(1,0.75,05,0.25), ylim=c(-1,3))
+abline(h=0)
+boxplot(sapply(resT, g), col="grey", main="with overlap",
+        names=c(1,0.75,05,0.25), ylim=c(-1,3))
+abline(h=0)
+par(op)
