@@ -41,7 +41,7 @@ function(runid=NA, q=1, overlap=FALSE)
     linkinv <- binomial("logit")$linkinv
     p <- linkinv(drop(Z %*% theta))
     delta <- p * q
-    lambda <- poisson("log")$linkinv(drop(X %*% beta))
+    lambda <- poisson("log")$linkinv(drop(X %*% beta)) / q
 
     N <- rnbinom(n, size=1/gvar, prob=1/(1+gvar*lambda))
     Y <- rbinom(n, N, delta)
@@ -58,8 +58,9 @@ function(runid=NA, q=1, overlap=FALSE)
     p0 <- mean(p)
     p1 <- mean(linkinv(drop(Z %*% cf1[(ncol(X)+1):(ncol(X)+ncol(Z))])))
 
-    out <- cbind(truth=c(lam=lam0, p=p0, q=q, coef=cf0, log.gvar=log(gvar)),
-        SV=c(lam1, p1, plogis(cf1[length(cf1)]), cf1, m1$var$est))
+    out <- cbind(
+        truth=c(lam=lam0, p=p0, q=q, coef=cf0, log.gvar=log(gvar)),
+        SV   =c(lam1, p1, plogis(cf1[length(cf1)]), cf1, m1$var$est))
 
     attr(out, "overlap") <- overlap
     attr(out, "runid") <- runid
@@ -114,18 +115,30 @@ save.image(file=paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/",
 stopCluster(cl)
 
 load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/MEE-rev2-simul-nbs.Rdata")
+#load("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/MEE-rev2-simul-nbs-n1000.Rdata")
 
 f <- function(xx)
-    t(sapply(xx, function(z) z[,2] - z[,1]))
+    t(sapply(xx, function(z) z[,2] - ifelse(is.finite(z[,1]), z[,1], 0)))
 
 aa <- lapply(resF, f)
 bb <- lapply(resT, f)
 
-pf <- function(tp) {
-    boxplot(tp, col="grey", ylim=c(-5,5))
+pf <- function(i, j) {
+    r <- if (j == 0)
+        resF[i] else resT[i]
+    boxplot(f(r[[1]]), col="grey", ylim=c(-5,5), main=names(r))
     abline(h=0)
 }
-pf(aa[[1]])
+op <- par(mfrow=c(4,2))
+pf(1, 0)
+pf(1, 1)
+pf(2, 0)
+pf(2, 1)
+pf(3, 0)
+pf(3, 1)
+pf(4, 0)
+pf(4, 1)
+par(op)
 
 g <- function(xx)
     sapply(xx, function(z) (z["lam",2]-z["lam",1]) / z["lam",1])
