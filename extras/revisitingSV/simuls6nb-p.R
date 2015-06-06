@@ -1,7 +1,19 @@
-## single-visit estimation
-library(detect)
+## preliminaries for MPI
+if (!interactive()) {}
+    .Last <- function() {
+        if (getOption("CLUSTER_ACTIVE")) {
+            stopCluster(cl)
+            cat("active cluster stopped by .Last\n")
+        } else {
+            cat("no active cluster found\n")
+        }
+    }
+    options("CLUSTER_ACTIVE" = FALSE)
+}
 library(snow)
+library(Rmpi)
 library(rlecuyer)
+library(detect)
 
 ## for the sake of reproducibility
 set.seed(1234)
@@ -91,45 +103,75 @@ function(runid=NA, q=1, distr="P", overlap=FALSE)
 #aa1 <- pblapply(c(1, 0.75, 0.5, 0.25), function(qv) fun(q=qv, overlap=FALSE))
 #aa2 <- pblapply(c(1, 0.75, 0.5, 0.25), function(qv) fun(q=qv, overlap=TRUE))
 
-system.time(aa <- fun(q=1, distr="NB", overlap=FALSE))
-system.time(bb <- fun(q=0.25, distr="NB", overlap=FALSE))
+#system.time(aa <- fun(q=1, distr="NB", overlap=FALSE))
+#system.time(bb <- fun(q=0.25, distr="NB", overlap=FALSE))
+
+## settings
+vals <- expand.grid(q=seq(0.1, 1, by=0.1),
+                    distr=c("P","NB"),
+                    overlap=c(FALSE,TRUE))
+
+if (!interactive()) {
+    (args <- commandArgs(trailingOnly = TRUE))
+    nodes <- as.numeric(args[1])
+    ncl <- nodes * 12
+} else {
+    ncl <- 10
+}
+
+TEST <- FALSE
+if (TEST) {
+    B <- 2
+    T <- 5
+    vals <- vals[1:2,]
+    ncl <- 2
+}
 
 ## parallel stuff
-qval <- c(1, 0.75, 0.5, 0.25)
-ncl <- 10
-cl <- makeSOCKcluster(ncl)
+if (interactive()) {
+    cl <- makeSOCKcluster(ncl)
+} else {
+    cl <- makeMPIcluster(ncl)
+    options("CLUSTER_ACTIVE" = TRUE)
+}
 
 ## load pkgs on workers
 clusterEvalQ(cl, library(detect))
 ## push data to workers
 clusterExport(cl, c("n","x","X","Z1","Z2","K","T","B","beta","theta",
-    "gvar", "svabu_nb2.fit"))
+    "gvar", "svabu_nb.fit", "svabu_nb2.fit"))
 ## set RNGs
 clusterSetupRNG (cl, type = "RNGstream")
 
 ## magic happens here
-resF <- list()
-for (qv in qval) {
-    cat("q =", qv, "no overlap\n")
+res <- list()
+for (rowid in seq_len(nrow(vals))) {
+    cat(rowid, "of", nrow(vals), "\n")
     flush.console()
     res1 <- parLapply(cl, seq_len(B), fun,
-            q=qv,
-            overlap=FALSE)
-    resF[[paste0("no overlap, q=",qv)]] <- res1
-}
-resT <- list()
-for (qv in qval) {
-    cat("q =", qv, "with overlap\n")
-    flush.console()
-    res1 <- parLapply(cl, seq_len(B), fun,
-        q=qv,
-        overlap=TRUE)
-    resT[[paste0("with overlap, q=",qv)]] <- res1
+                      q=vals[rowid,"q"],
+                      distr=vals[rowid,"distr"],
+                      overlap=vals[rowid,"overlap"])
+    save(res1, file=paste0("out/simres4-nbp-", rowid, ".Rdata"))
+    res[[rowid]] <- res1
 }
 
 ## save results
-save.image(file=paste0("~/Dropbox/pkg/detect2/mee-rebuttal/rev2/",
-    "MEE-rev2-simul-nbs-n", n, ".Rdata"))
+save(list=ls(),
+    file=paste0("MEE-rev2-simul-nbp-n", n, ".Rdata"))
+
+## shutting down safely
+stopCluster(cl)
+if (!interactive()) {}
+    options("CLUSTER_ACTIVE" = FALSE)
+    mpi.quit("no")
+} else {
+    q("no")
+}
+
+### ------------------ processing ---------------
+
+
 
 ## shutting down safely
 stopCluster(cl)

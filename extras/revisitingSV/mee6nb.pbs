@@ -22,6 +22,6 @@ export OMPI_MCA_mpi_paffinity_alone=0
 
 echo "Starting run at: `date`"
 
-mpiexec -n 1 Rscript --vanilla simuls6nb.R 10
+mpiexec -n 1 Rscript --vanilla simuls6nb-p.R 10
 
 echo "Program finished with exit code $? at: `date`"
