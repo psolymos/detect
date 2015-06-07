@@ -1,5 +1,5 @@
 ## preliminaries for MPI
-if (!interactive()) {}
+if (!interactive()) {
     .Last <- function() {
         if (getOption("CLUSTER_ACTIVE")) {
             stopCluster(cl)
@@ -162,7 +162,7 @@ save(list=ls(),
 
 ## shutting down safely
 stopCluster(cl)
-if (!interactive()) {}
+if (!interactive()) {
     options("CLUSTER_ACTIVE" = FALSE)
     mpi.quit("no")
 } else {
