@@ -11,7 +11,7 @@ The organization of this archive is as follows:
 * [Examples for the RSPF condition](#examples-for-the-rspf-condition)
 * [Quasi-Bayesian single-visit occupancy model](#quasi-bayesian-single-visit-occupancy-model)
 * [Bias in generalized N-mixture model](#bias-in-generalized-n-mixture-model)
-* [B-B-ZIP CL identifiability](#b-b-zip-cl-identifiability)
+* [B-B-ZIP identifiability](#b-b-zip-identifiability)
 
 ## Examples for the RSPF condition
 
@@ -488,17 +488,20 @@ par(op)
 ```
 
 
-## B-B-ZIP CL identifiability
+## B-B-ZIP identifiability
 
-The goal is to establish identifiability for svabuRD models:
-Binomial-Binomial-Poisson for p*p_max issue.
+The goal is to establish identifiability for the 
+Binomial-Binomial-Poisson in the following cases:
+
+* `p_i * q_i` case when `q_i` varies from location to location,
+* `p_i * q` case when `q` is constant but data is binned according to distance bands.
+
+### B-B-ZIP simulation with variable q
 
 We simulate under the single visit distance sampling model 
-to prove identifiability (constant and variable EDR): 
-to demonstrate that the concern of 0.5*p can be addressed 
-if there is a mechanism that causes that.
-
-### B-B-ZIP simulation
+where observations are not binned in multiple distance bands
+but vary in terms of their truncation distance
+to prove identifiability (constant EDR situation shown).
 
 ```R
 R <- 100
@@ -553,7 +556,7 @@ res2[[i]] <- coef(m)
 save.image("out-sim-2.Rdata")
 ```
 
-### Results from B-B-ZIP simulation
+### Results from B-B-ZIP  with variable q
 
 ```R
 load("out-sim-2.Rdata")
@@ -610,3 +613,118 @@ abline(h=0, lty=2, col=1)
 dev.off()
 ```
 
+### B-B-ZIP simulation with constant q
+
+We simulate under the single visit distance sampling model 
+where observations are binned in multiple distance bands
+to prove identifiability (constant EDR situation shown).
+
+```R
+set.seed(1234)
+library(detect)
+library(unmarked)
+source("svabuRDm.R")
+n <- 200
+T <- 3
+K <- 50
+B <- 100
+link <- "logit"
+linkinvfun.det <- binomial(link=make.link(link))$linkinv
+
+x1 <- runif(n,0,1)
+x2 <- rnorm(n,0,1)
+x3 <- runif(n,-1,1)
+x4 <- runif(n,-1,1)
+x5 <- rbinom(n,1,0.6)
+x6 <- rbinom(n,1,0.4)
+x7 <- rnorm(n,0,1)
+
+X <- model.matrix(~ x1)
+ZR <- model.matrix(~ x3)
+ZD <- model.matrix(~ x2)
+Q <- model.matrix(~ x7)
+
+beta <- c(0,1)
+thetaR <- c(1, -1.5) # for singing rate
+#thetaD <- c(-0.5, 1.2) # for EDR
+
+edr <- 0.8 # exp(drop(ZD %*% thetaD))
+Dm <- matrix(c(0.5, 1), n, 2, byrow=TRUE)
+## truncation distance must be finite
+r <- apply(Dm, 1, max, na.rm=TRUE)
+Area <- pi*r^2
+q <- (edr / r)^2 * (1 - exp(-(Dm / edr)^2))
+q <- q - cbind(0, q[,-ncol(Dm), drop=FALSE])
+
+## test case 1
+D <- exp(drop(X %*% beta))
+lambda <- D * Area
+p <- linkinvfun.det(drop(ZR %*% thetaR))
+delta <- cbind(p * q, 1-rowSums(p * q))
+summary(delta)
+summary(lambda)
+summary(rowSums(q))
+summary(p)
+
+res_mn0 <- list()
+res_mnp <- list()
+res_sv <- list()
+res_mn <- list()
+for (i in 1:B) {
+    cat("variable p, run", i, "of", B, ":\t");flush.console()
+
+    N <- rpois(n, lambda)
+    Y10 <- t(sapply(1:n, function(i)
+        rmultinom(1, N[i], delta[i,])))
+    Y <- Y10[,-ncol(Y10)]
+
+    zi <- FALSE
+
+    cat("mn_p,  ");flush.console()
+    m0 <- try(svabuRDm.fit(Y, X, NULL, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K))
+    res_mn0[[i]] <- try(cbind(est=unlist(coef(m0)), true=c(beta, mean(qlogis(p)), log(edr))))
+
+    cat("mn_pi,  ");flush.console()
+    m1 <- try(svabuRDm.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K))
+    res_mnp[[i]] <- try(cbind(est=unlist(coef(m1)), true=c(beta, thetaR, log(edr))))
+
+    cat("mn,  ");flush.console()
+    umf <- unmarkedFrameDS(y=Y,
+        siteCovs=data.frame(x1=x1,x2=x2,x3=x3),
+        dist.breaks=c(0,50,100), unitsIn="m", survey="point")
+    m <- distsamp(~1 ~x1, umf, output="abund")
+    sig <- exp(coef(m, type="det"))
+    ea <- 2*pi * integrate(grhn, 0, 100, sigma=sig)$value # effective area
+    logedr <- log(sqrt(ea / pi)/100) # effective radius
+    res_mn[[i]] <- cbind(est=c(coef(m)[1:2], logedr), true=c(beta, log(edr)))
+
+    cat("b_pi.\n")
+    yy <- rowSums(Y)
+    m2 <- svabu.fit(yy, X, ZR, Q=NULL, zeroinfl=zi, N.max=K)
+    res_sv[[i]] <- cbind(est=unlist(coef(m2)), true=c(beta, thetaR))
+
+}
+save.image("out-multinom_final.Rdata")
+```
+
+### Results from B-B-ZIP  with constant q
+
+```R
+load("out-multinom_final.Rdata")
+f <- function(res) {
+    true <- res[[1]][,"true"]
+    true[!is.finite(true)] <- 0
+    est <- t(sapply(res, function(z)
+        if (inherits(z, "try-error")) rep(NA, length(true)) else z[,"est"]))
+    bias <- t(t(est) - true)
+    list(true=true, est=est, bias=bias)
+}
+ylim <- c(-2,0.5)
+toPlot <- cbind(f(res_mn0)$bias[,1],
+    f(res_sv)$bias[,1]-log(pi))
+colnames(toPlot) <- c("Multinomial", "SV")
+boxplot(toPlot, col="grey", ylab="Bias")
+abline(h=0)
+abline(h=log(1/2), lty=2)
+text(0.6, log(1/2)+0.08, "log(q)", cex=0.8)
+```
