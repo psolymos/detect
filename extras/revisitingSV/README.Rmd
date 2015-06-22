@@ -1,9 +1,14 @@
-Revisiting resource selection probability functions and single-visit methods: Clarification and extensions
-=====
+---
+title: "Revisiting resource selection probability functions and single-visit methods: Clarification and extensions"
+author: "S&oacute;lymos, P., and Lele, S. R."
+output: pdf_document
+---
+
+# Revisiting resource selection probability functions and single-visit methods: Clarification and extensions
 
 ## Introduction
 
-Supporting Information for CITATION GOES HERE.
+Supporting Information for the paper S&oacute;lymos, P., and Lele, S. R., 2015. Revisiting resource selection probability functions and single-visit methods: clarification and extensions. _Methods in Ecology and Evolution, in press_.
 
 Here we give rationale and code for the simulation used in the paper.
 The organization of this archive is as follows:
@@ -19,7 +24,7 @@ The following figure from the paper demosntrates that the RSPF condition
 defines a class of functions that are fairly flexible.
 Here we are generating regression coefficients (`cf`) randomly but users can supply their own. 
 
-```R
+```r
 m <- 5 # how many lines to draw
 x <- seq(-1, 1, by=0.01) # predictor
 col <- 1:m
@@ -86,7 +91,7 @@ of detection is 1 for some combination of the covariates.
 We simulate data under BP N-mixture with logit 
 link for detection with cubic terms. 
 
-```R
+```r
 n <- 1000
 k <- 3 # order of polynomial
 link <- "logit"
@@ -115,7 +120,7 @@ Now we estimate the coefficients for BP N-mixture. Things to observe:
 * AIC for the true model is the lowest, as it should be.
 * The best fitting model approximates the true probabilities of detection quite well. 
 
-```R
+```r
 library(detect)
 m1 <- svabu(Y ~ x1 | z1, zeroinfl=FALSE, link.det=link)
 m2 <- svabu(Y ~ x1 | z1 + z2, zeroinfl=FALSE, link.det=link)
@@ -138,7 +143,7 @@ legend("bottomright", lty=1, col=1:4,
 Based on this single run, we can also do simulations to plot
 response curves based on model selection.
 
-```R
+```r
 S <- 100
 theta_hat <- matrix(0, 4, S)
 p_hat <- matrix(0, n, S)
@@ -170,7 +175,7 @@ obtained using simple random sampling with replacement.
 (See Lele and Keim 2006: Animal as a sampler description in the discussion).
 
 
-```R
+```r
 library(ResourceSelection)
 
 n <- 3000
@@ -200,7 +205,7 @@ dat <- simulateUsedAvail(z, theta, n, m=10, link=link)
 Estimate coefficients for RSPF. The best fitting model approximates the true probabilities quite well. 
 As usual, larger the sample size, better will be the fit.
 
-```R
+```r
 r1 <- rspf(status ~ z1, dat, m=0, B=0, link=link)
 r2 <- rspf(status ~ z1 + z2, dat, m=0, B=0, link=link)
 r3 <- rspf(status ~ z1 + z2 + z3, dat, m=0, B=0, link=link)
@@ -222,7 +227,7 @@ legend("bottomright", lty=1, col=1:4,
 Now we write simulation after the single run, but keeping the available
 distribution identical:
 
-```R
+```r
 theta_hat2 <- matrix(0, 4, S)
 p_hat2 <- matrix(0, sum(dat$status==0), S)
 for (i in 1:S) {
@@ -244,7 +249,7 @@ Now let's plot both the N-mixture and RSPF simulation results
 with the true response curve that was used
 
 
-```R
+```r
 ## model selection frequencies for N-mixture
 table(colSums(abs(theta_hat) > 0))
 ## model selection frequencies for RSPF
@@ -276,7 +281,7 @@ dev.off()
 ### Generate data 
 
 
-```R
+```r
 library(dclone)
 library(rjags)
 
@@ -303,7 +308,7 @@ but biased for small samples (as are all other estimators used here).
 We want to keep it close to this estimator unless the 
 information in the data forces us to move. 
 
-```R
+```r
 ## Data list includes: W, beta.naive, penalty,X1,Z1,nS
 OccPenal.est = function(){
     for (i in 1:nS){
@@ -331,7 +336,7 @@ regression setting:
 
 The other is much more cost effective and is under the control of the researcher.
 
-```R
+```r
 N <- 1000
 beta <- c(1,2)      # Occupancy parameters
 theta <- c(-1,0.6)  # Detection parameters
@@ -358,7 +363,7 @@ occ.data <- list (Y = occ.data$Y, W = occ.data$W, X1 = X1, Z1 = Z1)
 Penalty is the precision for the `beta` parameters. This should be at least as small as the 
 1/SE^2 for `beta.naive` but it could be substantially smaller than that (but not too small). 
 
-```R
+```r
 S <- 10  # Number of simulations
 out1 <- matrix(0, S, 5)   # Parameter estimates
 out2 <- matrix(0, S, 3)
@@ -417,7 +422,7 @@ the file `mee6.pbs`. The end result is an `Rdata` file that is used below.
 
 ### Summarizing results
 
-```R
+```r
 options("CLUSTER_ACTIVE" = FALSE)
 library(lattice)
 library(MASS)
@@ -503,7 +508,7 @@ where observations are not binned in multiple distance bands
 but vary in terms of their truncation distance
 to prove identifiability (constant EDR situation shown).
 
-```R
+```r
 R <- 100
 n <- 2000
 K <- 250
@@ -558,7 +563,7 @@ save.image("out-sim-2.Rdata")
 
 ### Results from B-B-ZIP  with variable q
 
-```R
+```r
 load("out-sim-2.Rdata")
 
 True2 <- c(beta, thetaR, "logedr"=log(edr))
@@ -619,7 +624,7 @@ We simulate under the single visit distance sampling model
 where observations are binned in multiple distance bands
 to prove identifiability (constant EDR situation shown).
 
-```R
+```r
 set.seed(1234)
 library(detect)
 library(unmarked)
@@ -709,7 +714,7 @@ save.image("out-multinom_final.Rdata")
 
 ### Results from B-B-ZIP  with constant q
 
-```R
+```r
 load("out-multinom_final.Rdata")
 f <- function(res) {
     true <- res[[1]][,"true"]
