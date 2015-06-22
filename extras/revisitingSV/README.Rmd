@@ -20,6 +20,8 @@ The organization of this archive is as follows:
 * [B-B-ZIP identifiability](#b-b-zip-identifiability)
 * [Associated files](#associated-files)
 
+An R markdown version of this document can be found at [GitHub](https://github.com/psolymos/detect/tree/master/extras/revisitingSV).
+
 ## Examples for the RSPF condition
 
 The following figure from the paper demosntrates that the RSPF condition
