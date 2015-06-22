@@ -1,6 +1,7 @@
 ---
 title: "Revisiting resource selection probability functions and single-visit methods: Clarification and extensions"
 author: "S&oacute;lymos, P., and Lele, S. R."
+date: 2015-06-22
 output: pdf_document
 ---
 
@@ -17,6 +18,7 @@ The organization of this archive is as follows:
 * [Quasi-Bayesian single-visit occupancy model](#quasi-bayesian-single-visit-occupancy-model)
 * [Bias in generalized N-mixture model](#bias-in-generalized-n-mixture-model)
 * [B-B-ZIP identifiability](#b-b-zip-identifiability)
+* [Associated files](#associated-files)
 
 ## Examples for the RSPF condition
 
@@ -733,3 +735,42 @@ abline(h=0)
 abline(h=log(1/2), lty=2)
 text(0.6, log(1/2)+0.08, "log(q)", cex=0.8)
 ```
+
+## Associated files
+
+### Session info
+
+```{r}
+sessionInfo()
+```
+
+### Functions referenced in the document
+
+The `svabuRDm.fit` function:
+
+```{r comment=NA,echo=FALSE}
+source("~/repos/detect/extras/revisitingSV/svabuRDm.R")
+dput(svabuRDm.fit)
+```
+
+The `svabuRD.fit` function:
+
+```{r comment=NA,echo=FALSE}
+source("~/repos/detect/extras/revisitingSV/svabuRD.R")
+dput(svabuRD.fit)
+```
+
+### Content of files referenced in the document
+
+R code for simulations from `simulas6.R` file:
+
+```{r comment=NA,echo=FALSE}
+cat(readLines("~/repos/detect/extras/revisitingSV/simuls6.R"), sep="\n")
+```
+
+MPI batch script `mee6.pbs` used in to run the simulations:
+
+```{r comment=NA,echo=FALSE}
+cat(readLines("~/repos/detect/extras/revisitingSV/mee6.pbs"), sep="\n")
+```
+

@@ -633,19 +633,11 @@ colnames(toPlot) <- c("Multinomial, p", "Multinom, p_i", "SV", "Distsamp")
 boxplot(toPlot, ylim=ylim, col="grey", ylab="Relative bias")
 abline(h=0)
 
-<<<<<<< HEAD
 ylim <- c(-1.5,1.5)
 toPlot <- cbind(f(res_mn0)$bias[,1],
     #f(res_mnp)$bias[,1],
     f(res_sv)$bias[,1]-log(pi))#,
     #f(res_mn)$bias[,1]-log(pi))
-=======
-ylim <- c(-2,0.5)
-toPlot <- cbind(f(res_mn0)$bias[,1],
-    #f(res_mnp)$est[,1],
-    f(res_sv)$bias[,1]-log(pi))#,
-    #f(res_mn)$est[,1]-log(pi))
->>>>>>> scaled-NB
 colnames(toPlot) <- c("Multinomial", #"Multinomial_p", 
     "SV")#, "Distsamp")
 boxplot(toPlot, col="grey", ylab="Bias")
