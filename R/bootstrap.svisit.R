@@ -48,7 +48,8 @@ function(object, B, type=c("nonpar", "param"), seed=NULL, ...) {
         }
     }
     ## doing bootstrap
-    rval <- if (require(pbapply))
+    pbOK <- try(requireNamespace(pbapply), silent=TRUE)
+    rval <- if (!inherits(pbOK, "try-error"))
         pblapply(b, bfun) else lapply(b, bfun)
     rm(list="ini", envir=parent.frame())
     ## making rval
@@ -61,4 +62,3 @@ function(object, B, type=c("nonpar", "param"), seed=NULL, ...) {
     attr(object, "bootstrap") <- rval
     object
 }
-

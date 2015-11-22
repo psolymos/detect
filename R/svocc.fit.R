@@ -155,7 +155,7 @@ method = c("optim", "dc"), inits, ...)
 #        mle.res <- jags.engine(dat, c("beta", "theta"), model, inits=NULL, cl=cl, ...)
 #        mle.res <- jags.fit(dat, c("beta", "theta"), model, inits, ...)
         ## latest preference is that it depends on dcmle
-        require(dcmle)
+        requireNamespace("dcmle")
         dcd <- makeDcFit(model=model, data=dat, params=c("beta", "theta"),
             multiply=c("Y","k"), unchanged=names(dat)[-c(1,4)])
         mle.res <- dcmle(dcd, n.clones=n.clones, ...)
@@ -200,8 +200,8 @@ method = c("optim", "dc"), inits, ...)
             # v2:Square root of the sum of the estimated variance for the occupancy parameters obtained by the MLE
             pmle.inits <- mle.parameters
             pmle.res <- optim(pmle.inits, singleocc.PMLE, gr = NULL, method = opmeth, hessian = TRUE,
-                    control = control.optim, 
-                    observations = observations, X = X, Z = Z, 
+                    control = control.optim,
+                    observations = observations, X = X, Z = Z,
                     bmax = coef.occ, dmax = coef.det,
                     psi0 = mean(mle.phi), d0 = mean(mle.delta),
                     link1=link.sta, link2=link.det,
@@ -269,23 +269,23 @@ method = c("optim", "dc"), inits, ...)
     }
     ## assembling return object
     out <- list(coefficients = list(sta = par.occ, det = par.det),
-        std.error = list(sta = se.occ, det = se.det), 
-        estimated.probabilities = as.numeric(temp), 
-        fitted.values = as.numeric(phi.obs), 
+        std.error = list(sta = se.occ, det = se.det),
+        estimated.probabilities = as.numeric(temp),
+        fitted.values = as.numeric(phi.obs),
         method = method,
         link = list(sta=link.sta, det=link.det),
-        nobs = N.sites, 
+        nobs = N.sites,
         df.null = N.sites - 2,
-        df.residual = N.sites - num.cov.occ - num.cov.det, 
-        inits = inits, 
+        df.residual = N.sites - num.cov.occ - num.cov.det,
+        inits = inits,
 #        phi = as.numeric(phi),
         occurrence.probabilities = as.numeric(phi),
-#        delta = as.numeric(delta), 
-        detection.probabilities = as.numeric(delta), 
-        loglik = loglik, 
+#        delta = as.numeric(delta),
+        detection.probabilities = as.numeric(delta),
+        loglik = loglik,
 #        results = list(glm.sta = glm.occ, glm.det = glm.det, mle = mle.res, pmle = pmle.res),
         results = list(mle = mle.res, pmle = pmle.res),
-        converged = converged, 
+        converged = converged,
         penalized = penalized,
         control = Control)
 #        y = observations)
@@ -294,9 +294,8 @@ method = c("optim", "dc"), inits, ...)
 
     Conv <- if (!out$penalized)
         out$converged[1] else out$converged[2]
-    if (!Conv) 
+    if (!Conv)
         cat("Warning:\n  Model did not converge\n\n")
 
     return(out)
 }
-
