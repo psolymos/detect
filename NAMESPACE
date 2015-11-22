@@ -1,5 +1,5 @@
 ## import from other packages
-importFrom("Formula")
+importFrom("Formula", "Formula")
 importFrom("stats4", "mle")
 importFrom("graphics", "abline", "legend", "lines", "par", "plot",
     "points", "polygon")
