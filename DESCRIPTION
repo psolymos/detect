@@ -13,5 +13,6 @@ Description: Models for analyzing site occupancy and count data models
   and the Boreal Avian Modelling (BAM) Project.
 License: GPL-2
 URL: https://github.com/psolymos/detect
+BugReports: https://github.com/psolymos/detect/issues
 LazyLoad: yes
 LazyData: true
