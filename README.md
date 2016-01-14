@@ -6,8 +6,6 @@ The package development was supported by the
 [Alberta Biodiversity Monitoring Institute (ABMI)](http://www.abmi.ca/)
 and the [Boreal Avian Modelling (BAM) Project](http://www.borealbirds.ca/).
 
-Stable version at CRAN: http://cran.r-project.org/package=detect
-
 Main functions:
 
 * `svocc`: single visit occupancy model (Lele et al. 2011, Moreno et al. 2010).
