@@ -1,5 +1,5 @@
-hbootindex <- 
-function(groups, strata, B = 199) 
+hbootindex <-
+function(groups, strata, B = 199)
 {
     groups <- as.integer(as.factor(as.integer(groups)))
     n <- length(groups)
@@ -30,9 +30,5 @@ function(groups, strata, B = 199)
         out <- unlist(out)
         sample(out, length(out), replace=FALSE)
     }
-    if (requireNamespace("pbapply")) {
-        pbapply::pbsapply(1:(B+1), xyclboot)
-    } else {
-        sapply(1:(B+1), xyclboot)
-    }
+    pbapply::pbsapply(1:(B+1), xyclboot)
 }

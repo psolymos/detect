@@ -48,9 +48,7 @@ function(object, B, type=c("nonpar", "param"), seed=NULL, ...) {
         }
     }
     ## doing bootstrap
-    pbOK <- try(requireNamespace(pbapply), silent=TRUE)
-    rval <- if (!inherits(pbOK, "try-error"))
-        pbapply::pblapply(b, bfun) else lapply(b, bfun)
+    rval <- pbapply::pblapply(b, bfun)
     rm(list="ini", envir=parent.frame())
     ## making rval
     rval <- matrix(unlist(rval), length(rval[[1]]), B)
