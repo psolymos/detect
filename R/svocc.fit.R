@@ -156,9 +156,9 @@ method = c("optim", "dc"), inits, ...)
 #        mle.res <- jags.fit(dat, c("beta", "theta"), model, inits, ...)
         ## latest preference is that it depends on dcmle
         requireNamespace("dcmle")
-        dcd <- makeDcFit(model=model, data=dat, params=c("beta", "theta"),
+        dcd <- dcmle::makeDcFit(model=model, data=dat, params=c("beta", "theta"),
             multiply=c("Y","k"), unchanged=names(dat)[-c(1,4)])
-        mle.res <- dcmle(dcd, n.clones=n.clones, ...)
+        mle.res <- dcmle::dcmle(dcd, n.clones=n.clones, ...)
     }
     ## MLE from optim
     if (method=="optim") {
@@ -174,7 +174,7 @@ method = c("optim", "dc"), inits, ...)
     if (penalized) {
         if (method=="dc") {
             mle.parameters <- coef(mle.res)
-            vv <- dcsd(mle.res)^2
+            vv <- dclone::dcsd(mle.res)^2
         }
         if (method=="optim") {
             mle.parameters <- mle.res$par
@@ -215,7 +215,7 @@ method = c("optim", "dc"), inits, ...)
 
     ## final evaluation of results
     if (method=="dc" && !penalized) {
-        std.error <- dcsd(mle.res)
+        std.error <- dclone::dcsd(mle.res)
         parameters <- coef(mle.res)
         loglik <- singleocc.MLE(parameters, observations, X, Z, link1 = link.sta, link2 = link.det)
     } else {
@@ -236,7 +236,7 @@ method = c("optim", "dc"), inits, ...)
     }
 
     converged[1] <- if (method=="dc")
-        gelman.diag(mle.res)$mpsrf < 1.1 else mle.res$convergence == 0
+        dcmle::gelman.diag(mle.res)$mpsrf < 1.1 else mle.res$convergence == 0
     if (penalized)
         converged[2] <- pmle.res$convergence == 0
     if (any(converged[!is.na(converged)]==FALSE))

@@ -17,17 +17,17 @@ raw = FALSE, vcov.type, ...)
     nps <- sapply(object$coefficients, length)
     np <- sum(nps[1:2])
     vcv <- vcov(object, model="full", vcov.type)[1:np, 1:np]
-    prec <- make.symmetric(solve(vcv))
+    prec <- dclone::make.symmetric(solve(vcv))
     param <- coef(object)[1:np]
     inits <- list(N = object$y + 1)
     prdat <- list(Y=object$y, n=length(object$y),
         lambda=fitted(object), p=object$detection.probabilities,
         np1=nps[1], np2=nps[2],
         param = param, prec = prec)
-    prval <- jags.fit(prdat, "N", predfun, inits,
+    prval <- dclone::jags.fit(prdat, "N", predfun, inits,
         n.chains=1, n.iter=n.iter, ...)
     rval <- if (se.fit) {
-        list(fit = coef(prval), se.fit = dcsd(prval))
+        list(fit = coef(prval), se.fit = dclone::dcsd(prval))
     } else coef(prval)
     if (raw)
         return(prval) else return(rval)
