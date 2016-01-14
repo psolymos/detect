@@ -1,6 +1,9 @@
 ## import from other packages
-importFrom("Formula", "Formula")
+importFrom("Formula", "Formula", "model.part")
+importFrom("pbapply", "pbapply", "pblapply")
 importFrom("stats4", "mle")
+importFrom("dclone", "dcsd")
+importFrom("dcmle", "makeDcFit", "gelman.diag")
 importFrom("graphics", "abline", "legend", "lines", "par", "plot",
     "points", "polygon")
 importFrom("stats", ".getXlevels", "aggregate", "as.formula",
