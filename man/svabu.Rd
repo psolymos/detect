@@ -107,7 +107,8 @@ method to be valid and parameters to be identifiable.
 See References for more detailed description.
 
 The Binomial-Poisson model is the single visit special case
-of the \emph{N}-mixture model proposed by Royle (2004).
+of the \emph{N}-mixture model proposed by Royle (2004)
+and explained in Solymos et a. (2012) and Solymos and Lele (2016).
 }
 \value{
 An object of class 'svabu'.
@@ -117,16 +118,16 @@ Royle, J. A. 2004.
 \emph{N}-Mixture Models for Estimating Population Size from Spatially Replicated Counts.
 \emph{Biometrics}, \bold{60(1)}, 108--115.
 
-Solymos, P., Lele, S. R and Bayne, E. 2011.
+Solymos, P., Lele, S. R. and Bayne, E. 2012.
 Conditional likelihood approach for analyzing single visit
 abundance survey data in the presence of zero inflation and
 detection error.
 \emph{Environmetrics}, \bold{23}, 197--205.
 
-Solymos, P., Lele, S. R and Bayne, E. 2011. Abundance estimation in the presence of zero
-inflation and detection error using single visit data. Alberta Biodiversity Monitoring Institute, Alberta, Canada.
-Technical Report No. ABMI-20061, August 24, 2011. Available at:
-\href{http://www.abmi.ca/FileDownloadServlet?filename=20061_ABMI_2011-08-24_Single_Visit_Abundance.pdf&dir=REPORTS_UPLOAD}{http://www.abmi.ca}
+Solymos, P., Lele, S. R. 2016.
+Revisiting resource selection probability functions and single-visit methods:
+clarification and extensions.
+\emph{Methods in Ecology and Evolution}, \bold{7}, 196--205.
 }
 \author{
 Peter Solymos and Subhash Lele

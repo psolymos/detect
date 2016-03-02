@@ -10,13 +10,13 @@ ZI Binomial model with single visit
 ZI Binomial model with single visit
 }
 \usage{
-svocc(formula, data, link.sta = "cloglog", link.det = "logit", penalized = FALSE, 
-method = c("optim", "dc"), inits, 
+svocc(formula, data, link.sta = "cloglog", link.det = "logit", penalized = FALSE,
+method = c("optim", "dc"), inits,
 model = TRUE, x = FALSE, ...)
-svocc.fit(Y, X, Z, link.sta = "cloglog", link.det = "logit", penalized = FALSE, 
+svocc.fit(Y, X, Z, link.sta = "cloglog", link.det = "logit", penalized = FALSE,
 auc = FALSE, method = c("optim", "dc"), inits, ...)
 extractMLE(object, ...)
-svocc.step(object, model, trace = 1, steps = 1000, 
+svocc.step(object, model, trace = 1, steps = 1000,
 criter = c("AIC", "BIC", "cAUC"), test = FALSE, k = 2, control, ...)
 }
 \arguments{
@@ -48,7 +48,7 @@ a logical value indicating whether model frame should be included as a component
 or true state or detection model
 }
   \item{x}{
-logical values indicating whether the response vector and model matrix used in the 
+logical values indicating whether the response vector and model matrix used in the
 fitting process should be returned as components of the returned value
 }
   \item{auc}{
@@ -92,19 +92,19 @@ See References for more detailed description.
 An object of class 'svocc'.
 }
 \references{
-Lele, S.R., Moreno, M. and Bayne, E. 2011. 
-Dealing with detection error in site occupancy surveys: 
-What can we do with a single survey? 
+Lele, S.R., Moreno, M. and Bayne, E. 2011.
+Dealing with detection error in site occupancy surveys:
+What can we do with a single survey?
 \emph{Journal of Plant Ecology}, \bold{5(1)}, 22--31.
 
 Moreno, M. and Lele, S. R. 2010.
-Improved estimation of site occupancy using penalized likelihood. 
+Improved estimation of site occupancy using penalized likelihood.
 \emph{Ecology}, \bold{91}, 341--346.
 
-Lele, S. R., Moreno, M. and Bayne, E. 2011. Dealing with detection error in site
-occupancy surveys: What can we do with a single survey? Alberta Biodiversity Monitoring Institute, Alberta,
-Canada. Technical Report No. ABMI-20060, August 24, 2011. Available at: 
-\href{http://www.abmi.ca/FileDownloadServlet?filename=20060_ABMI_2011-08-24__Single_Visit_Occupancy.pdf&dir=REPORTS_UPLOAD}{http://www.abmi.ca}
+Solymos, P., Lele, S. R. 2016.
+Revisiting resource selection probability functions and single-visit methods:
+clarification and extensions.
+\emph{Methods in Ecology and Evolution}, \bold{7}, 196--205.
 }
 \author{
 Peter Solymos and Monica Moreno
@@ -127,7 +127,7 @@ coef(m00, "sta")
 ## detection model estimates
 coef(m00, "det")
 ## compare estimates
-cbind(truth=c(0.6, 0.5, 0.4, -0.5, 0.3), 
+cbind(truth=c(0.6, 0.5, 0.4, -0.5, 0.3),
 mle=coef(m00), pmle=coef(m01))
 
 ## AIC, BIC
