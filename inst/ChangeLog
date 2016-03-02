@@ -8,6 +8,7 @@
     * pbapply package is now a dependency.
     * Various minor fixes to satisfy R-devel checks.
     * Negative Binomial option added to svabu.
+    * cmulti returns correct nobs (nonzero total counts).
 
 ## Version 0.3-2, May 15, 2014
 
