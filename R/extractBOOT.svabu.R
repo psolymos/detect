@@ -1,41 +1,46 @@
 extractBOOT.svabu <-
-function(object, model = c("full", "sta", "det", "phi"), ...)
+function(object, model = c("full", "sta", "det", "phi", "disp"), ...)
 {
     tmp <- attr(object, "bootstrap")
     if (is.null(tmp))
         return(NULL)
     model <- match.arg(model)
+    if (!inherits(object, "svabu_nb") && model == "disp")
+        stop("model = 'disp' available for svabu_nb models only.")
     if (!object$zeroinfl && model == "phi")
         stop("not ZI model, can't provide values for 'phi'")
-    cf <- coef(object, model)
-    wi <- seq(along = object$coefficients$sta)
-    cfs <- rowMeans(tmp)
-    ses <- apply(tmp, 1, sd)
-    vcv <- cov(t(tmp))
-    cors <- cor(t(tmp))
-    if (model == "sta") {
+    if (inherits(object, "svabu_nb")) {
+        log_sigma <- tmp["log.sigma",]
+        tmp <- tmp[rownames(tmp) != "log.sigma",]
+    }
+    if (model == "disp") {
+        cfs <- mean(log_sigma)
+        ses <- sd(log_sigma)
+        vcv <- matrix(ses^2, 1, 1)
+        cors <- matrix(1,1,1)
+        names(cfs) <- names(ses) <- "log.sigma"
+        colnames(vcv) <- rownames(vcv) <- "log.sigma"
+        colnames(cors) <- rownames(cors) <- "log.sigma"
+    } else {
+        cf <- coef(object, "full")
+        cfs <- rowMeans(tmp)
+        ses <- apply(tmp, 1, sd)
+        vcv <- cov(t(tmp))
+        cors <- cor(t(tmp))
+        names(cfs) <- names(ses) <- names(cf)
+        colnames(vcv) <- rownames(vcv) <- names(cf)
+        colnames(cors) <- rownames(cors) <- names(cf)
+        wi <- switch(model,
+            "full"=rep(TRUE, length(cf)),
+            "sta"=grepl("sta_", rownames(tmp)),
+            "det"=grepl("det_", rownames(tmp)),
+            "zif"=grepl("zif_", rownames(tmp)))
         cfs <- cfs[wi]
         ses <- ses[wi]
-        vcv <- data.matrix(vcv[wi, wi])
-        cors <- data.matrix(cors[wi, wi])
+        vcv <- vcv[wi, wi, drop=FALSE]
+        cors <- cors[wi, wi, drop=FALSE]
     }
-    if (model == "det") {
-        cfs <- cfs[-c(wi, nrow(tmp))]
-        ses <- ses[-c(wi, nrow(tmp))]
-        vcv <- data.matrix(vcv[-c(wi, nrow(tmp)), -c(wi, nrow(tmp))])
-        cors <- data.matrix(cors[-c(wi, nrow(tmp)), -c(wi, nrow(tmp))])
-    }
-    if (model == "phi") {
-        cfs <- cfs[nrow(tmp)]
-        ses <- ses[nrow(tmp)]
-        vcv <- data.matrix(vcv[nrow(tmp), nrow(tmp)])
-        cors <- data.matrix(cors[nrow(tmp), nrow(tmp)])
-    }
-    names(cfs) <- names(cfs) <- names(cf)
-    names(ses) <- names(ses) <- names(cf)
-    colnames(vcv) <- rownames(vcv) <- names(cf)
-    colnames(cors) <- rownames(cors) <- names(cf)
     list(coefficients=cfs, std.error=ses, vcov=vcv, cor=cors,
-        B = ncol(tmp) - 1, type = attr(tmp, "type"))
+        B = ncol(tmp) - 1, type = attr(tmp, "type"), model = model)
 }
 
