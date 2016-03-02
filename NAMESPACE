@@ -1,3 +1,23 @@
+## import from other packages
+importFrom("Formula", "Formula", "model.part")
+importFrom("pbapply", "pblapply", "pbsapply")
+importFrom("stats4", "mle")
+#importFrom("dclone", "dcsd")
+#importFrom("dcmle", "makeDcFit", "gelman.diag")
+importFrom("graphics", "abline", "legend", "lines", "par", "plot",
+    "points", "polygon")
+importFrom("stats", ".getXlevels", "aggregate", "as.formula",
+    "binomial", "coef", "cor", "cov", "dbinom", "dpois",
+    "extractAIC", "factor.scope", "fitted", "formula",
+    "glm.fit", "make.link", "model.response", "na.pass",
+    "optim", "optimize", "pchisq", "pnorm", "poisson",
+    "printCoefmat", "qnorm", "quantile", "rbinom", "rpois",
+    "runif", "sd", "terms.formula", "uniroot",
+    "case.names", "drop1",
+    "logLik", "model.matrix", "model.frame", "terms", "simulate",
+    "update.formula", "update", "vcov", "variable.names",
+    "AIC", "BIC")
+
 ## exported svocc functions
 export("svocc", "svocc.fit", "svocc.step")
 ## exported svabu functions
@@ -11,15 +31,6 @@ export("bootstrap", "extractMLE", "extractBOOT",
 export("AUC", "rocplot")
 ## QPAD
 export(load_BAM_QPAD, hbootindex, convertEDR)
-
-## import from other packages
-importFrom("stats",
-    "case.names", "drop1",
-    "logLik", "model.matrix", "model.frame", "terms", "simulate",
-    "update.formula", "update", "vcov", "variable.names", 
-    "AIC", "BIC")
-importFrom(Formula)
-importFrom(stats4, mle)
 
 ## methods for svocc class
 S3method("print", "svocc")

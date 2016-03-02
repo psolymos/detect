@@ -48,8 +48,7 @@ function(object, B, type=c("nonpar", "param"), seed=NULL, ...) {
         }
     }
     ## doing bootstrap
-    rval <- if (require(pbapply))
-        pblapply(b, bfun) else lapply(b, bfun)
+    rval <- pbapply::pblapply(b, bfun)
     rm(list="ini", envir=parent.frame())
     ## making rval
     rval <- matrix(unlist(rval), length(rval[[1]]), B)
@@ -61,4 +60,3 @@ function(object, B, type=c("nonpar", "param"), seed=NULL, ...) {
     attr(object, "bootstrap") <- rval
     object
 }
-

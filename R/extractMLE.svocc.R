@@ -9,7 +9,7 @@ function(object, model = c("full", "sta", "det"), ...)
     }
     if (object$method=="dc") {
         cfs <- coef(object$results$mle)
-        ses <- dcsd(object$results$mle)
+        ses <- dclone::dcsd(object$results$mle)
         vcv <- vcov(object$results$mle)
     }
     cf <- coef(object, model)

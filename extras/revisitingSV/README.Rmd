@@ -1,9 +1,15 @@
-Revisiting resource selection probability functions and single-visit methods: Clarification and extensions
-=====
+---
+title: "Revisiting resource selection probability functions and single-visit methods: Clarification and extensions"
+author: "S&oacute;lymos, P., and Lele, S. R."
+date: 2015-06-22
+output: pdf_document
+---
+
+# Revisiting resource selection probability functions and single-visit methods: Clarification and extensions
 
 ## Introduction
 
-Supporting Information for CITATION GOES HERE.
+Supporting Information for the paper S&oacute;lymos, P., and Lele, S. R., 2015. Revisiting resource selection probability functions and single-visit methods: clarification and extensions. _Methods in Ecology and Evolution, in press_.
 
 Here we give rationale and code for the simulation used in the paper.
 The organization of this archive is as follows:
@@ -11,7 +17,10 @@ The organization of this archive is as follows:
 * [Examples for the RSPF condition](#examples-for-the-rspf-condition)
 * [Quasi-Bayesian single-visit occupancy model](#quasi-bayesian-single-visit-occupancy-model)
 * [Bias in generalized N-mixture model](#bias-in-generalized-n-mixture-model)
-* [B-B-ZIP CL identifiability](#b-b-zip-cl-identifiability)
+* [B-B-ZIP identifiability](#b-b-zip-identifiability)
+* [Associated files](#associated-files)
+
+An R markdown version of this document can be found at [GitHub](https://github.com/psolymos/detect/tree/master/extras/revisitingSV).
 
 ## Examples for the RSPF condition
 
@@ -19,7 +28,7 @@ The following figure from the paper demosntrates that the RSPF condition
 defines a class of functions that are fairly flexible.
 Here we are generating regression coefficients (`cf`) randomly but users can supply their own. 
 
-```R
+```r
 m <- 5 # how many lines to draw
 x <- seq(-1, 1, by=0.01) # predictor
 col <- 1:m
@@ -86,7 +95,7 @@ of detection is 1 for some combination of the covariates.
 We simulate data under BP N-mixture with logit 
 link for detection with cubic terms. 
 
-```R
+```r
 n <- 1000
 k <- 3 # order of polynomial
 link <- "logit"
@@ -115,7 +124,7 @@ Now we estimate the coefficients for BP N-mixture. Things to observe:
 * AIC for the true model is the lowest, as it should be.
 * The best fitting model approximates the true probabilities of detection quite well. 
 
-```R
+```r
 library(detect)
 m1 <- svabu(Y ~ x1 | z1, zeroinfl=FALSE, link.det=link)
 m2 <- svabu(Y ~ x1 | z1 + z2, zeroinfl=FALSE, link.det=link)
@@ -138,7 +147,7 @@ legend("bottomright", lty=1, col=1:4,
 Based on this single run, we can also do simulations to plot
 response curves based on model selection.
 
-```R
+```r
 S <- 100
 theta_hat <- matrix(0, 4, S)
 p_hat <- matrix(0, n, S)
@@ -170,7 +179,7 @@ obtained using simple random sampling with replacement.
 (See Lele and Keim 2006: Animal as a sampler description in the discussion).
 
 
-```R
+```r
 library(ResourceSelection)
 
 n <- 3000
@@ -200,7 +209,7 @@ dat <- simulateUsedAvail(z, theta, n, m=10, link=link)
 Estimate coefficients for RSPF. The best fitting model approximates the true probabilities quite well. 
 As usual, larger the sample size, better will be the fit.
 
-```R
+```r
 r1 <- rspf(status ~ z1, dat, m=0, B=0, link=link)
 r2 <- rspf(status ~ z1 + z2, dat, m=0, B=0, link=link)
 r3 <- rspf(status ~ z1 + z2 + z3, dat, m=0, B=0, link=link)
@@ -222,7 +231,7 @@ legend("bottomright", lty=1, col=1:4,
 Now we write simulation after the single run, but keeping the available
 distribution identical:
 
-```R
+```r
 theta_hat2 <- matrix(0, 4, S)
 p_hat2 <- matrix(0, sum(dat$status==0), S)
 for (i in 1:S) {
@@ -244,7 +253,7 @@ Now let's plot both the N-mixture and RSPF simulation results
 with the true response curve that was used
 
 
-```R
+```r
 ## model selection frequencies for N-mixture
 table(colSums(abs(theta_hat) > 0))
 ## model selection frequencies for RSPF
@@ -276,7 +285,7 @@ dev.off()
 ### Generate data 
 
 
-```R
+```r
 library(dclone)
 library(rjags)
 
@@ -303,7 +312,7 @@ but biased for small samples (as are all other estimators used here).
 We want to keep it close to this estimator unless the 
 information in the data forces us to move. 
 
-```R
+```r
 ## Data list includes: W, beta.naive, penalty,X1,Z1,nS
 OccPenal.est = function(){
     for (i in 1:nS){
@@ -331,7 +340,7 @@ regression setting:
 
 The other is much more cost effective and is under the control of the researcher.
 
-```R
+```r
 N <- 1000
 beta <- c(1,2)      # Occupancy parameters
 theta <- c(-1,0.6)  # Detection parameters
@@ -358,7 +367,7 @@ occ.data <- list (Y = occ.data$Y, W = occ.data$W, X1 = X1, Z1 = Z1)
 Penalty is the precision for the `beta` parameters. This should be at least as small as the 
 1/SE^2 for `beta.naive` but it could be substantially smaller than that (but not too small). 
 
-```R
+```r
 S <- 10  # Number of simulations
 out1 <- matrix(0, S, 5)   # Parameter estimates
 out2 <- matrix(0, S, 3)
@@ -417,7 +426,7 @@ the file `mee6.pbs`. The end result is an `Rdata` file that is used below.
 
 ### Summarizing results
 
-```R
+```r
 options("CLUSTER_ACTIVE" = FALSE)
 library(lattice)
 library(MASS)
@@ -488,19 +497,22 @@ par(op)
 ```
 
 
-## B-B-ZIP CL identifiability
+## B-B-ZIP identifiability
 
-The goal is to establish identifiability for svabuRD models:
-Binomial-Binomial-Poisson for p*p_max issue.
+The goal is to establish identifiability for the 
+Binomial-Binomial-Poisson in the following cases:
+
+* `p_i * q_i` case when `q_i` varies from location to location,
+* `p_i * q` case when `q` is constant but data is binned according to distance bands.
+
+### B-B-ZIP simulation with variable q
 
 We simulate under the single visit distance sampling model 
-to prove identifiability (constant and variable EDR): 
-to demonstrate that the concern of 0.5*p can be addressed 
-if there is a mechanism that causes that.
+where observations are not binned in multiple distance bands
+but vary in terms of their truncation distance
+to prove identifiability (constant EDR situation shown).
 
-### B-B-ZIP simulation
-
-```R
+```r
 R <- 100
 n <- 2000
 K <- 250
@@ -553,9 +565,9 @@ res2[[i]] <- coef(m)
 save.image("out-sim-2.Rdata")
 ```
 
-### Results from B-B-ZIP simulation
+### Results from B-B-ZIP  with variable q
 
-```R
+```r
 load("out-sim-2.Rdata")
 
 True2 <- c(beta, thetaR, "logedr"=log(edr))
@@ -608,5 +620,159 @@ boxplot(bias,
       expression(bar(q))))
 abline(h=0, lty=2, col=1)
 dev.off()
+```
+
+### B-B-ZIP simulation with constant q
+
+We simulate under the single visit distance sampling model 
+where observations are binned in multiple distance bands
+to prove identifiability (constant EDR situation shown).
+
+```r
+set.seed(1234)
+library(detect)
+library(unmarked)
+source("svabuRDm.R")
+n <- 200
+T <- 3
+K <- 50
+B <- 100
+link <- "logit"
+linkinvfun.det <- binomial(link=make.link(link))$linkinv
+
+x1 <- runif(n,0,1)
+x2 <- rnorm(n,0,1)
+x3 <- runif(n,-1,1)
+x4 <- runif(n,-1,1)
+x5 <- rbinom(n,1,0.6)
+x6 <- rbinom(n,1,0.4)
+x7 <- rnorm(n,0,1)
+
+X <- model.matrix(~ x1)
+ZR <- model.matrix(~ x3)
+ZD <- model.matrix(~ x2)
+Q <- model.matrix(~ x7)
+
+beta <- c(0,1)
+thetaR <- c(1, -1.5) # for singing rate
+#thetaD <- c(-0.5, 1.2) # for EDR
+
+edr <- 0.8 # exp(drop(ZD %*% thetaD))
+Dm <- matrix(c(0.5, 1), n, 2, byrow=TRUE)
+## truncation distance must be finite
+r <- apply(Dm, 1, max, na.rm=TRUE)
+Area <- pi*r^2
+q <- (edr / r)^2 * (1 - exp(-(Dm / edr)^2))
+q <- q - cbind(0, q[,-ncol(Dm), drop=FALSE])
+
+## test case 1
+D <- exp(drop(X %*% beta))
+lambda <- D * Area
+p <- linkinvfun.det(drop(ZR %*% thetaR))
+delta <- cbind(p * q, 1-rowSums(p * q))
+summary(delta)
+summary(lambda)
+summary(rowSums(q))
+summary(p)
+
+res_mn0 <- list()
+res_mnp <- list()
+res_sv <- list()
+res_mn <- list()
+for (i in 1:B) {
+    cat("variable p, run", i, "of", B, ":\t");flush.console()
+
+    N <- rpois(n, lambda)
+    Y10 <- t(sapply(1:n, function(i)
+        rmultinom(1, N[i], delta[i,])))
+    Y <- Y10[,-ncol(Y10)]
+
+    zi <- FALSE
+
+    cat("mn_p,  ");flush.console()
+    m0 <- try(svabuRDm.fit(Y, X, NULL, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K))
+    res_mn0[[i]] <- try(cbind(est=unlist(coef(m0)), true=c(beta, mean(qlogis(p)), log(edr))))
+
+    cat("mn_pi,  ");flush.console()
+    m1 <- try(svabuRDm.fit(Y, X, ZR, NULL, Q=NULL, zeroinfl=zi, D=Dm, N.max=K))
+    res_mnp[[i]] <- try(cbind(est=unlist(coef(m1)), true=c(beta, thetaR, log(edr))))
+
+    cat("mn,  ");flush.console()
+    umf <- unmarkedFrameDS(y=Y,
+        siteCovs=data.frame(x1=x1,x2=x2,x3=x3),
+        dist.breaks=c(0,50,100), unitsIn="m", survey="point")
+    m <- distsamp(~1 ~x1, umf, output="abund")
+    sig <- exp(coef(m, type="det"))
+    ea <- 2*pi * integrate(grhn, 0, 100, sigma=sig)$value # effective area
+    logedr <- log(sqrt(ea / pi)/100) # effective radius
+    res_mn[[i]] <- cbind(est=c(coef(m)[1:2], logedr), true=c(beta, log(edr)))
+
+    cat("b_pi.\n")
+    yy <- rowSums(Y)
+    m2 <- svabu.fit(yy, X, ZR, Q=NULL, zeroinfl=zi, N.max=K)
+    res_sv[[i]] <- cbind(est=unlist(coef(m2)), true=c(beta, thetaR))
+
+}
+save.image("out-multinom_final.Rdata")
+```
+
+### Results from B-B-ZIP  with constant q
+
+```r
+load("out-multinom_final.Rdata")
+f <- function(res) {
+    true <- res[[1]][,"true"]
+    true[!is.finite(true)] <- 0
+    est <- t(sapply(res, function(z)
+        if (inherits(z, "try-error")) rep(NA, length(true)) else z[,"est"]))
+    bias <- t(t(est) - true)
+    list(true=true, est=est, bias=bias)
+}
+ylim <- c(-2,0.5)
+toPlot <- cbind(f(res_mn0)$bias[,1],
+    f(res_sv)$bias[,1]-log(pi))
+colnames(toPlot) <- c("Multinomial", "SV")
+boxplot(toPlot, col="grey", ylab="Bias")
+abline(h=0)
+abline(h=log(1/2), lty=2)
+text(0.6, log(1/2)+0.08, "log(q)", cex=0.8)
+```
+
+## Associated files
+
+### Session info
+
+```{r}
+sessionInfo()
+```
+
+### Functions referenced in the document
+
+The `svabuRDm.fit` function:
+
+```{r comment=NA,echo=FALSE}
+source("~/repos/detect/extras/revisitingSV/svabuRDm.R")
+dput(svabuRDm.fit)
+```
+
+The `svabuRD.fit` function:
+
+```{r comment=NA,echo=FALSE}
+source("~/repos/detect/extras/revisitingSV/svabuRD.R")
+dput(svabuRD.fit)
+```
+
+### Content of files referenced in the document
+
+R code for simulations from `simulas6.R` file:
+
+```{r comment=NA,echo=FALSE}
+cat(readLines("~/repos/detect/extras/revisitingSV/simuls6.R"), sep="\n")
+```
+
+MPI batch script `mee6.pbs` used in to run the simulations:
+
+```{r comment=NA,echo=FALSE}
+cat(readLines("~/repos/detect/extras/revisitingSV/mee6.pbs"), sep="\n")
 ```
 
