@@ -11,7 +11,10 @@ function(object, model = c("full", "sta", "det", "phi", "disp"), ...)
         stop("not ZI model, can't provide values for 'phi'")
     if (inherits(object, "svabu_nb")) {
         log_sigma <- tmp["log.sigma",]
+        att <- attributes(tmp)
+        att$dim <- att$dimnames <- NULL
         tmp <- tmp[rownames(tmp) != "log.sigma",]
+        attributes(tmp) <- att
     }
     if (model == "disp") {
         cfs <- mean(log_sigma)

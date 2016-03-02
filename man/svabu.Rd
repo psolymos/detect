@@ -7,10 +7,10 @@
 \alias{predictMCMC}
 \alias{svabu.step}
 \title{
-Binomial-Poisson and Binomial-ZIP models with single visit
+Single visit N-mixture abundance models
 }
 \description{
-Binomial-Poisson and Binomial-ZIP models with single visit
+Binomial-Poisson, Binomial-NegBin, Binomial-ZIP, and BinomialZINB models with single visit.
 }
 \usage{
 svabu(formula, data, zeroinfl = TRUE, area = 1, N.max = NULL,
