@@ -1,8 +1,8 @@
-cmulti <- 
-function(formula, data, type=c("rem", "mix", "dis"), 
+cmulti <-
+function(formula, data, type=c("rem", "mix", "dis"),
 inits=NULL, method="Nelder-Mead", ...)
 {
-    if (missing(data)) 
+    if (missing(data))
         data <- environment(formula)
     rv <- dFormula(formula, data, drop=FALSE)
     if (is.null(rv$D))
@@ -18,6 +18,7 @@ inits=NULL, method="Nelder-Mead", ...)
     rv <- c(rv, or)
     rv$call <- match.call()
     rv$type <- type
+    rv$nobs <- sum(rowSums(rfY) > 0)
     names(rv$coefficients) <- switch(type,
         "dis" = paste("log.tau", NAM, sep="_"),
         "mix" = c("log.phi", paste("logit.c", NAM, sep="_")),
