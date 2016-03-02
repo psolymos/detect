@@ -14,6 +14,8 @@ function(object, model = c("full", "sta", "det", "phi", "disp"), ...)
         att <- attributes(tmp)
         att$dim <- att$dimnames <- NULL
         tmp <- tmp[rownames(tmp) != "log.sigma",]
+        att$dim <- dim(tmp)
+        att$dimnames <- dimnames(tmp)
         attributes(tmp) <- att
     }
     if (model == "disp") {
