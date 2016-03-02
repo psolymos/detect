@@ -10,9 +10,9 @@ Models for analyzing site occupancy and count data models
   with detection error, including single-visit based models,
   conditional distance sampling and time-removal models.
   Package development was supported by the
-  Alberta Biodiversity Monitoring Institute (\url{http://www.abmi.ca/})
+  Alberta Biodiversity Monitoring Institute (www.abmi.ca)
   and the Boreal Avian Modelling Project
-  (\url{http://www.borealbirds.ca/}).
+  (borealbirds.ca).
 }
 \details{
 \code{\link{svocc}}: single visit occupancy model
