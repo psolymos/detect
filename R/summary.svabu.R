@@ -1,7 +1,7 @@
 summary.svabu <-
 function (object, type, ...) 
 {
-    boot <- extractBOOT(object)
+    boot <- extractBOOT(object, "full")
     if (missing(type)) {
         type <- if (is.null(boot))
         "cmle" else "boot"
@@ -46,6 +46,8 @@ function (object, type, ...)
         control = object$control, nobs = object$nobs, link = object$link, terms = object$terms,
         df.residual = object$df.residual, bootstrap=boot, type=type, area = object$area,
         distr=ifelse(inherits(object, "svabu_p"), "Poisson", "Negative Binomial"), var=object$var)
+    if (type == "boot" && inherits(object, "svabu_nb"))
+        out$var$se <- extractBOOT(object, "disp")$std.error
     class(out) <- "summary.svabu"
     return(out)
 }
