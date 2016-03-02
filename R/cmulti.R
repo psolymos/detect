@@ -18,7 +18,7 @@ inits=NULL, method="Nelder-Mead", ...)
     rv <- c(rv, or)
     rv$call <- match.call()
     rv$type <- type
-    rv$nobs <- sum(rowSums(rfY) > 0)
+    rv$nobs <- sum(rowSums(rf$Y) > 0)
     names(rv$coefficients) <- switch(type,
         "dis" = paste("log.tau", NAM, sep="_"),
         "mix" = c("log.phi", paste("logit.c", NAM, sep="_")),
