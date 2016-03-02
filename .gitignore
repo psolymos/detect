@@ -48,3 +48,4 @@ Temporary Items
 ## R related files
 *.Rdata
 *.Rhistory
+.Rproj.user
