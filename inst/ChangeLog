@@ -7,12 +7,13 @@
       when resampling from a length 1 vector.
     * pbapply package is now a dependency.
     * Various minor fixes to satisfy R-devel checks.
+    * Negative Binomial option added to svabu.
 
 ## Version 0.3-2, May 15, 2014
 
     * Bugfix in cmulti2.fit: n was undefined (reported by Julie Hart).
     * Bugfix in hbootindex: n was not set when strata was missing.
-    * Documentation fixes (comma separated lists of variable 
+    * Documentation fixes (comma separated lists of variable
       names inside \code).
 
 ## Version 0.3-1, Sept 25, 2013
