@@ -1,0 +1,94 @@
+---
+title: "A general conditional likelihood approach for zero-inflated data"
+output: pdf_document
+---
+
+# Introduction
+
+This follows Solymos et al. 2012 (Environmetrics).
+
+# Conditional maximum likelihood
+
+Let $Y$ be a random variable, and $y$ are observations.
+A zero inflated (ZI) distribution with 
+non-zero inflated density function $f(y; \theta)$ can be writte nas follows:
+
+$$ P(Y=0) = \phi + (1-\phi) f(0; \theta) $$
+$$ P(Y=y) = (1-\phi) f(y; \theta); y>0 $$
+
+where $\theta$ is a vector of model parameters, not including the ZI
+parameter $\phi$ that is the probability of observing 0 as part of the
+ZI process.
+
+$$ P(Y=y \mid Y>0) = \frac{P(Y=y)}{1 - P(Y=0)} $$
+
+$$ 1 - P(Y=0) = 1 - [\phi + (1-\phi) f(0; \theta)] $$
+$$ = 1 - \phi - (1-\phi) f(0; \theta) $$
+$$ = 1 - \phi - [f(0; \theta) - \phi f(0; \theta)] $$
+$$ = 1 - \phi - f(0; \theta) + \phi f(0; \theta)] $$
+$$ = (1 - \phi) [1 - f(0; \theta)] $$
+
+Thus
+
+$$ P(Y=y \mid Y>0) = \frac{(1-\phi) f(y; \theta)}{(1 - \phi) [1 - f(0; \theta)]} $$
+$$ = \frac{f(y; \theta)}{1 - f(0; \theta)} $$
+
+This conditional density function can be used in estimating conditional maximum 
+likelihood estimates of $\hat{\theta}^{(1)}$ based on the non-zero part of the data
+($y^{(1)}$).
+
+# Pseudo likelihood
+
+$W$ is a binary random variable ($W = I(Y>0)$):
+
+$$ P(W=0) = \phi + (1-\phi) f(0; \hat{\theta}^{(1)}) $$
+$$ P(W=1) = (1-\phi) [1 - f(0; \hat{\theta}^{(1)})]$$
+
+# Joint likelihood
+
+$$ P(Y=y) = I(y=0) \phi + (1 - \phi) f(y; \theta) $$
+
+# Distributions
+
+## Poisson
+
+$$ f(y; \theta) = f(y; \lambda) = e^{-\lambda} \frac{\lambda^{y}}{y!} $$
+$$ P(Y=0) = \phi + (1 + \phi) e^{-\lambda} $$
+
+## Negative Binomial
+
+$\gamma$ is Gamma variance in the Poisson-Gamma mixture parametrization
+($A \sim Bernoulli(1 - \phi)$; $Y \sim Poisson(A u \lambda)$; 
+$u \sim Gamma(mean=1, variance=\gamma)$):
+
+$$ f(y; \theta) = f(y; \lambda,\gamma) = \frac{\Gamma (y + \gamma^{-1})}{\Gamma (\gamma^{-1})} \frac{(\gamma \lambda)^{y}}{(1+\gamma \lambda)^{(y + \gamma{-1})}} $$
+$$ P(Y=0) = \phi + (1 + \phi) (1+\gamma \lambda)^{(\gamma{-1})} $$
+
+## Binomial 
+
+Size needs to be greater than 1 ($n > 1$)
+
+$$ f(y; \theta) = f(y; p) = {n \choose y} p^{y} (1-p)^{(n-y)} $$
+$$ P(Y=0) = \phi + (1 + \phi) (1-p)^{n} $$
+
+## Lognormal
+
+
+$$ f(y; \theta) = f(y; \mu, \sigma^2) = \frac{1}{y \sigma \sqrt{2 \pi}} e^{\frac{-(log(y)-\mu)^2}{2 \sigma^2}}; y>0$$
+$$ P(Y=0) = \phi $$
+
+Because $f(0; \theta)=0$ it follows that $P(Y=y \mid Y>0)=f(y;\theta)$.
+
+## Beta
+
+$\gamma$ is precision, $\mu$ is mean:
+
+$$ f(y; \theta) = f(y; \mu,\gamma) = \frac{\Gamma(\gamma)}{\Gamma(\mu \gamma) \Gamma[(1-\mu)\gamma]} y^{\mu\gamma-1}(1-y)^{(1-\mu)\gamma-1}; y \in (0,1)$$
+$$ P(Y=0) = \phi $$
+
+Because $f(0; \theta)=0$ it follows that $P(Y=y \mid Y>0)=f(y;\theta)$.
+
+# Questions
+
+* What to do with categorical predictors where all observations are 0?
+
