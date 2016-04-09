@@ -51,7 +51,8 @@ pl <- zi.fit(Y, X, Z, distr="pois", type="PL", fit=cl)
 pl0 <- zi.fit(Y, X, Z, distr="pois", type="PL", fit=-exp(mu))
 pl$PL$coef
 pl0$PL$coef
-
+plogis(pl0$PL$coef)
+1-plogis(-pl0$PL$coef)
 
 ## NegBin
 

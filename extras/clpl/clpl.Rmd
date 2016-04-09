@@ -88,7 +88,9 @@ $$ P(Y=0) = \phi $$
 
 Because $f(0; \theta)=0$ it follows that $P(Y=y \mid Y>0)=f(y;\theta)$.
 
-# Questions
+# Question
 
-* What to do with categorical predictors where all observations are 0?
+What to do with categorical predictors where all observations are 0?
+An option is to merge that factor level with simular one(s)
+that have >0 observations.
 
