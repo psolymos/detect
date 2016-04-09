@@ -1,15 +1,16 @@
 ## initial values need to be supplied from outside
 ## this uses 0 if not specified
 ## type can be several of c("ML", "CL", "PL")
-zi.fit <- 
-function(Y, X, Z, offsetx, offsetz, weights, 
+## fit can be a zi.fit (list) or numeric vector of logd0
+zi.fit <-
+function(Y, X, Z, offsetx, offsetz, weights,
 distr=c("pois","negbin","binom","lognorm","beta"), linkx, linkz="logit",
 type="ML", fit, N,
 method="Nelder-Mead", inits, control=list(), hessian=FALSE, ...)
 {
 
     ## >>> ZI-LOGNORM
-    ## linkinvx=identity
+    ## linkinvx=identity (because mu in dlnorm is on log scale)
     nll_ZILN_ML <- function(parms) {
         mu <- as.vector(linkinvx(X %*% parms[1:kx] + offsetx))
         sigma <- exp(parms[kx + 1])
@@ -17,7 +18,7 @@ method="Nelder-Mead", inits, control=list(), hessian=FALSE, ...)
         ## 0 mass of Ln leads to 0 density
         loglik0 <- log(phi)
         loglik1 <- log(1 - phi) + dlnorm(Y, mu, sigma, log = TRUE)
-        loglik <- sum(weights[id0] * loglik0[id0]) + sum(weights[id1] * 
+        loglik <- sum(weights[id0] * loglik0[id0]) + sum(weights[id1] *
             loglik1[id1])
         if (!is.finite(loglik) || is.na(loglik))
             loglik <- -good.num.limit[2]
@@ -50,9 +51,9 @@ method="Nelder-Mead", inits, control=list(), hessian=FALSE, ...)
         alpha <- mu * gamma
         beta <- (1 - mu) * gamma
         loglik0 <- log(phi)
-        loglik1 <- log(1 - phi) + suppressWarnings(dbeta(Y, 
+        loglik1 <- log(1 - phi) + suppressWarnings(dbeta(Y,
             alpha, beta, log = TRUE))
-        loglik <- sum(weights[id0] * loglik0[id0]) + sum(weights[id1] * 
+        loglik <- sum(weights[id0] * loglik0[id0]) + sum(weights[id1] *
             loglik1[id1])
         if (!is.finite(loglik) || is.na(loglik))
             loglik <- -good.num.limit[2]
@@ -63,7 +64,7 @@ method="Nelder-Mead", inits, control=list(), hessian=FALSE, ...)
         gamma <- exp(parms[kx + 1]) # precision
         alpha1 <- mu1 * gamma
         beta1 <- (1 - mu1) * gamma
-        loglik <- sum(weights1 * suppressWarnings(dbeta(Y1, 
+        loglik <- sum(weights1 * suppressWarnings(dbeta(Y1,
             alpha1, beta1, log = TRUE)))
         if (!is.finite(loglik) || is.na(loglik))
             loglik <- -good.num.limit[2]
@@ -79,7 +80,7 @@ method="Nelder-Mead", inits, control=list(), hessian=FALSE, ...)
         phi <- as.vector(linkinvz(Z %*% parms[(kx + 1):(kx + kz)] + offsetz))
         loglik0 <- log(phi + exp(log(1 - phi) - mu))
         loglik1 <- log(1 - phi) + dpois(Y, lambda = mu, log = TRUE)
-        loglik <- sum(weights[id0] * loglik0[id0]) + sum(weights[id1] * 
+        loglik <- sum(weights[id0] * loglik0[id0]) + sum(weights[id1] *
             loglik1[id1])
         if (!is.finite(loglik) || is.na(loglik))
             loglik <- -good.num.limit[2]
@@ -118,11 +119,11 @@ method="Nelder-Mead", inits, control=list(), hessian=FALSE, ...)
         mu <- as.vector(linkinvx(X %*% parms[1:kx] + offsetx))
         theta <- exp(parms[kx + 1])
         phi <- as.vector(linkinvz(Z %*% parms[(kx+1+1):(kx+kz+1)] + offsetz))
-        loglik0 <- log(phi + exp(log(1 - phi) + suppressWarnings(dnbinom(0, 
+        loglik0 <- log(phi + exp(log(1 - phi) + suppressWarnings(dnbinom(0,
             size = theta, mu = mu, log = TRUE))))
-        loglik1 <- log(1 - phi) + suppressWarnings(dnbinom(Y, 
+        loglik1 <- log(1 - phi) + suppressWarnings(dnbinom(Y,
             size = theta, mu = mu, log = TRUE))
-        loglik <- sum(weights[id0] * loglik0[id0]) + sum(weights[id1] * 
+        loglik <- sum(weights[id0] * loglik0[id0]) + sum(weights[id1] *
             loglik1[id1])
         if (!is.finite(loglik) || is.na(loglik))
             loglik <- -good.num.limit[2]
@@ -133,9 +134,9 @@ method="Nelder-Mead", inits, control=list(), hessian=FALSE, ...)
         mu1 <- as.vector(linkinvx(X1 %*% parms[1:kx] + offsetx1))
         theta <- exp(parms[kx + 1])
         ## P(Y=y|Y>0)=f(y;theta)/(1-0)=f(y;theta)
-        num <- suppressWarnings(dnbinom(Y1, 
+        num <- suppressWarnings(dnbinom(Y1,
             size = theta, mu = mu1, log = TRUE))
-        den <- log(1 - exp(suppressWarnings(dnbinom(0, 
+        den <- log(1 - exp(suppressWarnings(dnbinom(0,
             size = theta, mu = mu1, log = TRUE))))
         loglik <- sum(weights1 * (num - den))
         if (!is.finite(loglik) || is.na(loglik))
@@ -157,7 +158,7 @@ method="Nelder-Mead", inits, control=list(), hessian=FALSE, ...)
         phi <- as.vector(linkinvz(Z %*% parms[(kx + 1):(kx + kz)] + offsetz))
         loglik0 <- log(phi + (1 - phi) * (1-mu)^N)
         loglik1 <- log(1 - phi) + dbinom(Y, N, mu, log = TRUE)
-        loglik <- sum(weights[id0] * loglik0[id0]) + sum(weights[id1] * 
+        loglik <- sum(weights[id0] * loglik0[id0]) + sum(weights[id1] *
             loglik1[id1])
         if (!is.finite(loglik) || is.na(loglik))
             loglik <- -good.num.limit[2]
@@ -199,7 +200,7 @@ method="Nelder-Mead", inits, control=list(), hessian=FALSE, ...)
             "pois" = "log",
             "negbin" = "log",
             "binom" = "logit",
-            "lognorm" = "identity",
+            "lognorm" = "identity", # (because mu in dlnorm is on log scale)
             "beta" = "logit")
     linkinvx <- poisson(linkx)$linkinv
     linkinvz <- binomial(linkz)$linkinv
@@ -233,7 +234,7 @@ method="Nelder-Mead", inits, control=list(), hessian=FALSE, ...)
             "binom" = nll_ZIBIN_ML,
             "lognorm" = nll_ZILN_ML,
             "beta" = nll_ZIB_ML)
-        t_ML <- system.time(res_ML <- optim(inits, nll_ML, 
+        t_ML <- system.time(res_ML <- optim(inits, nll_ML,
             method=method, hessian=hessian, control=control, ...))
         res_ML$coef <- res_ML$par
         res_ML$loglik <- -res_ML$value
@@ -250,7 +251,7 @@ method="Nelder-Mead", inits, control=list(), hessian=FALSE, ...)
             "binom" = nll_ZIBIN_CL,
             "lognorm" = nll_ZILN_CL,
             "beta" = nll_ZIB_CL)
-        t_CL <- system.time(res_CL <- suppressWarnings(optim(inits[1:(np-kz)], nll_CL, 
+        t_CL <- system.time(res_CL <- suppressWarnings(optim(inits[1:(np-kz)], nll_CL,
             method=method, hessian=hessian, control=control, ...)))
         res_CL$coef <- res_CL$par
         res_CL$loglik <- -res_CL$value
@@ -272,11 +273,18 @@ method="Nelder-Mead", inits, control=list(), hessian=FALSE, ...)
         if (is.null(res_CL)) {
             if (missing(fit))
                 stop("type PL needs fit")
-            logd0 <- logd0_fun(fit$CL$coef)
-            res_CL <- fit$CL
+            if (is.list(fit)) {
+                ## fit is a previous object from zi.fit
+                res_CL <- fit$CL
+                logd0 <- logd0_fun(fit$CL$coef)
+            } else {
+                ## fit is the logdensity f(y=0)
+                #res_CL <- NULL # already NULL
+                logd0 <- fit
+            }
         } else {
             if (!missing(fit))
-                warning("type includes CL, fit ignored")
+                warning("type includes CL, fit argument ignored")
             logd0 <- logd0_fun(res_CL$coef)
         }
         nll_PL <- switch(distr,
@@ -285,7 +293,7 @@ method="Nelder-Mead", inits, control=list(), hessian=FALSE, ...)
             "binom" = nll_ZIBIN_PL,
             "lognorm" = nll_ZILN_PL,
             "beta" = nll_ZIB_PL)
-        t_PL <- system.time(res_PL <- suppressWarnings(optim(inits[(np-kz+1):np], nll_PL, 
+        t_PL <- system.time(res_PL <- suppressWarnings(optim(inits[(np-kz+1):np], nll_PL,
             logd0=logd0,
             method=method, hessian=hessian, control=control, ...)))
         res_PL$coef <- res_PL$par
@@ -313,7 +321,7 @@ method="Nelder-Mead", inits, control=list(), hessian=FALSE, ...)
             res_CLPL$vcov[1:(np-kz),1:(np-kz)] <- res_CL$vcov
             res_CLPL$vcov[(np-kz+1):np,(np-kz+1):np] <- res_PL$vcov
         }
-        
+
     }
     list(ML=res_ML, CL=res_CL, PL=res_PL, CLPL=res_CLPL)
 }

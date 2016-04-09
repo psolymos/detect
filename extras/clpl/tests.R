@@ -1,3 +1,5 @@
+source("~/repos/detect/R/zi.fit.R")
+
 ## Lognormal
 
 n <- 2000
@@ -46,6 +48,9 @@ lapply(zi.fit(Y, X, Z, distr="pois", type=c("ML","CL","PL")), "[[", "coef")
 clpl <- zi.fit(Y, X, Z, distr="pois", type=c("CL","PL"))
 cl <- zi.fit(Y, X, Z, distr="pois", type="CL")
 pl <- zi.fit(Y, X, Z, distr="pois", type="PL", fit=cl)
+pl0 <- zi.fit(Y, X, Z, distr="pois", type="PL", fit=-exp(mu))
+pl$PL$coef
+pl0$PL$coef
 
 
 ## NegBin
