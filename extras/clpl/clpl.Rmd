@@ -64,6 +64,10 @@ $u \sim Gamma(mean=1, variance=\gamma)$):
 $$ f(y; \theta) = f(y; \lambda,\gamma) = \frac{\Gamma (y + \gamma^{-1})}{\Gamma (\gamma^{-1})} \frac{(\gamma \lambda)^{y}}{(1+\gamma \lambda)^{(y + \gamma{-1})}} $$
 $$ P(Y=0) = \phi + (1 + \phi) (1+\gamma \lambda)^{(\gamma{-1})} $$
 
+## Geometric
+
+To be added...
+
 ## Binomial 
 
 Size needs to be greater than 1 ($n > 1$)
@@ -72,7 +76,6 @@ $$ f(y; \theta) = f(y; p) = {n \choose y} p^{y} (1-p)^{(n-y)} $$
 $$ P(Y=0) = \phi + (1 + \phi) (1-p)^{n} $$
 
 ## Lognormal
-
 
 $$ f(y; \theta) = f(y; \mu, \sigma^2) = \frac{1}{y \sigma \sqrt{2 \pi}} e^{\frac{-(log(y)-\mu)^2}{2 \sigma^2}}; y>0$$
 $$ P(Y=0) = \phi $$
@@ -88,9 +91,17 @@ $$ P(Y=0) = \phi $$
 
 Because $f(0; \theta)=0$ it follows that $P(Y=y \mid Y>0)=f(y;\theta)$.
 
-# Question
+## Gamma
+
+To be added...
+
+## Exponential
+
+To be added...
+
+# Limitations
 
 What to do with categorical predictors where all observations are 0?
-An option is to merge that factor level with simular one(s)
+An option is to merge that factor level with similar one(s)
 that have >0 observations.
 
