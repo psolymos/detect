@@ -1,5 +1,21 @@
 source("~/repos/detect/R/zi.fit.R")
 
+## Gamma
+if (FALSE) {
+n <- 2000
+phi <- 0.7
+beta <- c(1,0.5)
+theta <- 0.5
+x <- rnorm(n)
+X <- model.matrix(~x)
+mu <- exp(drop(X %*% beta))  # log link, but can be inverse as well
+o <- rgamma(n, shape=mu^2/theta, scale=theta/mu)
+z <- rbinom(n, 1, 1-phi)
+Z <- matrix(1, n, 1)
+Y <- z * o
+hist(Y)
+}
+
 ## Lognormal
 
 n <- 2000
