@@ -8,7 +8,7 @@
 ## Version 0.4-0, March 2, 2016
 
 * `load_BAM_QPAD` function is deprecated (migrated to **QPAD** package).
-* `hbootindex` bugfix: `sample()`` behaviour when
+* `hbootindex` bugfix: `sample()` behaviour when
   `length(x) == 1` is recognized when resampling from a length 1 vector.
 * **pbapply** package is now a dependency.
 * Various minor fixes to satisfy R-devel checks.
