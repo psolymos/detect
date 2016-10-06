@@ -9,7 +9,7 @@ and the [Boreal Avian Modelling (BAM) Project](http://www.borealbirds.ca/).
 Main functions:
 
 * `svocc`: single visit occupancy model (Lele et al. 2011, Moreno et al. 2010).
-* `svabu`: single visit abundance model based on conditional maximum likelihood (Solymos et al. 2012).
+* `svabu`: single visit Poisson and Negative Binomial abundance model based on conditional maximum likelihood (Solymos et al. 2012, Denes et al. 2016).
 * `cmulti`: conditional multinomial maximum likelihood estimation for removal and (point count) distance sampling, efficient and flexible setup for varying methodologies (Solymos et al. 2013).
 
 ## Versions
@@ -20,7 +20,7 @@ Main functions:
 
 ### Build status for development version
 
-[![Build Status](https://travis-ci.org/psolymos/detect.svg?branch=master)](https://travis-ci.org/psolymos/detect)
+[![Build Status](https://travis-ci.org/psolymos/detect.svg?branch=master)](https://travis-ci.org/psolymos/detect) [![codecov](https://codecov.io/gh/psolymos/detect/branch/master/graph/badge.svg)](https://codecov.io/gh/psolymos/detect)
 
 ## Report a problem
 
@@ -49,3 +49,8 @@ Cumming, S. G., Stralberg, D., Schmiegelow, F. K. A. & Song, S. J., 2013.
 Calibrating indices of avian density from non-standardized survey data:
 making the most of a messy situation.
 _Methods in Ecology and Evolution_, **4**, 1047-1058.
+
+Denes, F., Solymos, P., Lele, S. R., Silveira, L. & Beissinger, S. 2016.
+Biome scale signatures of land use change on raptor abundance:
+insights from single-visit detection-based models.
+_Journal of Applied Ecology_, in press.
