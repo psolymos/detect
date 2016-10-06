@@ -128,6 +128,11 @@ Solymos, P., Lele, S. R. 2016.
 Revisiting resource selection probability functions and single-visit methods:
 clarification and extensions.
 \emph{Methods in Ecology and Evolution}, \bold{7}, 196--205.
+
+Denes, F., Solymos, P., Lele, S. R., Silveira, L. & Beissinger, S. 2016.
+Biome scale signatures of land use change on raptor abundance:
+insights from single-visit detection-based models.
+\emph{Journal of Applied Ecology}, in press.
 }
 \author{
 Peter Solymos and Subhash Lele
