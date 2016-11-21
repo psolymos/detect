@@ -20,7 +20,7 @@ function (object, model = c("full", "sta", "det"), type, ...)
         rval <- boot$vcov
     } else {
         if (object$method=="optim") {
-            rval <- -solve(object$results$mle$hessian)
+            rval <- -.solvenear(object$results$mle$hessian)
         }
         if (object$method=="dc") {
             rval <- vcov(object$results$mle)

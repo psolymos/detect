@@ -178,7 +178,7 @@ method = c("optim", "dc"), inits, ...)
         }
         if (method=="optim") {
             mle.parameters <- mle.res$par
-            vv <- -diag(solve(mle.res$hessian))
+            vv <- -diag(.solvenear(mle.res$hessian))
         }
         mle.par.occ <- mle.parameters[1:num.cov.occ]
         mle.par.det <- mle.parameters[-(1:num.cov.occ)]
@@ -222,7 +222,7 @@ method = c("optim", "dc"), inits, ...)
         if (rcond(result$hessian) <= 1e-06)
             std.error <- rep(NA, num.cov.occ + num.cov.det)
         if (rcond(result$hessian) > 1e-06) {
-            opvar <- -diag(solve(result$hessian))
+            opvar <- -diag(.solvenear(result$hessian))
             if (any(opvar < 0)) {
                 opvar[opvar < 0] <- NA
                 ## if pmle.problem=TRUE, this warning would be repeated

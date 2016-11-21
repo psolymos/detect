@@ -6,6 +6,7 @@ Date: 2016-03-02
 Author: Peter Solymos [cre, aut], Monica Moreno [aut], Subhash R. Lele [aut]
 Maintainer: Peter Solymos <solymos@ualberta.ca>
 Depends: R (>= 2.13.0), Formula, stats4, pbapply
+Imports: Matrix
 Suggests: dclone, dcmle
 Description: Models for analyzing site occupancy and count data models
   with detection error, including single-visit based models,

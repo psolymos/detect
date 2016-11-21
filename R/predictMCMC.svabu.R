@@ -17,7 +17,7 @@ raw = FALSE, vcov.type, ...)
     nps <- sapply(object$coefficients, length)
     np <- sum(nps[1:2])
     vcv <- vcov(object, model="full", vcov.type)[1:np, 1:np]
-    prec <- dclone::make.symmetric(solve(vcv))
+    prec <- dclone::make.symmetric(.solvenear(vcv))
     param <- coef(object)[1:np]
     inits <- list(N = object$y + 1)
     prdat <- list(Y=object$y, n=length(object$y),

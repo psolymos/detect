@@ -1,5 +1,5 @@
 cmulti.fit <-
-function(Y, D, X=NULL, type=c("rem", "mix", "dis"), 
+function(Y, D, X=NULL, type=c("rem", "mix", "dis"),
 inits=NULL, method="Nelder-Mead", ...)
 {
     Ysum <- rowSums(Y, na.rm=TRUE)
@@ -37,17 +37,17 @@ inits=NULL, method="Nelder-Mead", ...)
         if (is.null(inits))
             inits <- v0
 #        require(stats4)
-        res <- suppressWarnings(stats4::mle(nll.fun1, 
-            list(pv=inits[1], cv=inits[2]), 
+        res <- suppressWarnings(stats4::mle(nll.fun1,
+            list(pv=inits[1], cv=inits[2]),
             method=method, ...))
-        rval <- list(coef=res@coef, 
-            vcov=res@vcov, 
+        rval <- list(coef=res@coef,
+            vcov=res@vcov,
             loglik=-res@details$value)
     }
     ## parameter is not fixed, removal mixture
     if (!is.null(X) && type == "mix") {
         nll.fun2 <- function(param) {
-            CP <- pifun(D, poisson("log")$linkinv(param[1]), 
+            CP <- pifun(D, poisson("log")$linkinv(param[1]),
                 binomial("logit")$linkinv(drop(X %*% param[-1])))
             P <- CP - cbind(0, CP[, -k, drop=FALSE])
             Psum <- rowSums(P, na.rm=TRUE)
@@ -63,8 +63,8 @@ inits=NULL, method="Nelder-Mead", ...)
             inits[1:2] <- v0
         }
         res <- optim(inits, nll.fun2, method=method, hessian=TRUE, ...)
-        rval <- list(coef=res$par, 
-            vcov=try(solve(res$hessian)), 
+        rval <- list(coef=res$par,
+            vcov=try(.solvenear(res$hessian)),
             loglik=-res$value)
     }
     ## parameter is fixed, rem or dist
@@ -83,12 +83,12 @@ inits=NULL, method="Nelder-Mead", ...)
         if (is.null(inits))
             inits <- v0
 #        require(stats4)
-        res <- suppressWarnings(stats4::mle(nll.fun3, list(pv=inits), 
+        res <- suppressWarnings(stats4::mle(nll.fun3, list(pv=inits),
             method=method, ...))
-        rval <- list(coef=res@coef, 
-            vcov=res@vcov, 
+        rval <- list(coef=res@coef,
+            vcov=res@vcov,
             loglik=-res@details$value)
-    } 
+    }
     ## parameter is not fixed, rem or dist
     if (!is.null(X) && type != "mix") {
         nll.fun4 <- function(param) {
@@ -107,8 +107,8 @@ inits=NULL, method="Nelder-Mead", ...)
             inits[1] <- v0
         }
         res <- optim(inits, nll.fun4, method=method, hessian=TRUE, ...)
-        rval <- list(coef=res$par, 
-            vcov=try(solve(res$hessian)), 
+        rval <- list(coef=res$par,
+            vcov=try(.solvenear(res$hessian)),
             loglik=-res$value)
     }
     if (inherits(rval$vcov, "try-error"))

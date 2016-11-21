@@ -4,6 +4,8 @@ importFrom("pbapply", "pblapply", "pbsapply")
 importFrom("stats4", "mle")
 #importFrom("dclone", "dcsd")
 #importFrom("dcmle", "makeDcFit", "gelman.diag")
+
+importFrom("Matrix", "nearPD")
 importFrom("graphics", "abline", "legend", "lines", "par", "plot",
     "points", "polygon")
 importFrom("stats", ".getXlevels", "aggregate", "as.formula",

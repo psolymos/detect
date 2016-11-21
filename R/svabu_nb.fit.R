@@ -1,5 +1,5 @@
 svabu_nb.fit <-
-function(Y, X, Z, Q=NULL, zeroinfl=TRUE, area=1, N.max=NULL, inits, 
+function(Y, X, Z, Q=NULL, zeroinfl=TRUE, area=1, N.max=NULL, inits,
 link.det = "logit", link.zif = "logit", ...)
 {
     dnegbin <- function(x, mean, var, log=FALSE) {
@@ -140,12 +140,12 @@ link.det = "logit", link.zif = "logit", ...)
             area1 <- area[id1]
             area1.rep <- rep(area1, each=N.max+1)
         }
-        results <- optim(inits[c(1:(np.abu + np.det), np)], nll.ZIP1, 
+        results <- optim(inits[c(1:(np.abu + np.det), np)], nll.ZIP1,
             method=method, hessian=TRUE, control=control)
     } else {
         id1 <- Y >= 0
         id1.rep <- rep(id1, each=N.max+1)
-        results <- optim(inits[c(1:(np.abu + np.det), np)], nll.P, 
+        results <- optim(inits[c(1:(np.abu + np.det), np)], nll.P,
             method=method, hessian=TRUE, control=control)
     }
     estimates <- results$par
@@ -157,7 +157,7 @@ link.det = "logit", link.zif = "logit", ...)
         std.error <- rep(NA, np)
     if (rcond(results$hessian) > 1e-06) {
         ## due to negLogLik, we take H^-1 and not -H^-1
-        opvar <- diag(solve(results$hessian))
+        opvar <- diag(.solvenear(results$hessian))
         if (any(opvar < 0)) {
             opvar[opvar < 0] <- NA
             warning("negative variance values in optim, NAs produced")
@@ -182,7 +182,7 @@ link.det = "logit", link.zif = "logit", ...)
     if (sum(!id1) > 0 && zeroinfl) {
         glp <- (1 + exp(logvar) * lambda * delta)^(-1/exp(logvar))
 #        emlp <- exp(-lambda * delta)
-        zif.results <- suppressWarnings(optim(inits[(np.abu+np.det+1):(np-1)], 
+        zif.results <- suppressWarnings(optim(inits[(np.abu+np.det+1):(np-1)],
             nll.ZIP0, glp=glp, id1=id1, method=method, hessian=TRUE, control=control))
         par.zif <- zif.results$par
         names(par.zif) <- nam.zif
@@ -193,7 +193,7 @@ link.det = "logit", link.zif = "logit", ...)
             se.zif <- rep(NA, np.zif)
         if (rcond(zif.results$hessian) > 1e-06) {
             ## due to negLogLik, we take H^-1 and not -H^-1
-            opvar2 <- diag(solve(data.matrix(zif.results$hessian)))
+            opvar2 <- diag(.solvenear(data.matrix(zif.results$hessian)))
             if (any(opvar2 < 0)) {
                 opvar2[opvar2 < 0] <- NA
                 warning("negative variance values in optim, NAs produced")
@@ -207,17 +207,17 @@ link.det = "logit", link.zif = "logit", ...)
         results$convergence == 0 && zif.results$convergence == 0
     } else results$convergence == 0
     out <- list(coefficients = list(sta = par.state, det = par.det),
-        std.error = list(sta = se.state, det = se.det), 
-        fitted.values = lambda, 
+        std.error = list(sta = se.state, det = se.det),
+        fitted.values = lambda,
         detection.probabilities = delta,
         zif.probabilities = phi,
         zeroinfl = zeroinfl,
-        nobs = n, 
+        nobs = n,
         N.max = N.max,
         link = list(sta="log", det=link.det, zif=link.zif),
         df.null = n - 2,
-        df.residual = n - np, 
-        inits = inits, 
+        df.residual = n - np,
+        inits = inits,
         loglik = lLik,
         results = list(count=results, zero=zif.results),
         converged = Converged,

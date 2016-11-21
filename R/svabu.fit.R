@@ -145,7 +145,7 @@ link.det = "logit", link.zif = "logit", ...)
         std.error <- rep(NA, np)
     if (rcond(results$hessian) > 1e-06) {
         ## due to negLogLik, we take H^-1 and not -H^-1
-        opvar <- diag(solve(results$hessian))
+        opvar <- diag(.solvenear(results$hessian))
         if (any(opvar < 0)) {
             opvar[opvar < 0] <- NA
             warning("negative variance values in optim, NAs produced")
@@ -178,7 +178,7 @@ link.det = "logit", link.zif = "logit", ...)
             se.zif <- rep(NA, np.zif)
         if (rcond(zif.results$hessian) > 1e-06) {
             ## due to negLogLik, we take H^-1 and not -H^-1
-            opvar2 <- diag(solve(data.matrix(zif.results$hessian)))
+            opvar2 <- diag(.solvenear(data.matrix(zif.results$hessian)))
             if (any(opvar2 < 0)) {
                 opvar2[opvar2 < 0] <- NA
                 warning("negative variance values in optim, NAs produced")

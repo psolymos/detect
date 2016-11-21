@@ -1,5 +1,5 @@
 cmulti2.fit <-
-function(Y, D1, D2, X1=NULL, X2=NULL, 
+function(Y, D1, D2, X1=NULL, X2=NULL,
 inits=NULL, method="Nelder-Mead", ...)
 {
     ## flattening the array
@@ -69,12 +69,12 @@ inits=NULL, method="Nelder-Mead", ...)
     DIM <- c(n, k1, k2)
     ## negative log-likelihood fn
     nll.fun <- function(param) {
-        CP1 <- pifun1(D1, 
+        CP1 <- pifun1(D1,
             poisson("log")$linkinv(drop(X1 %*% param[1:np1])))
         P1 <- CP1 - cbind(0, CP1[, -k1, drop=FALSE])
         Psum1 <- rowSums(P1, na.rm=TRUE)
 
-        CP2 <- pifun2(D2, 
+        CP2 <- pifun2(D2,
             poisson("log")$linkinv(drop(X2 %*% param[(np1+1):(np1+np2)])))
         P2 <- CP2 - cbind(0, CP2[, -k2, drop=FALSE])
         Psum2 <- rowSums(P2, na.rm=TRUE)
@@ -90,8 +90,8 @@ inits=NULL, method="Nelder-Mead", ...)
     }
     ## estimation
     res <- optim(inits, nll.fun, method=method, hessian=TRUE, ...)
-    rval <- list(coef=res$par, 
-        vcov=try(solve(res$hessian)), 
+    rval <- list(coef=res$par,
+        vcov=try(.solvenear(res$hessian)),
         loglik=-res$value)
     ## assembling return value
     if (inherits(rval$vcov, "try-error"))

@@ -4,8 +4,8 @@ function(object, model = c("full", "sta", "det"), ...)
     model <- match.arg(model)
     if (object$method=="optim") {
         cfs <- object$results$mle$par
-        ses <- sqrt(-diag(solve(object$results$mle$hessian)))
-        vcv <- -solve(object$results$mle$hessian)
+        ses <- sqrt(-diag(.solvenear(object$results$mle$hessian)))
+        vcv <- -.solvenear(object$results$mle$hessian)
     }
     if (object$method=="dc") {
         cfs <- coef(object$results$mle)

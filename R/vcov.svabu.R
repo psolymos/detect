@@ -20,9 +20,9 @@ function (object, model = c("full", "sta", "det", "zif"), type, ...)
         rval <- boot$vcov
     } else {
         rval <- matrix(NA, sum(nps), sum(nps))
-        rval[1:sum(nps[1:2]), 1:sum(nps[1:2])] <- solve(object$results$count$hessian)
+        rval[1:sum(nps[1:2]), 1:sum(nps[1:2])] <- .solvenear(object$results$count$hessian)
         if (object$zeroinfl)
-            rval[((sum(nps[1:2])+1):sum(nps)), ((sum(nps[1:2])+1):sum(nps))] <- solve(object$results$zero$hessian)
+            rval[((sum(nps[1:2])+1):sum(nps)), ((sum(nps[1:2])+1):sum(nps))] <- .solvenear(object$results$zero$hessian)
     }
 
 #    if (model == "full" && object$zeroinfl && type == "cmle")

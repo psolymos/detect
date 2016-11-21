@@ -4,6 +4,7 @@
 
 * Denes et al. 2016 paper added to documentation.
 * `inst/ChangeLog` is removed and replaced by `NEWS.md`.
+* cmulti models now have a `predict` method, see examples.
 
 ## Version 0.4-0, March 2, 2016
 
