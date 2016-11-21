@@ -4,6 +4,10 @@ before_install:
   - sudo add-apt-repository ppa:marutter/rrutter -y
   - sudo apt-get update -q
   - sudo apt-get install r-cran-rjags -y
+r:
+  - release
+  - devel
+  - oldrel
 r_packages:
   - covr
 after_success:
