@@ -1,5 +1,11 @@
 # detect: analyzing wildlife data with detection error
 
+[![CRAN version](http://www.r-pkg.org/badges/version/detect)](http://cran.rstudio.com/web/packages/detect/index.html)
+[![CRAN download stats](http://cranlogs.r-pkg.org/badges/grand-total/detect)](http://cran.rstudio.com/web/packages/detect/index.html)
+[![Linux build Status](https://travis-ci.org/psolymos/detect.svg?branch=master)](https://travis-ci.org/psolymos/detect)
+[![Windows build status](https://ci.appveyor.com/api/projects/status/5y5fwgv90f8i84ck?svg=true)](https://ci.appveyor.com/project/psolymos/detect)
+[![Code coverage status](https://codecov.io/gh/psolymos/detect/branch/master/graph/badge.svg)](https://codecov.io/gh/psolymos/detect)
+
 The R package implements models to analyze
 site occupancy and count data models with detection error.
 The package development was supported by the
@@ -12,20 +18,31 @@ Main functions:
 * `svabu`: single visit Poisson and Negative Binomial abundance model based on conditional maximum likelihood (Solymos et al. 2012, Denes et al. 2016).
 * `cmulti`: conditional multinomial maximum likelihood estimation for removal and (point count) distance sampling, efficient and flexible setup for varying methodologies (Solymos et al. 2013).
 
-## Versions
+## Install
 
-### CRAN release version
+Install CRAN release version (recommended):
 
-[![CRAN version](http://www.r-pkg.org/badges/version/detect)](http://cran.rstudio.com/web/packages/detect/index.html) [![](http://cranlogs.r-pkg.org/badges/grand-total/detect)](http://cran.rstudio.com/web/packages/detect/index.html)
+```R
+install.packages("detect")
+```
 
-### Build status for development version
+Development version:
 
-[![Build Status](https://travis-ci.org/psolymos/detect.svg?branch=master)](https://travis-ci.org/psolymos/detect) [![codecov](https://codecov.io/gh/psolymos/detect/branch/master/graph/badge.svg)](https://codecov.io/gh/psolymos/detect)
+```R
+library(devtools)
+install_github("psolymos/detect")
+```
+
+User visible changes in the package are listed in the [NEWS](https://github.com/psolymos/detect/blob/master/NEWS.md) file.
 
 ## Report a problem
 
 Use the [issue tracker](https://github.com/psolymos/detect/issues)
 to report a problem.
+
+## License
+
+[GPL-2](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 
 ## References
 
@@ -50,7 +67,13 @@ Calibrating indices of avian density from non-standardized survey data:
 making the most of a messy situation.
 _Methods in Ecology and Evolution_, **4**, 1047-1058.
 
-Denes, F., Solymos, P., Lele, S. R., Silveira, L. & Beissinger, S. 2016.
+Solymos, P. & Lele, S. R., 2016.
+Revisiting resource selection probability functions and single-visit methods:
+clarification and extensions.
+_Methods in Ecology and Evolution_ **7**, 196--205.
+[[link](http://dx.doi.org/10.1111/2041-210X.12432), [preprint](http://arxiv.org/abs/1501.05880)]
+
+Denes, F., Solymos, P., Lele, S. R., Silveira, L. & Beissinger, S., 2016.
 Biome scale signatures of land use change on raptor abundance:
 insights from single-visit detection-based models.
 _Journal of Applied Ecology_, in press.
