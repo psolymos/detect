@@ -22,6 +22,8 @@ inits=NULL, method="Nelder-Mead", ...)
 \method{fitted}{cmulti}(object, ...)
 \method{model.frame}{cmulti}(object, ...)
 \method{model.matrix}{cmulti}(object, ...)
+\method{predict}{cmulti}(object, newdata = NULL,
+    type = c("link", "response"), ...)
 }
 \arguments{
   \item{formula}{
@@ -35,7 +37,10 @@ data.
 character, one of \code{"rem"} (removal sampling, homogeneous
 singing rates), \code{"mix"} (removal sampling, heterogeneous
 singing rates), \code{"dis"} (distance sampling, half-normal detection
-function for point counts, circular area)
+function for point counts, circular area).
+For the \code{predict} method it is the \code{type}
+of prediction required; the default is on the scale of the linear predictors;
+the alternative \code{"response"} is on the scale of the response variable.
 }
   \item{Y}{
 this contains the cell counts.
@@ -66,6 +71,10 @@ method for \code{\link{optim}}.
 }
   \item{object}{
 fitted model object.
+}
+  \item{newdata}{
+optionally, a data frame in which to look for variables with which to predict.
+If omitted, the fitted linear predictors are used.
 }
   \item{\dots}{
 additional options for \code{\link{optim}}.
@@ -161,6 +170,24 @@ logLik(m3)
 
 ## fitted values
 plot(exp(log.tau), fitted(m3))
+
+## prediction for new locations (type = 'rem')
+ndf <- data.frame(x=seq(-1, 1, by=0.1))
+summary(predict(m1, newdata=ndf, type="link"))
+summary(pr1 <- predict(m1, newdata=ndf, type="response"))
+## turing singing rates into probabilities requires total duration
+## 5 minutes used here
+psing <- 1-exp(-5*pr1)
+plot(ndf$x, psing, type="l", ylim=c(0,1))
+
+## prediction for new locations (type = 'dis')
+summary(predict(m3, newdata=ndf, type="link"))
+summary(pr3 <- predict(m3, newdata=ndf, type="response"))
+## turing EDR into probabilities requires finite truncation distances
+## r=0.5 used here (50 m)
+r <- 0.5
+pdet <- pr3^2*(1-exp(-r^2/pr3^2))/r^2
+plot(ndf$x, pdet, type="l", ylim=c(0,1))
 
 ## joint removal-distance estimation
 ## is not different from 2 orthogonal estimations
