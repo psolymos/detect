@@ -6,3 +6,4 @@ extras
 .travis.yml
 ^.*\.Rproj$
 ^\.Rproj\.user$
+appveyor.yml
