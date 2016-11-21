@@ -5,6 +5,7 @@
 \alias{fitted.cmulti}
 \alias{model.frame.cmulti}
 \alias{model.matrix.cmulti}
+\alias{predict.cmulti}
 \title{
 Conditional Multinomial Maximum Likelihood Estimation
 }
@@ -20,7 +21,7 @@ inits=NULL, method="Nelder-Mead", ...)
 cmulti2.fit(Y, D1, D2, X1=NULL, X2=NULL,
 inits=NULL, method="Nelder-Mead", ...)
 \method{fitted}{cmulti}(object, ...)
-\method{model.frame}{cmulti}(object, ...)
+\method{model.frame}{cmulti}(formula, ...)
 \method{model.matrix}{cmulti}(object, ...)
 \method{predict}{cmulti}(object, newdata = NULL,
     type = c("link", "response"), ...)
