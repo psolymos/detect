@@ -3,6 +3,8 @@
 \alias{cmulti.fit}
 \alias{cmulti2.fit}
 \alias{fitted.cmulti}
+\alias{model.frame.cmulti}
+\alias{model.matrix.cmulti}
 \title{
 Conditional Multinomial Maximum Likelihood Estimation
 }
@@ -11,47 +13,49 @@ Conditional Multinomial Maximum Likelihood Estimation
 for different sampling methodologies.
 }
 \usage{
-cmulti(formula, data, type = c("rem", "mix", "dis"), 
+cmulti(formula, data, type = c("rem", "mix", "dis"),
 inits = NULL, method = "Nelder-Mead", ...)
-cmulti.fit(Y, D, X=NULL, type=c("rem", "mix", "dis"), 
+cmulti.fit(Y, D, X=NULL, type=c("rem", "mix", "dis"),
 inits=NULL, method="Nelder-Mead", ...)
-cmulti2.fit(Y, D1, D2, X1=NULL, X2=NULL, 
+cmulti2.fit(Y, D1, D2, X1=NULL, X2=NULL,
 inits=NULL, method="Nelder-Mead", ...)
 \method{fitted}{cmulti}(object, ...)
+\method{model.frame}{cmulti}(object, ...)
+\method{model.matrix}{cmulti}(object, ...)
 }
 \arguments{
   \item{formula}{
-formula, LHS takes 2 matrices in the form of \code{Y | D}, 
+formula, LHS takes 2 matrices in the form of \code{Y | D},
 RHS is either \code{1} or some covariates, see Examples.
 }
   \item{data}{
 data.
 }
   \item{type}{
-character, one of \code{"rem"} (removal sampling, homogeneous 
-singing rates), \code{"mix"} (removal sampling, heterogeneous 
-singing rates), \code{"dis"} (distance sampling, half-normal detection 
+character, one of \code{"rem"} (removal sampling, homogeneous
+singing rates), \code{"mix"} (removal sampling, heterogeneous
+singing rates), \code{"dis"} (distance sampling, half-normal detection
 function for point counts, circular area)
 }
   \item{Y}{
-this contains the cell counts. 
+this contains the cell counts.
 \code{cmulti.fit} requires
-that \code{Y} is a matrix (observations x intervals), 
+that \code{Y} is a matrix (observations x intervals),
 dimensions and pattern in \code{NA}s must match that of \code{D}.
 \code{cmulti2.fit} requires that \code{Y} is a 3-dimensional array
-(observations x time intervals x distance intervals), 
-dimensions and pattern in \code{NA}s must match that of 
+(observations x time intervals x distance intervals),
+dimensions and pattern in \code{NA}s must match that of
 \code{D1} and \code{D2}.
 }
   \item{D, D1, D2}{
-design matrices, that describe the interval endpoints for the sampling 
+design matrices, that describe the interval endpoints for the sampling
 methodology, dimensions must match dimensions of \code{Y}.
 }
   \item{X, X1, X2}{
 design matrices, \code{X} is the matrix with covariates for the
 removal/distance sampling parameters.
-\code{X1} is the matrix with covariates for the removal, 
-\code{X2} is the matrix with covariates for the distance 
+\code{X1} is the matrix with covariates for the removal,
+\code{X2} is the matrix with covariates for the distance
 sampling parameters.
 }
   \item{inits}{
@@ -75,10 +79,10 @@ for different sampling methodologies.
 An object of class 'cmulti'.
 }
 \references{
-Solymos, P., Matsuoka, S. M., Bayne, E. M., Lele, S. R., Fontaine, P., 
+Solymos, P., Matsuoka, S. M., Bayne, E. M., Lele, S. R., Fontaine, P.,
 Cumming, S. G., Stralberg, D., Schmiegelow, F. K. A. & Song, S. J., 2013.
-Calibrating indices of avian density from non-standardized survey data: 
-making the most of a messy situation. 
+Calibrating indices of avian density from non-standardized survey data:
+making the most of a messy situation.
 \emph{Methods in Ecology and Evolution}, \bold{4}, 1047--1058.
 
 Supporting info, including a tutorial for the above paper:
@@ -222,11 +226,11 @@ res2 <- cmulti.fit(vv$Y2, vv$D2, NULL, "dis")
 ## points estimates are identical
 cbind(res$coef, c(res1$coef, res2$coef))
 ## standard errors are identical
-cbind(sqrt(diag(res$vcov)), 
+cbind(sqrt(diag(res$vcov)),
     c(sqrt(diag(res1$vcov)),sqrt(diag(res2$vcov))))
 
 ## removal and distance, not constant
-vv <- simfun12(n=n, 
+vv <- simfun12(n=n,
     phi=exp(cbind(log.phi, log.phi, log.phi)),
     tau=exp(cbind(log.tau, log.tau, log.tau)))
 res <- cmulti2.fit(vv$Y, vv$D1, vv$D2, X1=X, X2=X)
@@ -236,7 +240,7 @@ res2 <- cmulti.fit(vv$Y2, vv$D2, X, "dis")
 ## points estimates are identical
 cbind(res$coef, c(res1$coef, res2$coef))
 ## standard errors are identical
-cbind(sqrt(diag(res$vcov)), 
+cbind(sqrt(diag(res$vcov)),
     c(sqrt(diag(res1$vcov)),sqrt(diag(res2$vcov))))
 }
 \keyword{ htest }
