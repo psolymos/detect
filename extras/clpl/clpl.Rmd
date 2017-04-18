@@ -98,9 +98,9 @@ that have >0 observations.
 ## Gamma
 
 To be added, but see [this](http://civil.colorado.edu/~balajir/CVEN6833/lectures/GammaGLM-01.pdf) first.
-It is not totally how to best parametrize it and what link function to use.
+It is not totally clear how to best parametrize it and what link function to use.
 Both log and inverse link leads to non-finite results for $y=0$.
-I guess the point here should be that we condition on the zeroes, so
+The point here should be that we condition on the zeroes, so
 it shouldn't matter, and link function is only needed to scale
 the predictions right.
 
@@ -110,7 +110,7 @@ $\gamma$ is Gamma variance, $\mu$ is Gamma mean, $y \geq 0$
 $$ f(y; \theta) = f(y; \mu,\gamma) = \frac{1}{(\gamma/\mu)^{\mu^2/\gamma} \Gamma(\mu^2/\gamma)} y^{(\mu^2/\gamma)-1} e^{-y (\mu/\gamma)}$$
 $$ P(Y=0) = \phi + (1 + \phi) f(y=0; \theta)$$
 
-$f(y=0; \theta)$ is also funni analytically, because the exponential term
+$f(y=0; \theta)$ is also funny analytically, because the exponential term
 with $y$ in it leads to 1 (which is fine), but the $y^{(\mu^2/\gamma)-1}$
 is tricky (can be 0, 1, $\infty$). Leave this for another day.
 
