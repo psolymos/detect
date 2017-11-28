@@ -180,7 +180,7 @@ method="Nelder-Mead", inits, control=list(), hessian=FALSE, ...)
     nll_ZIBIN_PL <- nll_ZIP_PL
 
 
-    good.num.limit = c(.Machine$double.xmin, .Machine$double.xmax)^(1/3)
+    good.num.limit <- c(.Machine$double.xmin, .Machine$double.xmax)^(1/3)
 
     kx <- ncol(X)
     kz <- ncol(Z)
