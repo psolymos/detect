@@ -1,0 +1,255 @@
+---
+title: "V-inflated Poisson count regression"
+output: pdf_document
+---
+
+# Motivation
+
+We want to model the distribution of groups size in parrot populations.
+These anymals tend to form smaller or larger groups, but
+groups of size 2 are also often observed as a result of mating pairs.
+
+The count distribution is characterized with a spike at 2, and by the
+absence of 0s due to group size is conditional on having >0 birds to consider
+it a group.
+
+We start developing a general V-Inflated Poisson (VIP) model, then we add the >0 condition.
+Simulations are done to check the estimating procedure.
+
+# Maximum likelihood
+
+Let $Y$ be a random variable, and $y$ are observations, $V$ is the count value
+that has some extra probability mass ($V=0$ is the ZIP model), $f(y; \lambda)$
+is the Poisson density ($f(y; \lambda) = e^{-\lambda} \frac{\lambda^{y}}{y!}$).
+
+The V-Inflated density can be written as $P(Y=y) = \phi I(Y=V) + (1-\phi) f(y; \lambda)$
+which is $\phi + (1-\phi) f(V; \lambda)$ when $Y=V$ and
+$(1-\phi) f(y; \lambda)$ otherwise.
+
+## Functions
+
+```{r}
+vip <-
+function(Y, X, Z, V=0,
+offsetx, offsetz, weights, linkz="logit",
+truncate=FALSE, ...) {
+    if (missing(Y))
+        stop("C'mon, you must have some data?!")
+    if (truncate && any(Y < 1))
+        stop("Y must be >0 when truncate=TRUE")
+    n <- length(Y)
+    id0 <- Y == V
+    id1 <- !id0
+    if (missing(X)) {
+        X <- matrix(1, n, 1)
+        colnames(X) <- "(Intercept)"
+    }
+    if (missing(Z)) {
+        Z <- matrix(1, n, 1)
+        colnames(Z) <- "(Intercept)"
+    }
+    kx <- ncol(X)
+    kz <- ncol(Z)
+    if (missing(offsetx))
+        offsetx <- 0
+    if (missing(offsetz))
+        offsetz <- 0
+    if (missing(weights))
+        weights <- rep(1, n)
+    linkinvx <- poisson("log")$linkinv
+    linkinvz <- binomial(linkz)$linkinv
+    good.num.limit <- c(.Machine$double.xmin, .Machine$double.xmax)^(1/3)
+
+    ## VIP model full likelihood
+    nll_VIP_ML <- function(parms) {
+        mu <- as.vector(linkinvx(X %*% parms[1:kx] + offsetx))
+        phi <- as.vector(linkinvz(Z %*% parms[(kx + 1):(kx + kz)] + offsetz))
+        loglik0 <- log(phi + (1 - phi) * dpois(V, lambda = mu, log = FALSE))
+        loglik1 <- log(1 - phi) + dpois(Y, lambda = mu, log = TRUE)
+        loglik <- sum(weights[id0] * loglik0[id0]) + sum(weights[id1] * loglik1[id1])
+        if (!is.finite(loglik) || is.na(loglik))
+            loglik <- -good.num.limit[2]
+        -loglik
+    }
+    ## 0-truncated VIP model full likelihood
+    nll_VIP_TR <- function(parms) {
+        mu <- as.vector(linkinvx(X %*% parms[1:kx] + offsetx))
+        phi <- as.vector(linkinvz(Z %*% parms[(kx + 1):(kx + kz)] + offsetz))
+        loglik0 <- log(phi + (1 - phi) * dpois(V, lambda = mu, log = FALSE) / (1-exp(-mu)))
+        loglik1 <- log((1 - phi) * dpois(Y, lambda = mu, log = FALSE) / (1-exp(-mu)))
+        loglik <- sum(weights[id0] * loglik0[id0]) + sum(weights[id1] * loglik1[id1])
+        if (!is.finite(loglik) || is.na(loglik))
+            loglik <- -good.num.limit[2]
+        -loglik
+    }
+
+    opt <- optim(rep(0, kx+kz), 
+        if (truncate) nll_VIP_TR else nll_VIP_ML, 
+        hessian=TRUE, method="Nelder-Mead")
+    par <- opt$par
+    names(par) <- c(paste0("P_", colnames(X)), paste0("V_", colnames(Z)))
+    vc <- solve(opt$hessian)
+    dimnames(vc) <- list(names(par), names(par))
+    out <- list(call=match.call(),
+        coefficients=par, loglik=-opt$value, vcov=vc, nobs=n,
+        truncate=truncate)
+    class(out) <- "vip"
+    out
+}
+vcov.vip <- function(object, ...) object$vcov
+logLik.vip <- function (object, ...)
+    structure(object$loglik, df = object$nobs - length(object$coef),
+        nobs = object$nobs, class = "logLik")
+summary.vip <- function (object, ...) {
+    k <- length(object$coefficients)
+    coefs <- coef(object)
+    se <- sqrt(diag(vcov(object)))
+    tstat <- coefs/se
+    pval <- 2 * pnorm(-abs(tstat))
+    coefs <- cbind(coefs, se, tstat, pval)
+    colnames(coefs) <- c("Estimate", "Std. Error", "z value", "Pr(>|z|)")
+    coefs <- coefs[1:k, , drop = FALSE]
+    rownames(coefs) <- names(coef(object))
+    out <- list(call = object$call, coefficients=coefs, loglik = object$loglik,
+        bic=BIC(object), truncate=object$truncate)
+    class(out) <- "summary.vip"
+    return(out)
+}
+print.summary.vip <- function (x, digits, ...)
+{
+    if (missing(digits))
+        digits <- max(3, getOption("digits") - 3)
+    cat("\nCall:", deparse(x$call,
+        width.cutoff = floor(getOption("width") * 0.85)), "", sep = "\n")
+    cat("V-Inflated", if (x$truncate) "(Zero-Truncated)" else "", "Poisson Model\n\n")
+    cat(paste("Coefficients:\n", sep = ""))
+    printCoefmat(x$coefficients, digits = digits, signif.legend = FALSE)
+    if (!any(is.na(array(x$coefficients)))) {
+        if (getOption("show.signif.stars") & any(x$coefficients[,4] < 0.1))
+            cat("---\nSignif. codes: ", "0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1", "\n")
+    }
+    cat("\nLog-likelihood:", formatC(x$loglik, digits = digits),
+        "\nBIC =", formatC(x$bic, digits = digits), "\n")
+    cat("\n")
+    invisible(x)
+}
+confint.vip <-
+function (object, parm, level = 0.95, ...)
+{
+    cf <- coef(object)
+    pnames <- names(cf)
+    if (missing(parm)) {
+        parm <- pnames
+    } else {
+        if (is.numeric(parm))
+            parm <- pnames[parm]
+    }
+    a <- (1 - level)/2
+    a <- c(a, 1 - a)
+    pct <- paste(format(100 * a, trim = TRUE, scientific = FALSE, digits = 3), "%", sep="")
+    ci <- array(NA, dim = c(length(parm), 2), dimnames = list(parm, pct))
+    fac <- qnorm(a)
+    ses <- sqrt(diag(vcov(object, model, type)))
+    ci[] <- cf[parm] + ses[parm] %o% fac
+    ci
+}
+```
+
+## Simple case
+
+```{r}
+set.seed(123)
+n <- 1000
+lam <- 2 # poisson mean, can be a vector of length n
+phi <- 0.4 # V-inflation probability, can be a vector of length n
+V <- 2 # V is the count value, can be 0, 2, etc
+y <- y0 <- rpois(n, lam)
+a <- rbinom(n, 1, phi)
+y[a > 0] <- V
+table(Poisson=y0, Vinflated=y)
+
+mod <- vip(Y=y, V=2)
+summary(mod)
+cbind(True=c(log_lam=log(lam), logit_phi=qlogis(phi)),
+      Est=coef(mod))
+```
+
+## Covariates for the non-V part
+
+```{r}
+set.seed(123)
+n <- 10000
+x <- rnorm(n)
+df <- data.frame(x=x)
+X <- model.matrix(~x, df)
+beta <- c(-0.5,-0.5)
+lam <- exp(X %*% beta) # poisson mean, can be a vector of length n
+phi <- 0.4 # V-inflation probability, can be a vector of length n
+V <- 2 # V is the count value, can be 0, 2, etc
+y <- y0 <- rpois(n, lam)
+a <- rbinom(n, 1, phi)
+y[a > 0] <- V
+table(Poisson=y0, Vinflated=y)
+mod <- vip(Y=y, X=X, V=2)
+summary(mod)
+cbind(True=c(beta=beta, logit_phi=qlogis(phi)),
+      coef(mod))
+```
+
+## Methods
+
+```{r}
+coef(mod)
+vcov(mod)
+summary(mod)
+confint(mod)
+nobs(mod)
+logLik(mod)
+AIC(mod)
+BIC(mod)
+```
+
+
+# Zero-truncated VIP
+
+We can truncate counts to be larger than 0. We also need $V>0$
+(for $V=0$ case, look into ZIP or conditional Poisson model).
+Conceptually, the V-Inflation follows the
+0-truncation (because we cannot observe 0, real truncated distribution).
+
+The 0-truncated PDF is $P(Y=y \mid Y>0) = \frac{P(Y=y)}{1 - P(Y=0)}$.
+The 0-truncated V-Inflated density is
+$P(Y=y  \mid Y>0,V>0) = \phi I(Y=V) + (1-\phi) \frac{f(y; \lambda)}{1-f(0; \lambda)}$.
+This can be achieved in the `vip` call by the argument `truncate=TRUE`.
+
+Here we use covariates for both the V and non-V part.
+
+```{r}
+set.seed(1)
+n <- 1000
+x <- rnorm(n)
+z <- runif(n, -1, 1)
+df <- data.frame(x=x, z=z)
+X <- model.matrix(~x, df)
+Z <- model.matrix(~z, df)
+beta <- c(-0.5, -0.5)
+alpha <- c(0, 0.5)
+lam <- exp(X %*% beta)
+phi <- plogis(Z %*% alpha)
+V <- 2 # V is the count value, cannot be 0
+y <- y0 <- rpois(n, lam)
+a <- rbinom(n, 1, phi)
+keep <- y0>0
+y <- y[keep] # conditioning
+y0 <- y0[keep]
+X <- X[keep,]
+Z <- Z[keep,]
+y[a[keep] > 0] <- V
+table(Poisson=y0, Vinflated=y)
+
+mod <- vip(Y=y, X=X, Z=Z, V=2, truncate=TRUE)
+summary(mod)
+cbind(True=c(beta=beta, alpha=alpha),
+      coef(mod))
+```
+
