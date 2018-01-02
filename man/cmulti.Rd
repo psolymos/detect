@@ -14,9 +14,9 @@ Conditional Multinomial Maximum Likelihood Estimation
 for different sampling methodologies.
 }
 \usage{
-cmulti(formula, data, type = c("rem", "mix", "dis"),
+cmulti(formula, data, type = c("rem", "mix", "dis", "fmix"),
 inits = NULL, method = "Nelder-Mead", ...)
-cmulti.fit(Y, D, X=NULL, type=c("rem", "mix", "dis"),
+cmulti.fit(Y, D, X=NULL, type=c("rem", "mix", "dis", "fmix"),
 inits=NULL, method="Nelder-Mead", ...)
 cmulti2.fit(Y, D1, D2, X1=NULL, X2=NULL,
 inits=NULL, method="Nelder-Mead", ...)
@@ -36,8 +36,10 @@ data.
 }
   \item{type}{
 character, one of \code{"rem"} (removal sampling, homogeneous
-singing rates), \code{"mix"} (removal sampling, heterogeneous
-singing rates), \code{"dis"} (distance sampling, half-normal detection
+singing rates), \code{"mix"} and \code{"fmix"} (removal sampling, heterogeneous
+singing rates, \code{"mix"} implies that 'phi' is constant but 'c' can vary;
+\code{"fmix"} implies that 'c' is constant but 'phi' can vary),
+\code{"dis"} (distance sampling, half-normal detection
 function for point counts, circular area).
 For the \code{predict} method it is the \code{type}
 of prediction required; the default is on the scale of the linear predictors;

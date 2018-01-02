@@ -11,6 +11,8 @@ function (x, digits, ...)
         cat("Removal Sampling (homogeneous singing rate)\n")
     if (x$type == "mix")
         cat("Removal Sampling (heterogeneous singing rate)\n")
+    if (x$type == "fmix")
+        cat("Removal Sampling (heterogeneous singing rate)\n")
     cat(paste("Conditional Maximum Likelihood estimates\n\n", sep = ""))
     cat(paste("Coefficients:\n", sep = ""))
     print.default(format(x$coefficients, digits = digits),

@@ -1,8 +1,8 @@
 predict.cmulti <-
 function(object, newdata = NULL, type = c("link", "response"), ...)
 {
-    if (object$type == "mix")
-        stop("fitted values are not available for finite mixture model")
+    if (object$type %in% c("mix", "fmix"))
+        stop("predicted values are not available for finite mixture model")
     if (is.null(newdata)) {
         rval <- fitted(object)
         ## fitted gives 'response', need to use linkfun for 'link'

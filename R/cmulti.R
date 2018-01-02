@@ -1,5 +1,5 @@
 cmulti <-
-function(formula, data, type=c("rem", "mix", "dis"),
+function(formula, data, type=c("rem", "mix", "dis", "fmix"),
 inits=NULL, method="Nelder-Mead", ...)
 {
     if (missing(data))
@@ -23,7 +23,8 @@ inits=NULL, method="Nelder-Mead", ...)
     names(rv$coefficients) <- switch(type,
         "dis" = paste("log.tau", NAM, sep="_"),
         "mix" = c("log.phi", paste("logit.c", NAM, sep="_")),
-        "rem" = paste("log.phi", NAM, sep="_"))
+        "rem" = paste("log.phi", NAM, sep="_"),
+        "fmix" = c(paste("log.phi", NAM, sep="_"), "logit.c"))
     class(rv) <- c("cmulti")
     rv
 }
