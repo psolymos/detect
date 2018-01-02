@@ -27,7 +27,7 @@ inits=NULL, method="Nelder-Mead", ...)
     nlimit <- c(.Machine$double.xmin, .Machine$double.xmax)^(1/3)
     ## parameter is fixed, removal mixture (mix or fmix)
     if (is.null(X) && type %in% c("mix", "fmix")) {
-        nll.fun <- function(pv, cv) {
+        nll.fun0 <- function(pv, cv) {
             CP <- pifun(D,
                 poisson("log")$linkinv(pv),
                 binomial("logit")$linkinv(cv))
@@ -42,7 +42,7 @@ inits=NULL, method="Nelder-Mead", ...)
         }
         if (is.null(inits))
             inits <- v0
-        res <- suppressWarnings(stats4::mle(nll.fun,
+        res <- suppressWarnings(stats4::mle(nll.fun0,
             list(pv=inits[1], cv=inits[2]),
             method=method, ...))
         rval <- list(coefficients=res@coef,
@@ -100,9 +100,9 @@ inits=NULL, method="Nelder-Mead", ...)
     }
     ## parameter is fixed, rem or dis
     if (is.null(X) && type %in% c("rem", "dis")) {
-        nll.fun <- function(pv) {
+        nll.fun <- function(param) {
             CP <- pifun(D,
-                poisson("log")$linkinv(pv))
+                poisson("log")$linkinv(param))
             P <- CP - cbind(0, CP[, -k, drop=FALSE])
             Psum <- rowSums(P, na.rm=TRUE)
             PPsum <- P / Psum
@@ -114,7 +114,7 @@ inits=NULL, method="Nelder-Mead", ...)
         }
         if (is.null(inits))
             inits <- v0
-        res <- suppressWarnings(stats4::mle(nll.fun, list(pv=inits),
+        res <- suppressWarnings(stats4::mle(nll.fun, list(param=inits),
             method=method, ...))
         rval <- list(coefficients=res@coef,
             vcov=res@vcov,

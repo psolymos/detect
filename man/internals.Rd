@@ -8,7 +8,7 @@ Internal functions
 Internal functions, not intended for use on their own.
 }
 \usage{
-cmulti.fit0(Y, D, type=c("rem", "mix", "dis"), interval=c(-25, 25), ...)
+cmulti.fit0(Y, D, type=c("rem", "mix", "dis", "fmix"), interval=c(-25, 25), ...)
 drop.scope.svisit(terms1, terms2, model = c("sta", "det"))
 }
 \arguments{
@@ -16,14 +16,14 @@ drop.scope.svisit(terms1, terms2, model = c("sta", "det"))
 this contains the cell counts. See \code{\link{cmulti.fit}}.
 }
   \item{D}{
-design matrix, that describe the interval endpoints for the sampling 
+design matrix, that describe the interval endpoints for the sampling
 methodology, dimensions must match dimensions of \code{Y}.
 See \code{\link{cmulti.fit}}.
 }
   \item{type}{
-character, one of \code{"rem"} (removal sampling, homogeneous 
-singing rates), \code{"mix"} (removal sampling, heterogeneous 
-singing rates), \code{"dis"} (distance sampling, half-normal detection 
+character, one of \code{"rem"} (removal sampling, homogeneous
+singing rates), \code{"mix"} and \code{"fmix"} (removal sampling, heterogeneous
+singing rates), \code{"dis"} (distance sampling, half-normal detection
 function for point counts, circular area). See \code{\link{cmulti.fit}}.
 }
   \item{interval}{
