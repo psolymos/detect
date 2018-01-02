@@ -90,7 +90,8 @@ inits=NULL, method="Nelder-Mead", ...)
         }
         if (is.null(inits)) {
             inits <- rep(0, ncol(X)+1)
-            inits[1:2] <- v0
+            inits[1] <- v0[1]
+            inits[length(inits)] <- v0[2]
         }
         res <- optim(inits, nll.fun, method=method, hessian=TRUE, ...)
         rval <- list(coefficients=res$par,
