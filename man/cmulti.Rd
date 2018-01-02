@@ -139,27 +139,34 @@ X <- cbind(1, x)
 vv <- simfun1(n=n, phi=exp(-1.5))
 m1 <- cmulti(vv$Y | vv$D ~ 1, type="rem")
 coef(m1)
-## mixture, constant
+## mixture, constant (mix and fmix are identical)
 vv <- simfun1(n=n, phi=exp(-1.5), c=plogis(0.8))
 m2 <- cmulti(vv$Y | vv$D ~ 1, type="mix")
 coef(m2)
+m2f <- cmulti(vv$Y | vv$D ~ 1, type="fmix")
+coef(m2f)
 ## dist, constant
 vv <- simfun1(n=n, tau=exp(-0.2), type="dis")
 m3 <- cmulti(vv$Y | vv$D ~ 1, type="dis")
 coef(m3)
 
 ## removal, not constant
-log.phi <- X \%*\% c(-2,-1)
+log.phi <- crossprod(t(X), c(-2,-1))
 vv <- simfun1(n=n, phi=exp(cbind(log.phi, log.phi, log.phi)))
 m1 <- cmulti(vv$Y | vv$D ~ x, type="rem")
 coef(m1)
-## mixture, not constant
-logit.c <- X \%*\% c(-2,1)
+## mixture, fixed phi, varying c
+logit.c <- crossprod(t(X), c(-2,1))
 vv <- simfun1(n=n, phi=exp(-1.5), c=plogis(cbind(logit.c, logit.c, logit.c)))
 m2 <- cmulti(vv$Y | vv$D ~ x, type="mix")
 coef(m2)
+## mixture, varying phi, fixed c
+log.phi <- crossprod(t(X), c(-2,-1))
+vv <- simfun1(n=n, phi=exp(cbind(log.phi, log.phi, log.phi)), c=plogis(0.8))
+m2f <- cmulti(vv$Y | vv$D ~ x, type="fmix")
+coef(m2f)
 ## dist, not constant
-log.tau <- X \%*\% c(-0.5,-0.2)
+log.tau <- crossprod(t(X), c(-0.5,-0.2))
 vv <- simfun1(n=n, tau=exp(cbind(log.tau, log.tau, log.tau)), type="dis")
 m3 <- cmulti(vv$Y | vv$D ~ x, type="dis")
 coef(m3)
