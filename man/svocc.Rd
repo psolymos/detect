@@ -96,15 +96,18 @@ Lele, S.R., Moreno, M. and Bayne, E. 2011.
 Dealing with detection error in site occupancy surveys:
 What can we do with a single survey?
 \emph{Journal of Plant Ecology}, \bold{5(1)}, 22--31.
+<doi:10.1093/jpe/rtr042>
 
 Moreno, M. and Lele, S. R. 2010.
 Improved estimation of site occupancy using penalized likelihood.
 \emph{Ecology}, \bold{91}, 341--346.
+<doi:10.1890/09-1073.1>
 
 Solymos, P., Lele, S. R. 2016.
 Revisiting resource selection probability functions and single-visit methods:
 clarification and extensions.
 \emph{Methods in Ecology and Evolution}, \bold{7}, 196--205.
+<doi:10.1111/2041-210X.12432>
 }
 \author{
 Peter Solymos and Monica Moreno

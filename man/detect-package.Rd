@@ -20,7 +20,7 @@ Models for analyzing site occupancy and count data models
 
 \code{\link{svabu}}: single visit abundance model
 based on conditional maximum likelihood
-(Solymos et al. 2012, Solymos and Lele 2016).
+(Solymos et al. 2012, Solymos and Lele 2016, Denes et al. 2016).
 
 \code{\link{cmulti}}: conditional multinomial maximum likelihood
 estimation for removal and (point count) distance sampling,
@@ -33,38 +33,44 @@ Peter Solymos, Monica Moreno, Subhash R Lele
 Maintainer: Peter Solymos <solymos@ualberta.ca>
 }
 \references{
-Moreno, M. and Lele, S. R. 2010.
-Improved estimation of site occupancy using penalized likelihood.
-\emph{Ecology}, \bold{91}, 341--346.
+Denes, F., Solymos, P., Lele, S. R., Silveira, L. & Beissinger, S. 2017.
+Biome scale signatures of land use change on raptor abundance:
+insights from single-visit detection-based models.
+\emph{Journal of Applied Ecology}, \bold{54}, 1268--1278.
+<doi:10.1111/1365-2664.12818>
 
 Lele, S.R., Moreno, M. and Bayne, E. 2011.
 Dealing with detection error in site occupancy surveys:
 What can we do with a single survey?
 \emph{Journal of Plant Ecology}, \bold{5(1)}, 22--31.
+<doi:10.1093/jpe/rtr042>
 
-Solymos, P., Lele, S. R and Bayne, E. 2012.
+Moreno, M. and Lele, S. R. 2010.
+Improved estimation of site occupancy using penalized likelihood.
+\emph{Ecology}, \bold{91}, 341--346.
+<doi:10.1890/09-1073.1>
+
+Solymos, P., Lele, S. R. and Bayne, E. 2012.
 Conditional likelihood approach for analyzing single visit
 abundance survey data in the presence of zero inflation and
 detection error.
 \emph{Environmetrics}, \bold{23}, 197--205.
+<doi:10.1002/env.1149>
 
 Solymos, P., Matsuoka, S. M., Bayne, E. M., Lele, S. R., Fontaine, P.,
 Cumming, S. G., Stralberg, D., Schmiegelow, F. K. A. & Song, S. J., 2013.
 Calibrating indices of avian density from non-standardized survey data:
 making the most of a messy situation.
 \emph{Methods in Ecology and Evolution}, \bold{4}, 1047--1058.
+<doi:10.1111/2041-210X.12106>
 
-Supporting info, including a tutorial for the above paper:
-\url{http://dcr.r-forge.r-project.org/qpad/}
-
-Solymos, P. & Lele, S. R. 2016.
+Solymos, P., Lele, S. R. 2016.
 Revisiting resource selection probability functions and single-visit methods:
 clarification and extensions.
 \emph{Methods in Ecology and Evolution}, \bold{7}, 196--205.
+<doi:10.1111/2041-210X.12432>
 
-Denes, F., Solymos, P., Lele, S. R., Silveira, L. & Beissinger, S. 2016.
-Biome scale signatures of land use change on raptor abundance:
-insights from single-visit detection-based models.
-\emph{Journal of Applied Ecology}, in press.
+Supporting info, including a tutorial for the above paper:
+\url{https://github.com/psolymos/QPAD/tree/master/inst/doc/v2}
 }
 \keyword{ package }

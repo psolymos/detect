@@ -117,22 +117,26 @@ An object of class 'svabu'.
 Royle, J. A. 2004.
 \emph{N}-Mixture Models for Estimating Population Size from Spatially Replicated Counts.
 \emph{Biometrics}, \bold{60(1)}, 108--115.
+<doi:10.1111/j.0006-341X.2004.00142.x>
 
 Solymos, P., Lele, S. R. and Bayne, E. 2012.
 Conditional likelihood approach for analyzing single visit
 abundance survey data in the presence of zero inflation and
 detection error.
 \emph{Environmetrics}, \bold{23}, 197--205.
+<doi:10.1002/env.1149>
 
 Solymos, P., Lele, S. R. 2016.
 Revisiting resource selection probability functions and single-visit methods:
 clarification and extensions.
 \emph{Methods in Ecology and Evolution}, \bold{7}, 196--205.
+<doi:10.1111/2041-210X.12432>
 
-Denes, F., Solymos, P., Lele, S. R., Silveira, L. & Beissinger, S. 2016.
+Denes, F., Solymos, P., Lele, S. R., Silveira, L. & Beissinger, S. 2017.
 Biome scale signatures of land use change on raptor abundance:
 insights from single-visit detection-based models.
-\emph{Journal of Applied Ecology}, in press.
+\emph{Journal of Applied Ecology}, \bold{54}, 1268--1278.
+<doi:10.1111/1365-2664.12818>
 }
 \author{
 Peter Solymos and Subhash Lele

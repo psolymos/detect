@@ -37,6 +37,7 @@ Conditional likelihood approach for analyzing single visit
 abundance survey data in the presence of zero inflation and
 detection error.
 \emph{Environmetrics}, \bold{23}, 197--205.
+<doi:10.1002/env.1149>
 }
 \examples{
 data(databu)

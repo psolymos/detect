@@ -7,7 +7,7 @@ Conversion between truncated and unlimited effective detection distance (EDR)
 Conversion between truncated and unlimited effective detection distance (EDR).
 }
 \usage{
-convertEDR(edr, r, truncated=FALSE) 
+convertEDR(edr, r, truncated=FALSE)
 }
 \arguments{
   \item{edr}{
@@ -31,20 +31,22 @@ EDR given \code{r}, and the function returns the unlimited EDR.
 A numeric vector with converted EDR values.
 }
 \references{
-Matsuoka, S. M., Bayne, E. M., Solymos, P., Fontaine, P., 
+Matsuoka, S. M., Bayne, E. M., Solymos, P., Fontaine, P.,
 Cumming, S. G., Schmiegelow, F. K. A., & Song, S. A., 2012.
-Using binomial distance-sampling models to estimate the effective 
-detection radius of point-counts surveys across boreal Canada. 
+Using binomial distance-sampling models to estimate the effective
+detection radius of point-counts surveys across boreal Canada.
 \emph{Auk}, \bold{129}, 268--282.
+<doi:10.1525/auk.2012.11190>
 
-Solymos, P., Matsuoka, S. M., Bayne, E. M., Lele, S. R., Fontaine, P., 
+Solymos, P., Matsuoka, S. M., Bayne, E. M., Lele, S. R., Fontaine, P.,
 Cumming, S. G., Stralberg, D., Schmiegelow, F. K. A. & Song, S. J., 2013.
-Calibrating indices of avian density from non-standardized survey data: 
-making the most of a messy situation. 
+Calibrating indices of avian density from non-standardized survey data:
+making the most of a messy situation.
 \emph{Methods in Ecology and Evolution}, \bold{4}, 1047--1058.
+<doi:10.1111/2041-210X.12106>
 
 Supporting info, including a tutorial for the above paper:
-\url{http://dcr.r-forge.r-project.org/qpad/}
+\url{https://github.com/psolymos/QPAD/tree/master/inst/doc/v2}
 }
 \author{
 Peter Solymos

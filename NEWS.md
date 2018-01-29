@@ -2,7 +2,7 @@
 
 ## Version 0.4-1, October 6, 2016
 
-* Denes et al. 2016 paper added to documentation.
+* Denes et al. 2017 paper added to documentation.
 * `inst/ChangeLog` is removed and replaced by `NEWS.md`.
 * cmulti models now have a `predict` method, see examples.
 * fmix model type added to cmulti models.

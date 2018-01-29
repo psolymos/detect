@@ -25,10 +25,15 @@ Ovenbird abundances from BBS
   }
 }
 \source{
-BBS
+BBS, Erin Bayne (Univ. Alberta), unpublished data set used in Solymos et al. 2012.
 }
 \references{
-Bayne unpublished
+Solymos, P., Lele, S. R. and Bayne, E. 2012.
+Conditional likelihood approach for analyzing single visit
+abundance survey data in the presence of zero inflation and
+detection error.
+\emph{Environmetrics}, \bold{23}, 197--205.
+<doi:10.1002/env.1149>
 }
 \examples{
 data(oven)
