@@ -3,8 +3,9 @@ library(detect)
 
 ## --- run examples with \dontrun sections ---
 
-help_pages <- c("bootstrap", "cmulti", "convertEDR", "databu", "datocc",
-"hbootindex", "oven", "svabu", "svocc")
+help_pages <- c(#"bootstrap",
+    "cmulti", "convertEDR", "databu", "datocc",
+    "hbootindex", "oven", "svabu", "svocc")
 
 for (i in help_pages) {
     cat("\n\n---------- detect example:", i, "----------\n\n")
