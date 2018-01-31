@@ -1,11 +1,11 @@
 # detect package version history
 
-## Version 0.4-1, October 6, 2016
+## Version 0.4-1, January 30, 2018
 
 * Denes et al. 2017 paper added to documentation.
 * `inst/ChangeLog` is removed and replaced by `NEWS.md`.
 * cmulti models now have a `predict` method, see examples.
-* fmix model type added to cmulti models.
+* `"fmix"`" model type with time warying rates added to `cmulti` models.
 
 ## Version 0.4-0, March 2, 2016
 
