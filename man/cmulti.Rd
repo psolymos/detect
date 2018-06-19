@@ -98,6 +98,12 @@ making the most of a messy situation.
 \emph{Methods in Ecology and Evolution}, \bold{4}, 1047--1058.
 <doi:10.1111/2041-210X.12106>
 
+Solymos, P., Matsuoka, S. M., Cumming, S. G., Stralberg, D., Fontaine, P.,
+Schmiegelow, F. K. A., Song, S. J., and Bayne, E. M., 2018.
+Evaluating time-removal models for estimating availability of boreal birds
+during point-count surveys: sample size requirements and model complexity.
+\emph{Condor}, \bold{xx}, xx--xx.
+
 Supporting info, including a tutorial for the above paper:
 \url{https://github.com/psolymos/QPAD/tree/master/inst/doc/v2}
 }
