@@ -4,6 +4,12 @@ before_install:
   - sudo add-apt-repository ppa:marutter/rrutter -y
   - sudo apt-get update -q
   - sudo apt-get install r-cran-rjags -y
+env:
+  global:
+    - _R_CHECK_FORCE_SUGGESTS_=false
+branches:
+  only:
+    - master
 r:
   - release
   - devel
