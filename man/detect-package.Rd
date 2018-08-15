@@ -25,7 +25,7 @@ based on conditional maximum likelihood
 \code{\link{cmulti}}: conditional multinomial maximum likelihood
 estimation for removal and (point count) distance sampling,
 efficient and flexible setup for varying methodologies
-(Solymos et al. 2013).
+(Solymos et al. 2013, Solymos et al. 2018).
 }
 \author{
 Peter Solymos, Monica Moreno, Subhash R Lele
@@ -70,7 +70,13 @@ clarification and extensions.
 \emph{Methods in Ecology and Evolution}, \bold{7}, 196--205.
 <doi:10.1111/2041-210X.12432>
 
-Supporting info, including a tutorial for the above paper:
+Solymos, P., Matsuoka, S. M., Cumming, S. G., Stralberg, D., Fontaine, P.,
+Schmiegelow, F. K. A., Song, S. J., and Bayne, E. M., 2018.
+Evaluating time-removal models for estimating availability of boreal birds
+during point-count surveys: sample size requirements and model complexity.
+\emph{Condor}, \bold{xx}, xx--xx.
+
+Supporting info, including a tutorial for the QPAD method:
 \url{https://github.com/psolymos/QPAD/tree/master/inst/doc/v2}
 }
 \keyword{ package }

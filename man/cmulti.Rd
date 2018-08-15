@@ -104,7 +104,7 @@ Evaluating time-removal models for estimating availability of boreal birds
 during point-count surveys: sample size requirements and model complexity.
 \emph{Condor}, \bold{xx}, xx--xx.
 
-Supporting info, including a tutorial for the above paper:
+Supporting info, including a tutorial for the QPAD method:
 \url{https://github.com/psolymos/QPAD/tree/master/inst/doc/v2}
 }
 \author{
