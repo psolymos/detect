@@ -14,7 +14,7 @@ inits=NULL, method="Nelder-Mead", ...)
     if (ncol(rv$X) < 2)
         rv$X <- NULL
     or <- cmulti.fit(rv$Y, rv$D, rv$X, type=type,
-        inits=inits, method=method, ...)
+        inits=unname(inits), method=method, ...)
     rv <- c(rv, or)
     rv$call <- match.call()
     rv$type <- type
