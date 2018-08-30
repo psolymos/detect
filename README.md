@@ -82,7 +82,8 @@ Solymos, P., Matsuoka, S. M., Cumming, S. G., Stralberg, D., Fontaine, P.,
 Schmiegelow, F. K. A., Song, S. J., and Bayne, E. M., 2018.
 Evaluating time-removal models for estimating availability of boreal birds
 during point-count surveys: sample size requirements and model complexity.
-_Condor_, in press.
+_Condor_, **120**, 765--786.
+[DOI: 10.1650/CONDOR-18-32.1](https://dx.doi.org/10.1650/CONDOR-18-32.1)
 
 Supporting info, including a tutorial for the 
 [QPAD method](https://github.com/psolymos/QPAD/tree/master/inst/doc/v2).

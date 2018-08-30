@@ -1,8 +1,8 @@
 # detect package version history
 
-## Version 0.4-2, August 15, 2018
+## Version 0.4-2, August 29, 2018
 
-*
+* Updated documentation, references.
 
 ## Version 0.4-1, January 30, 2018
 
