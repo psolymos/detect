@@ -86,9 +86,9 @@ method = c("optim", "dc"), inits, ...)
 
     ## evaluation starts here
     method <- match.arg(method)
-    X <- occ
-    Z <- det
-    Y <- obs
+#    X <- occ
+#    Z <- det
+#    Y <- obs
     observations <- Y
     N.sites <- length(Y)
     num.cov.occ <- NCOL(X)
@@ -156,6 +156,7 @@ method = c("optim", "dc"), inits, ...)
 #        mle.res <- jags.fit(dat, c("beta", "theta"), model, inits, ...)
         ## latest preference is that it depends on dcmle
         requireNamespace("dcmle")
+        #requireNamespace("dclone")
         dcd <- dcmle::makeDcFit(model=model, data=dat, params=c("beta", "theta"),
             multiply=c("Y","k"), unchanged=names(dat)[-c(1,4)])
         mle.res <- dcmle::dcmle(dcd, n.clones=n.clones, ...)
@@ -173,9 +174,10 @@ method = c("optim", "dc"), inits, ...)
     ## PMLE
     if (penalized) {
         if (method=="dc") {
-            mle.parameters <- coef(mle.res)
+            #mle.parameters <- coef(mle.res)
             #vv <- dclone::dcsd(mle.res)^2
-            vv <- dcsd(mle.res)^2
+            vv <- dcmle::dcsd(mle.res)^2
+            mle.parameters <- dcmle::coef(mle.res)
 
         }
         if (method=="optim") {
@@ -218,8 +220,9 @@ method = c("optim", "dc"), inits, ...)
     ## final evaluation of results
     if (method=="dc" && !penalized) {
         #std.error <- dclone::dcsd(mle.res)
-        std.error <- dcsd(mle.res)
-        parameters <- coef(mle.res)
+        #parameters <- coef(mle.res)
+        std.error <- dcmle::dcsd(mle.res)
+        parameters <- dcmle::coef(mle.res)
         loglik <- singleocc.MLE(parameters, observations, X, Z, link1 = link.sta, link2 = link.det)
     } else {
         if (rcond(result$hessian) <= 1e-06)
