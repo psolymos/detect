@@ -174,7 +174,9 @@ method = c("optim", "dc"), inits, ...)
     if (penalized) {
         if (method=="dc") {
             mle.parameters <- coef(mle.res)
-            vv <- dclone::dcsd(mle.res)^2
+            #vv <- dclone::dcsd(mle.res)^2
+            vv <- dcsd(mle.res)^2
+
         }
         if (method=="optim") {
             mle.parameters <- mle.res$par
@@ -215,7 +217,8 @@ method = c("optim", "dc"), inits, ...)
 
     ## final evaluation of results
     if (method=="dc" && !penalized) {
-        std.error <- dclone::dcsd(mle.res)
+        #std.error <- dclone::dcsd(mle.res)
+        std.error <- dcsd(mle.res)
         parameters <- coef(mle.res)
         loglik <- singleocc.MLE(parameters, observations, X, Z, link1 = link.sta, link2 = link.det)
     } else {
