@@ -9,10 +9,9 @@ function(object, model = c("full", "sta", "det"), ...)
     }
     if (object$method=="dc") {
         requireNamespace("dcmle")
-        cfs <- coef(object$results$mle)
-        #ses <- dclone::dcsd(object$results$mle)
-        ses <- dcsd(object$results$mle)
-        vcv <- vcov(object$results$mle)
+        cfs <- dcmle::coef(object$results$mle)
+        ses <- dcmle::dcsd(object$results$mle)
+        vcv <- dcmle::vcov(object$results$mle)
     }
     cf <- coef(object, model)
     wi <- seq(along = object$coefficients$sta)
