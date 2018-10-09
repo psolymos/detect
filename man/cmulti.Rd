@@ -15,11 +15,13 @@ for different sampling methodologies.
 }
 \usage{
 cmulti(formula, data, type = c("rem", "mix", "dis", "fmix"),
-inits = NULL, method = "Nelder-Mead", ...)
+    inits = NULL, method = "Nelder-Mead", ...)
 cmulti.fit(Y, D, X=NULL, type=c("rem", "mix", "dis", "fmix"),
-inits=NULL, method="Nelder-Mead", ...)
+    inits=NULL, method="Nelder-Mead", ...)
+
 cmulti2.fit(Y, D1, D2, X1=NULL, X2=NULL,
-inits=NULL, method="Nelder-Mead", ...)
+    inits=NULL, method="Nelder-Mead", ...)
+
 \method{fitted}{cmulti}(object, ...)
 \method{model.frame}{cmulti}(formula, ...)
 \method{model.matrix}{cmulti}(object, ...)

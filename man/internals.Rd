@@ -8,7 +8,8 @@ Internal functions
 Internal functions, not intended for use on their own.
 }
 \usage{
-cmulti.fit0(Y, D, type=c("rem", "mix", "dis", "fmix"), interval=c(-25, 25), ...)
+cmulti.fit0(Y, D, type=c("rem", "mix", "dis", "fmix"),
+    interval=c(-25, 25), ...)
 drop.scope.svisit(terms1, terms2, model = c("sta", "det"))
 }
 \arguments{

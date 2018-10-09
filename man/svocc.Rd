@@ -10,14 +10,17 @@ ZI Binomial model with single visit
 ZI Binomial model with single visit
 }
 \usage{
-svocc(formula, data, link.sta = "cloglog", link.det = "logit", penalized = FALSE,
-method = c("optim", "dc"), inits,
-model = TRUE, x = FALSE, ...)
-svocc.fit(Y, X, Z, link.sta = "cloglog", link.det = "logit", penalized = FALSE,
-auc = FALSE, method = c("optim", "dc"), inits, ...)
+svocc(formula, data, link.sta = "cloglog", link.det = "logit",
+    penalized = FALSE, method = c("optim", "dc"), inits,
+    model = TRUE, x = FALSE, ...)
+svocc.fit(Y, X, Z, link.sta = "cloglog", link.det = "logit",
+    penalized = FALSE, auc = FALSE, method = c("optim", "dc"),
+    inits, ...)
+
 extractMLE(object, ...)
 svocc.step(object, model, trace = 1, steps = 1000,
-criter = c("AIC", "BIC", "cAUC"), test = FALSE, k = 2, control, ...)
+    criter = c("AIC", "BIC", "cAUC"), test = FALSE, k = 2,
+    control, ...)
 }
 \arguments{
   \item{formula}{
