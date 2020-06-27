@@ -1,9 +1,11 @@
-extras
+^extras$
 \.md
 .git*
 .DS_Store
 .*~
-.travis.yml
+^\.travis\.yml$
 ^.*\.Rproj$
 ^\.Rproj\.user$
-appveyor.yml
+^appveyor\.yml$
+^docs$
+^_pkgdown\.yml$
