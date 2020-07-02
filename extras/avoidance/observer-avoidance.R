@@ -1,10 +1,8 @@
 ## response to observer
 
 ## visualize the diffs
-avoidDiff <-
-function(r=seq(0,3,len=100), sigma=1, param=1,
-type=c("exp","norm", "thres"), int=TRUE)
-{
+avoidDiff <- function(r=seq(0,3,len=100), sigma=1, param=1,
+type=c("exp","norm", "thres"), int=TRUE) {
     if (is.function(type)) {
         hfun <- type
         type <- "custom"
@@ -57,9 +55,13 @@ type=c("exp","norm", "thres"), int=TRUE)
 }
 if (FALSE) {
 r <- seq(0,3,len=3000)
+## no avoidance
 avoidDiff(r, sigma=1, param=1, type=function(r,param) 1)
+## step function (threshold)
 avoidDiff(r, sigma=1, param=0.5, type="thres")
+## exponential weight
 avoidDiff(r, sigma=1, param=0.5, type="exp")
+## half normal weight
 avoidDiff(r, sigma=1, param=0.5, type="norm")
 }
 
@@ -69,8 +71,7 @@ avoidDiff(r, sigma=1, param=0.5, type="norm")
 ##    -- not generalizable !!!!!!!!!!!!!!
 cmultiAvoid.fit <-
 function(Y, D, X=NULL, type=c("exp","norm"),
-inits=NULL, method="Nelder-Mead", ...)
-{
+inits=NULL, method="Nelder-Mead", ...) {
     Ysum <- rowSums(Y, na.rm=TRUE)
     Y <- Y[Ysum > 0,,drop=FALSE]
     D <- D[Ysum > 0,,drop=FALSE]
@@ -168,8 +169,7 @@ inits=NULL, method="Nelder-Mead", ...)
 
 simfunAvoid <-
 function(n = 10, sigma=0.8, theta=NULL, type=c("exp","norm"),
-D, lam=10, Nfixed=FALSE)
-{
+D, lam=10, Nfixed=FALSE) {
     type <- match.arg(type)
     hfun <- switch(type,
         "exp"   = function(r, param) 1-exp(-r/param),
@@ -246,6 +246,7 @@ D <- matrix(c(0.25, 0.5, 1, 1.5), n, 4, byrow=TRUE)
 theta <- 0.001 # ----------- no effect
 
 cmulti.fit <- detect::cmulti.fit
+logdmultinom <- detect:::logdmultinom
 
 ## CDS with exp
 #avoidDiff(seq(0,1.5,len=200), sigma=edr, param=theta, type="exp")
