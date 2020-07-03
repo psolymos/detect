@@ -22,8 +22,9 @@ inits=NULL, method="Nelder-Mead", ...)
     Yok <- !is.na(Y)
     n <- nrow(Y)
     k <- ncol(Y)
+    intr <- c(-1, 1) * max(10, log(max(D))*2)
     if (is.null(inits))
-        v0 <- detect::cmulti.fit0(Y, D, type)$coef
+        v0 <- detect::cmulti.fit0(Y, D, type, intr)$coef
     nlimit <- c(.Machine$double.xmin, .Machine$double.xmax)^(1/3)
     ## parameter is fixed, removal mixture (mix or fmix)
     if (is.null(X) && type %in% c("mix", "fmix")) {
