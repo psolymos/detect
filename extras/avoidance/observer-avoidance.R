@@ -13,7 +13,6 @@ type=c("exp","norm", "thres"), int=TRUE) {
             "norm"  = function(r, param) 1-exp(-(r/param)^2),
             "thres" = function(r, param) ifelse(r < param,0,1))
     }
-#    require(MASS)
     ## this calculates the product c(r)*g(r)*h(r) for the integral
     pfun <- function(r, sigma, param, standard=FALSE) {
         aa <- exp(-(r/sigma)^2)
@@ -25,7 +24,6 @@ type=c("exp","norm", "thres"), int=TRUE) {
         if (standard)
             aa else aa * hfun(r, param)
     }
-#    require(MASS)
     ## function for the integral
     intfun1 <- function(r, ...) {
         suppressWarnings(MASS:::area(f=tmpfun, a=0, b=r, ...))
@@ -82,7 +80,7 @@ inits=NULL, method="Nelder-Mead", ...) {
     if (any(D[!is.na(D)] == Inf))
         stop("unlimited distance not supported in D")
     nlimit <- c(.Machine$double.xmin, .Machine$double.xmax)^(1/3)
-        type <- match.arg(type)
+    type <- match.arg(type)
     hfun <- switch(type,
         "exp"   = function(r, param) 1-exp(-r/param),
         "norm"  = function(r, param) 1-exp(-(r/param)^2))
@@ -90,13 +88,10 @@ inits=NULL, method="Nelder-Mead", ...) {
     tmpfun <- function(r, sigma, param) {
         pi*2*r * exp(-(r/sigma)^2) * hfun(r, param)
     }
-#    require(MASS)
     ## function for the integral
     intfun <- function(r, ...) {
         integrate(f=tmpfun, lower=0, upper=r, ...)$value
-#        suppressWarnings(MASS:::area(f=tmpfun, a=0, b=r, ...))
     }
-#    Ysum <- rowSums(Y, na.rm=TRUE)
     Yok <- !is.na(Y)
     n <- nrow(Y)
     k <- ncol(Y)
@@ -157,9 +152,10 @@ inits=NULL, method="Nelder-Mead", ...) {
                 nlimit[2] else nll
         }
     }
-    res <- optim(inits, nll.fun, method=method, hessian=TRUE, ...)
+    res <- optim(inits, nll.fun, method=method, hessian=FALSE, ...)
+    V <- try(solve(optimHess(res$par, nll.fun, ...)))
     rval <- list(coefficients=unname(res$par),
-        vcov=try(solve(res$hessian)),
+        vcov=V,
         loglik=-res$value)
     if (inherits(rval$vcov, "try-error"))
         rval$vcov <- matrix(NA, length(rval$coef), length(rval$coef))
@@ -180,9 +176,7 @@ D, lam=10, Nfixed=FALSE) {
     ## function for the integral
     intfun <- function(r, ...) {
         integrate(f=tmpfun, lower=0, upper=r, ...)$value
-#        suppressWarnings(MASS:::area(f=tmpfun, a=0, b=r, ...))
     }
-#    require(MASS)
 
     pifun0 <- function(r, sigma, param) {
         rr <- r
@@ -204,11 +198,9 @@ D, lam=10, Nfixed=FALSE) {
     }
     pifun <- if (length(sigma) == 1)
         pifun0 else pifun1
-#    sigma <- rep(sigma, n)[1:n]
     if (missing(D)) {
         Dparts <- matrix(c(0.5, 1, NA,
                       0.5, 1, NA,
-#                      0.5, 1, Inf,
                       0.25, 0.5, 1), 3, 3, byrow=TRUE)
         D <- Dparts[sample.int(3, n, replace=TRUE),]
     }
@@ -217,7 +209,6 @@ D, lam=10, Nfixed=FALSE) {
 
     CP <- pifun(D, sigma, theta)
     P <- CP - cbind(0, CP[, -k, drop=FALSE])
-#    P[P<0] <- 0
     ## integral is not exact, small negative P might happen
     ## a rescaling seems more appropriate than hard thresholding at 0
 #    P <- (P - min(P, na.rm=TRUE)) / (max(P, na.rm=TRUE) - min(P, na.rm=TRUE))
@@ -281,6 +272,53 @@ colMeans(vv$Y)
 m0 <- cmulti.fit(vv$Y, vv$D, NULL, "dis")
 m1 <- cmultiAvoid.fit(vv$Y, vv$D, NULL, type="norm")
 cbind(true=c(log.edr=log(edr), log.theta=log(theta)), cds=c(m0$coef, NA), cdsAv=m1$coef)
+
+
+
+aicfun <- function(x) {
+    -2*x$loglik + 2*length(x$coefficients)
+}
+x <- readRDS("~/Downloads/grass_Y_D.rds")
+names(x)
+SPP <- names(x)
+
+#spp <- "BAIS"
+OUT <- list()
+for (spp in SPP) {
+    cat(spp, "\n")
+
+    Y <- x[[spp]]$Y
+    D <- x[[spp]]$D
+    colSums(Y)
+    summary(Y)
+    summary(D)
+    table(rowSums(Y))
+
+    m1 = cmulti.fit(Y, D, NULL, type="dis", inits=0.25)
+    m2 = cmultiAvoid.fit(Y, D, NULL, type="exp", inits=c(0.5,-7))
+    m3 = cmultiAvoid.fit(Y, D, NULL, type="norm", inits=c(0.5,-7))
+
+    cf <- cbind(cds=c(exp(m1$coefficients), NA),
+          exp=exp(m2$coefficients),
+          norm=exp(m3$coefficients))
+    aic <- c(cds=aicfun(m1), exp=aicfun(m2), norm=aicfun(m3))
+    daic <- aic-min(aic)
+    #round(cf, 4)
+    #daic
+
+    OUT[[spp]] <- list(cds=m1, exp=m2, norm=m3, cf=cf, aic=aic)
+}
+
+t(sapply(OUT, function(z) z$aic-min(z$aic)))
+t(sapply(OUT, function(z) z$aic[-2]-min(z$aic[-2])))
+
+lapply(OUT, function(z) round(z$cf, 4))
+
+
+avoidDiff(seq(0,3,len=3000), sigma=0.74, param=149000, type="exp")
+avoidDiff(seq(0,3,len=3000), sigma=0.9593, param=0.0011, type="norm")
+
+
 
 }
 
