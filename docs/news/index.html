@@ -77,7 +77,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">detect</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.4.3</span>
       </span>
     </div>
 
@@ -120,12 +120,155 @@
       <small>Source: <a href='https://github.com/psolymos/detect/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="version-0-4-3-august-11-2020" class="section level1">
+<h1 class="page-header">
+<a href="#version-0-4-3-august-11-2020" class="anchor"></a>Version 0.4-3, August 11, 2020<small> Unreleased </small>
+</h1>
+<ul>
+<li>Namespace issue fixed for <code>scocc.fit</code> and <code>extractMLE</code> (<a href='https://github.com/psolymos/detect/issues/6'>#6</a>).</li>
+<li>Adding <code>na.rm=TRUE</code> to <code>cmulti</code> to avoid issues with <code>optimize</code> interval.</li>
+</ul>
+</div>
+    <div id="version-0-4-2-august-29-2018" class="section level1">
+<h1 class="page-header">
+<a href="#version-0-4-2-august-29-2018" class="anchor"></a>Version 0.4-2, August 29, 2018<small> 2018-08-30 </small>
+</h1>
+<ul>
+<li>Updated documentation, references.</li>
+</ul>
+</div>
+    <div id="version-0-4-1-january-30-2018" class="section level1">
+<h1 class="page-header">
+<a href="#version-0-4-1-january-30-2018" class="anchor"></a>Version 0.4-1, January 30, 2018<small> 2018-01-31 </small>
+</h1>
+<ul>
+<li>Denes et al. 2017 paper added to documentation.</li>
+<li>
+<code>inst/ChangeLog</code> is removed and replaced by <code>NEWS.md</code>.</li>
+<li>cmulti models now have a <code>predict</code> method, see examples.</li>
+<li>
+<code>"fmix"</code>" model type with time warying rates added to <code>cmulti</code> models.</li>
+</ul>
+</div>
+    <div id="version-0-4-0-march-2-2016" class="section level1">
+<h1 class="page-header">
+<a href="#version-0-4-0-march-2-2016" class="anchor"></a>Version 0.4-0, March 2, 2016<small> 2016-03-03 </small>
+</h1>
+<ul>
+<li>
+<code>load_BAM_QPAD</code> function is deprecated (migrated to <strong>QPAD</strong> package).</li>
+<li>
+<code>hbootindex</code> bugfix: <code><a href="https://rdrr.io/r/base/sample.html">sample()</a></code> behaviour when <code>length(x) == 1</code> is recognized when resampling from a length 1 vector.</li>
+<li>
+<strong>pbapply</strong> package is now a dependency.</li>
+<li>Various minor fixes to satisfy R-devel checks.</li>
+<li>Negative Binomial option added to <code>svabu</code>.</li>
+<li>
+<code>cmulti</code> returns correct <code>nobs</code> (nonzero total counts).</li>
+</ul>
+</div>
+    <div id="version-0-3-2-may-15-2014" class="section level1">
+<h1 class="page-header">
+<a href="#version-0-3-2-may-15-2014" class="anchor"></a>Version 0.3-2, May 15, 2014<small> 2014-05-16 </small>
+</h1>
+<ul>
+<li>Bugfix in <code>cmulti2.fit</code>: n was undefined (reported by Julie Hart).</li>
+<li>Bugfix in <code>hbootindex</code>: n was not set when strata was missing.</li>
+<li>Documentation fixes (comma separated lists of variable names inside <code>\code</code>).</li>
+</ul>
+</div>
+    <div id="version-0-3-1-sept-25-2013" class="section level1">
+<h1 class="page-header">
+<a href="#version-0-3-1-sept-25-2013" class="anchor"></a>Version 0.3-1, Sept 25, 2013<small> 2013-10-26 </small>
+</h1>
+<ul>
+<li>
+<code>hbootindex</code>: routine improved, now uses weights proportional to groups sizes.</li>
+<li>Cleanup to satisfy R 3.0.2 check: remove <code>:::</code>.</li>
+<li>Bugfix: <code>svocc</code> returned k=1 object irrespective of the <code>n.clones</code> option settings for MLE with <code>method = "dc"</code>.</li>
+<li>Help page added for internal objects (e.g. <code>cmulti.fit0</code>).</li>
+<li>
+<code>drop.scope.svisit</code> is no longer treated as a method because <code>drop.scope</code> is not a generic.</li>
+</ul>
+</div>
+    <div id="version-0-3-0-july-29-2013" class="section level1">
+<h1 class="page-header">
+<a href="#version-0-3-0-july-29-2013" class="anchor"></a>Version 0.3-0, July 29, 2013<small> 2013-07-30 </small>
+</h1>
+<ul>
+<li>
+<code>jags.engine</code> removed, replaced by <strong>dcmle</strong> dependency.</li>
+<li>
+<code>dFormula</code> and <code>checkDesign</code> added with <strong>Formula</strong> dependency, this will replace the old <code>svisitFormula</code> interface to allow handling of more complex designs.</li>
+<li>
+<code>logdmultinom</code>: simplified version of <code>dmultinom</code>.</li>
+<li>
+<code>bymethod</code>: collapses (pools) observations by methodology.</li>
+<li>
+<code>cmulti</code>: new function for conditional multinomial estimation.</li>
+<li>
+<code>load_BAM_QPAD</code>: new function to load BAM QPAD parameter estimates and support functions.</li>
+<li>
+<code>hbootindex</code>: new function to sample indices with replacement for grouped/stratified data.</li>
+<li>
+<code>fitted.cmulti</code> added: get estimated singing rate or distance model parameter (not available for <code>type = "mix"</code>)</li>
+<li>
+<code>predict</code> methods: response (lhs) is dropped from formula when <code>newdata</code> is provided.</li>
+</ul>
+</div>
+    <div id="version-0-2-2-may-2-2012" class="section level1">
+<h1 class="page-header">
+<a href="#version-0-2-2-may-2-2012" class="anchor"></a>Version 0.2-2, May 2, 2012<small> 2012-05-03 </small>
+</h1>
+<ul>
+<li>
+<code>inst/COPYING</code> file removed (standard license).</li>
+</ul>
+</div>
+    <div id="version-0-2-1-november-25-2011" class="section level1">
+<h1 class="page-header">
+<a href="#version-0-2-1-november-25-2011" class="anchor"></a>Version 0.2-1, November 25, 2011<small> 2011-11-26 </small>
+</h1>
+<ul>
+<li>Help pages edited.</li>
+</ul>
+</div>
+    <div id="version-0-2-0-october-18-2011" class="section level1">
+<h1 class="page-header">
+<a href="#version-0-2-0-october-18-2011" class="anchor"></a>Version 0.2-0, October 18, 2011<small> 2011-10-19 </small>
+</h1>
+<ul>
+<li>
+<code>svabu</code> and related functions added.</li>
+<li>summary: nobs was returned as NULL, so AIC was not printed. Now fixed.</li>
+<li>R (&gt;= 2.13.0) added to <code>DESCRIPTION</code> (reported by Uwe Ligges).</li>
+</ul>
+</div>
+    <div id="version-0-1-0-september-27-2011" class="section level1">
+<h1 class="page-header">
+<a href="#version-0-1-0-september-27-2011" class="anchor"></a>Version 0.1-0, September 27, 2011<small> 2011-09-29 </small>
+</h1>
+<ul>
+<li>First public release on CRAN.</li>
+</ul>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
+        <li><a href="#version-0-4-3-august-11-2020">0.4-3</a></li>
+        <li><a href="#version-0-4-2-august-29-2018">0.4-2</a></li>
+        <li><a href="#version-0-4-1-january-30-2018">0.4-1</a></li>
+        <li><a href="#version-0-4-0-march-2-2016">0.4-0</a></li>
+        <li><a href="#version-0-3-2-may-15-2014">0.3-2</a></li>
+        <li><a href="#version-0-3-1-sept-25-2013">0.3-1</a></li>
+        <li><a href="#version-0-3-0-july-29-2013">0.3-0</a></li>
+        <li><a href="#version-0-2-2-may-2-2012">0.2-2</a></li>
+        <li><a href="#version-0-2-1-november-25-2011">0.2-1</a></li>
+        <li><a href="#version-0-2-0-october-18-2011">0.2-0</a></li>
+        <li><a href="#version-0-1-0-september-27-2011">0.1-0</a></li>
       </ul>
     </div>
   </div>
