@@ -1,17 +1,20 @@
-# detect package version history
+# Version 0.4-3, August 11, 2020
 
-## Version 0.4-2, August 29, 2018
+* Namespace issue fixed for `scocc.fit` and `extractMLE` (#6).
+* Adding `na.rm=TRUE` to `cmulti` to avoid issues with `optimize` interval.
+
+# Version 0.4-2, August 29, 2018
 
 * Updated documentation, references.
 
-## Version 0.4-1, January 30, 2018
+# Version 0.4-1, January 30, 2018
 
 * Denes et al. 2017 paper added to documentation.
 * `inst/ChangeLog` is removed and replaced by `NEWS.md`.
 * cmulti models now have a `predict` method, see examples.
 * `"fmix"`" model type with time warying rates added to `cmulti` models.
 
-## Version 0.4-0, March 2, 2016
+# Version 0.4-0, March 2, 2016
 
 * `load_BAM_QPAD` function is deprecated (migrated to **QPAD** package).
 * `hbootindex` bugfix: `sample()` behaviour when
@@ -21,13 +24,13 @@
 * Negative Binomial option added to `svabu`.
 * `cmulti` returns correct `nobs` (nonzero total counts).
 
-## Version 0.3-2, May 15, 2014
+# Version 0.3-2, May 15, 2014
 
 * Bugfix in `cmulti2.fit`: n was undefined (reported by Julie Hart).
 * Bugfix in `hbootindex`: n was not set when strata was missing.
 * Documentation fixes (comma separated lists of variable names inside `\code`).
 
-## Version 0.3-1, Sept 25, 2013
+# Version 0.3-1, Sept 25, 2013
 
 * `hbootindex`: routine improved, now uses weights proportional to groups sizes.
 * Cleanup to satisfy R 3.0.2 check: remove `:::`.
@@ -37,7 +40,7 @@
 * `drop.scope.svisit` is no longer treated as a method because
   `drop.scope` is not a generic.
 
-## Version 0.3-0, July 29, 2013
+# Version 0.3-0, July 29, 2013
 
 * `jags.engine` removed, replaced by **dcmle** dependency.
 * `dFormula` and `checkDesign` added with **Formula** dependency,
@@ -55,20 +58,20 @@
 * `predict` methods: response (lhs) is dropped from formula
   when `newdata` is provided.
 
-## Version 0.2-2, May 2, 2012
+# Version 0.2-2, May 2, 2012
 
 * `inst/COPYING` file removed (standard license).
 
-## Version 0.2-1, November 25, 2011
+# Version 0.2-1, November 25, 2011
 
 * Help pages edited.
 
-## Version 0.2-0, October 18, 2011
+# Version 0.2-0, October 18, 2011
 
 * `svabu` and related functions added.
 * summary: nobs was returned as NULL, so AIC was not printed. Now fixed.
 * R (>= 2.13.0) added to `DESCRIPTION` (reported by Uwe Ligges).
 
-## Version 0.1-0, September 27, 2011
+# Version 0.1-0, September 27, 2011
 
 * First public release on CRAN.
