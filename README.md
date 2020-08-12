@@ -10,8 +10,8 @@
 The R package implements models to analyze
 site occupancy and count data models with detection error.
 The package development was supported by the
-[Alberta Biodiversity Monitoring Institute (ABMI)](http://www.abmi.ca/)
-and the [Boreal Avian Modelling (BAM) Project](http://www.borealbirds.ca/).
+[Alberta Biodiversity Monitoring Institute (ABMI)](https://abmi.ca/)
+and the [Boreal Avian Modelling (BAM) Project](https://borealbirds.ualberta.ca/).
 
 Main functions:
 
