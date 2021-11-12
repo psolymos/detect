@@ -148,5 +148,6 @@ inits=NULL, method="Nelder-Mead", ...)
         rval$vcov <- matrix(NA, length(rval$coefficients), length(rval$coefficients))
     rval$coefficients <- unname(rval$coefficients)
     rval$vcov <- unname(rval$vcov)
+    rval$results <- res # return optim results
     rval
 }
