@@ -30,11 +30,10 @@ install.packages("detect")
 Development version:
 
 ```R
-library(devtools)
-install_github("psolymos/detect")
+install.packages("detect", repos = "https://psolymos.r-universe.dev")
 ```
 
-User visible changes in the package are listed in the [NEWS](https://github.com/psolymos/detect/blob/master/NEWS.md) file.
+User visible changes in the package are listed in the [NEWS](NEWS.md) file.
 
 Use the [issue tracker](https://github.com/psolymos/detect/issues)
 to report a problem.
