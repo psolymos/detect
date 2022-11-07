@@ -26,6 +26,7 @@ f <- c("debian-gcc-devel",
        "windows-x86_64-devel",
        "windows-x86_64-release",
        "windows-x86_64-oldrel")
+# validate_email()
 check(platform=f)
 list_package_checks(".")
 
