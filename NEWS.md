@@ -1,3 +1,7 @@
+# Version 0.4-5, November 7, 2022
+
+* Documentation updates (#8).
+
 # Version 0.4-4, August 12, 2020
 
 * Using fully specified URLs in `DESCRIPTION` as per CRAN request.
