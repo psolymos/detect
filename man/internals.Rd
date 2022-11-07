@@ -30,9 +30,7 @@ function for point counts, circular area). See \code{\link{cmulti.fit}}.
   \item{interval}{
 the interval used in \code{\link{optimize}}.
 }
-  \item{terms1}{
-the terms or formula for the base model.
-}
+
   \item{terms1}{
 the terms or formula for the upper/lower scope. See \code{\link{drop.scope}}.
 }
