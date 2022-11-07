@@ -11,9 +11,7 @@ Models for analyzing site occupancy and count data models
   conditional distance sampling and time-removal models.
   Package development was supported by the
   Alberta Biodiversity Monitoring Institute
-  (\url{https://abmi.ca})
-  and the Boreal Avian Modelling Project
-  (\url{https://borealbirds.ualberta.ca/}).
+  and the Boreal Avian Modelling Project.
 }
 \details{
 \code{\link{svocc}}: single visit occupancy model

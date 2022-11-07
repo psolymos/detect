@@ -3,9 +3,13 @@
 .git*
 .DS_Store
 .*~
-^\.travis\.yml$
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^appveyor\.yml$
 ^docs$
 ^_pkgdown\.yml$
+^\.github$
+^README\.Rmd$
+^README\.md$
+^LICENSE\.md$
+^CODE_OF_CONDUCT\.md$
+^RELEASE\.R$

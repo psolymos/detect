@@ -12,8 +12,8 @@ Description: Models for analyzing site occupancy and count data models
   with detection error, including single-visit based models,
   conditional distance sampling and time-removal models.
   Package development was supported by the
-  Alberta Biodiversity Monitoring Institute (<https://www.abmi.ca>)
-  and the Boreal Avian Modelling Project (<https://borealbirds.ualberta.ca>).
+  Alberta Biodiversity Monitoring Institute
+  and the Boreal Avian Modelling Project.
 License: GPL-2
 URL: https://github.com/psolymos/detect
 BugReports: https://github.com/psolymos/detect/issues

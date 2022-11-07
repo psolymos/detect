@@ -1,17 +1,15 @@
 # detect: analyzing wildlife data with detection error
 
-[![CRAN version](http://www.r-pkg.org/badges/version/detect)](http://cran.rstudio.com/web/packages/detect/index.html)
+[![CRAN version](http://www.r-pkg.org/badges/version/detect)](https://CRAN.R-project.org/package=detect)
 [![CRAN download stats](http://cranlogs.r-pkg.org/badges/grand-total/detect)](https://www.rdocumentation.org/packages/detect/)
-[![Linux build Status](https://travis-ci.org/psolymos/detect.svg?branch=master)](https://travis-ci.org/psolymos/detect)
-[![Windows build status](https://ci.appveyor.com/api/projects/status/5y5fwgv90f8i84ck?svg=true)](https://ci.appveyor.com/project/psolymos/detect)
-[![Code coverage status](https://codecov.io/gh/psolymos/detect/branch/master/graph/badge.svg)](https://codecov.io/gh/psolymos/detect)
+[![Build status](https://github.com/psolymos/detect/actions/workflows/check.yml/badge.svg)](https://github.com/psolymos/detect/actions)
 [![License: GPL v2](https://img.shields.io/badge/License-GPL%20v2-blue.svg)](https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html)
 
 The R package implements models to analyze
 site occupancy and count data models with detection error.
 The package development was supported by the
-[Alberta Biodiversity Monitoring Institute (ABMI)](https://abmi.ca/)
-and the [Boreal Avian Modelling (BAM) Project](https://borealbirds.ualberta.ca/).
+Alberta Biodiversity Monitoring Institute and the
+Boreal Avian Modelling (BAM) Project.
 
 Main functions:
 

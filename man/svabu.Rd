@@ -10,7 +10,7 @@
 Single visit N-mixture abundance models
 }
 \description{
-Binomial-Poisson, Binomial-NegBin, Binomial-ZIP, and BinomialZINB models with single visit.
+Binomial-Poisson, Binomial-NegBin, Binomial-ZIP, and Binomial-ZINB models with single visit.
 }
 \usage{
 svabu(formula, data, zeroinfl = TRUE, area = 1, N.max = NULL,

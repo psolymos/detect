@@ -5,7 +5,7 @@
 AUC ROC plot for fitted models
 }
 \description{
-Area under the reciever-operator (ROC) curve (AUC), and ROC plot methods for fitted models.
+Area under the receiver-operator (ROC) curve (AUC), and ROC plot methods for fitted models.
 }
 \usage{
 AUC(object, ...)
