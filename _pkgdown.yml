@@ -1,4 +1,31 @@
+url: https://peter.solymos.org/detec
+
+home:
+  title: "detect: Analyzing Wildlife Data with Detection Error"
+  description: |
+    Models for analyzing site occupancy and count data models
+    with detection error, including single-visit based models,
+    conditional distance sampling and time-removal models.
+
 template:
+  bootstrap: 5
   params:
     bootswatch: cosmo
-    ganalytics: UA-55877016-2
+  includes:
+    in_header: |
+      <script src="https://cdn.usefathom.com/script.js" data-site="KTMJHUPR" defer></script>
+      <link rel="icon" href="https://peter.solymos.org/favicon.ico" />
+
+navbar:
+  structure:
+    right: [search, twitter, github]
+  components:
+    twitter:
+      icon: fa-twitter
+      href: http://twitter.com/psolymos
+      aria-label: Twitter
+    github:
+      icon: fa-github
+      href: http://github.com/psolymos
+      aria-label: GitHub
+
