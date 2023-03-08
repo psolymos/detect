@@ -1,4 +1,4 @@
-update.formula.svisit <-
+update_formula_svisit <-
 function (old, new) 
 {
     oldsta <- . ~ .
