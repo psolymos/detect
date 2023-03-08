@@ -1,3 +1,8 @@
+# Version 0.4-6, March 8, 2023
+
+* CRAN alert fixed: internal `update.formula.svisit` renamed to `update_formula_svisit` (#9).
+* Maintainer email changed to personal email.
+
 # Version 0.4-5, November 7, 2022
 
 * Documentation updates (#8).
