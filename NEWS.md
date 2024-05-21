@@ -1,3 +1,8 @@
+# Version 0.5-0, May 21, 2024
+
+* Updated documentation.
+* Adding SQPAD approach.
+
 # Version 0.4-6, March 8, 2023
 
 * CRAN alert fixed: internal `update.formula.svisit` renamed to `update_formula_svisit` (#9).

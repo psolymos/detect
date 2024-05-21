@@ -1,16 +1,22 @@
 Package: detect
 Type: Package
 Title: Analyzing Wildlife Data with Detection Error
-Version: 0.4-6
-Date: 2023-03-08
-Author: Peter Solymos [cre, aut], Monica Moreno [aut], Subhash R. Lele [aut]
+Version: 0.5-0
+Date: 2024-05-21
+Author: Peter Solymos [cre, aut] (<https://orcid.org/0000-0001-7337-1740>), Monica Moreno [aut], Subhash R. Lele [aut]
 Maintainer: Peter Solymos <psolymos@gmail.com>
 Depends: R (>= 2.13.0), Formula, stats4, pbapply
 Imports: Matrix
 Suggests: dclone, dcmle
 Description: Models for analyzing site occupancy and count data models
-  with detection error, including single-visit based models,
-  conditional distance sampling and time-removal models.
+  with detection error, including 
+  single-visit based models (Lele et al. 2012 <doi:10.1093/jpe/rtr042>, 
+  Moreno et al. 2010 <doi:10.1890/09-1073.1>,
+  Solymos et al. 2012 <doi:10.1002/env.1149>,
+  Denes et al. 2016 <doi:10.1111/1365-2664.12818>),
+  conditional distance sampling and time-removal models
+  (Solymos et al. 2013 <doi:10.1111/2041-210X.12106>,
+  Solymos et al. 2018 <doi:10.1650/CONDOR-18-32.1>).
   Package development was supported by the
   Alberta Biodiversity Monitoring Institute
   and the Boreal Avian Modelling Project.
