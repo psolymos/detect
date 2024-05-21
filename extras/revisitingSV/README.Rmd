@@ -420,7 +420,7 @@ out2
 
 ### Simulation setup
 
-The simulations were conducted using MPI cluster on WestGrid (http://www.westgrid.ca).
+The simulations were conducted using MPI cluster on WestGrid (https://www.westgrid.ca).
 The `simuls6.R` file was run using the portable batch system by running
 the file `mee6.pbs`. The end result is an `Rdata` file that is used below.
 

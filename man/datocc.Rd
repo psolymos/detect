@@ -28,7 +28,7 @@ This simulated example corresponds to the ZI Binomial model implemented in the f
 Simulated example.
 }
 \references{
-Lele, S.R., Moreno, M. and Bayne, E. (2011)
+Lele, S.R., Moreno, M. and Bayne, E. (2012)
 Dealing with detection error in site occupancy surveys:
 What can we do with a single survey?
 \emph{Journal of Plant Ecology}, \bold{5(1)}, 22--31.

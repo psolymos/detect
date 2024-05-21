@@ -15,7 +15,7 @@ Models for analyzing site occupancy and count data models
 }
 \details{
 \code{\link{svocc}}: single visit occupancy model
-(Lele et al. 2011, Moreno et al. 2010).
+(Lele et al. 2012, Moreno et al. 2010).
 
 \code{\link{svabu}}: single visit abundance model
 based on conditional maximum likelihood
@@ -38,7 +38,7 @@ insights from single-visit detection-based models.
 \emph{Journal of Applied Ecology}, \bold{54}, 1268--1278.
 <doi:10.1111/1365-2664.12818>
 
-Lele, S.R., Moreno, M. and Bayne, E. 2011.
+Lele, S.R., Moreno, M. and Bayne, E. 2012.
 Dealing with detection error in site occupancy surveys:
 What can we do with a single survey?
 \emph{Journal of Plant Ecology}, \bold{5(1)}, 22--31.

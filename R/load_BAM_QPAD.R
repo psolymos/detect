@@ -12,8 +12,8 @@ load_BAM_QPAD <- function(version) {
 #        version <- readline()
 #    }
 #    if (version == "1") {
-#        source("http://dcr.r-forge.r-project.org/qpad/BAM_QPAD_coefs_20130226.R")
-#        source("http://dcr.r-forge.r-project.org/qpad/BAM_QPAD_functions_20130226.R")
+#        source("https://dcr.r-forge.r-project.org/qpad/BAM_QPAD_coefs_20130226.R")
+#        source("https://dcr.r-forge.r-project.org/qpad/BAM_QPAD_functions_20130226.R")
 #    }
     cat("The 'load_BAM_QPAD' function in the 'detect' package is deprecated.\n",
     "Use the 'load_BAM_QPAD' function in the 'QPAD' package instead.\n",

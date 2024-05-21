@@ -70,7 +70,7 @@ link.det = "logit", link.zif = "logit", ...)
         method <- "Nelder-Mead"
     Control <- list(optim.control=control, optim.method=method)
     ## from post of Spencer Graves to avoid: optim() non-finite finite-difference value
-    ## http://tolstoy.newcastle.edu.au/R/help/05/04/3272.html
+    ## https://tolstoy.newcastle.edu.au/R/help/05/04/3272.html
     good.num.limit = c(.Machine$double.xmin, .Machine$double.xmax)^(1/3)
 
     n <- length(Y)
