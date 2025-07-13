@@ -12,7 +12,7 @@ Authors@R:
       person(given = "Monica",
              family = "Moreno",
              role = c("aut")),
-      person(given = "Subhash",
+      person(given = c("Subhash", "R."),
              family = "Lele",
              role = c("aut")))
 Maintainer: Peter Solymos <psolymos@gmail.com>
