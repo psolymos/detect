@@ -2,8 +2,19 @@ Package: detect
 Type: Package
 Title: Analyzing Wildlife Data with Detection Error
 Version: 0.5-0
-Date: 2024-05-21
-Author: Peter Solymos [cre, aut] (<https://orcid.org/0000-0001-7337-1740>), Monica Moreno [aut], Subhash R. Lele [aut]
+Date: 2025-07-12
+Authors@R: 
+    c(person(given = "Peter",
+             family = "Solymos",
+             comment = c(ORCID = "0000-0001-7337-1740"),
+             role = c("aut", "cre"),
+             email = "psolymos@gmail.com"),
+      person(given = "Monica",
+             family = "Moreno",
+             role = c("aut")),
+      person(given = "Subhash",
+             family = "Lele",
+             role = c("aut")))
 Maintainer: Peter Solymos <psolymos@gmail.com>
 Depends: R (>= 2.13.0), Formula, stats4, pbapply
 Imports: Matrix

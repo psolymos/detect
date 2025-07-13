@@ -1,5 +1,6 @@
 # Version 0.5-0, May 21, 2024
 
+* Use `Authors@R` field in `DESCRIPTION`.
 * Updated documentation.
 * Adding SQPAD approach.
 
