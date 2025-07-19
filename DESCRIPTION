@@ -17,7 +17,7 @@ Authors@R:
              role = c("aut")))
 Maintainer: Peter Solymos <psolymos@gmail.com>
 Depends: R (>= 2.13.0), Formula, stats4, pbapply
-Imports: Matrix
+Imports: Matrix, extraDistr
 Suggests: dclone, dcmle
 Description: Models for analyzing site occupancy and count data models
   with detection error, including 

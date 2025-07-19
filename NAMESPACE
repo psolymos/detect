@@ -18,12 +18,15 @@ importFrom("stats", ".getXlevels", "aggregate", "as.formula",
     "case.names", "drop1",
     "logLik", "model.matrix", "model.frame", "terms", "simulate",
     "update.formula", "update", "vcov", "variable.names",
-    "AIC", "BIC")
+    "AIC", "BIC", "glm", "rnorm")
+importFrom("extraDistr", "rtriang")
 
 ## exported svocc functions
 export("svocc", "svocc.fit", "svocc.step")
 ## exported svabu functions
 export("svabu", "svabu.fit", "svabu.step", "zif")
+## exported sqpad functions
+export("sqpad", "sqpad.fit")
 ## exported cmulti functions
 export("cmulti", "cmulti.fit", "cmulti.fit0", "cmulti2.fit")
 ## exported helper functions
@@ -89,3 +92,11 @@ S3method("model.frame", "cmulti")
 S3method("model.matrix", "cmulti")
 S3method("predict", "cmulti")
 
+## sqpad methods
+S3method("print", "sqpad")
+S3method("summary", "sqpad")
+S3method("print", "summary.sqpad")
+S3method("vcov", "sqpad")
+S3method("logLik", "sqpad")
+S3method("fitted", "sqpad")
+S3method("predict", "sqpad")

@@ -2,7 +2,7 @@
 
 * Use `Authors@R` field in `DESCRIPTION`.
 * Updated documentation.
-* Adding SQPAD approach.
+* Added SQPAD approach.
 
 # Version 0.4-6, March 8, 2023
 
