@@ -14,7 +14,10 @@ Authors@R:
              role = c("aut")),
       person(given = c("Subhash", "R."),
              family = "Lele",
-             role = c("aut")))
+             role = c("aut")),
+      person(given = c("Steven", "L."),
+             family = "Van Wilgenburg",
+             role = c("ctb")))
 Maintainer: Peter Solymos <psolymos@gmail.com>
 Depends: R (>= 2.13.0), Formula, stats4, pbapply
 Imports: Matrix, extraDistr
