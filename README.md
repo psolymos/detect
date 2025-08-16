@@ -15,7 +15,8 @@ Main functions:
 
 * `svocc`: single visit occupancy model (Lele et al. 2012, Moreno et al. 2010).
 * `svabu`: single visit Poisson and Negative Binomial abundance model based on conditional maximum likelihood (Solymos et al. 2012, Denes et al. 2016, Solymos & Lele 2016).
-* `cmulti`: conditional multinomial maximum likelihood estimation for removal and (point count) distance sampling, efficient and flexible setup for varying methodologies (Solymos et al. 2013, Solymos et al. 2018).
+* `cmulti`: conditional multinomial maximum likelihood estimation for QPAD approach combining removal and (point count) distance sampling, efficient and flexible setup for varying methodologies (Solymos et al. 2013, Solymos et al. 2018).
+* `sqpad`: single bin QPAD (SQPAD) approach for robust analysis of point count data (Lele & Solymos 2025).
 
 ## Versions
 
@@ -49,6 +50,11 @@ Dealing with detection error in site occupancy surveys:
 What can we do with a single survey?
 _Journal of Plant Ecology_, **5(1)**, 22--31.
 [DOI: 10.1093/jpe/rtr042](https://doi.org/10.1093/jpe/rtr042)
+
+Lele, S. R., Solymos, P. 2025.
+Single bin QPAD (SQPAD) approach for robust analysis of point count data
+with detection error.
+_Ornithological Applications_, **xx**, xx--xx. (in press)
 
 Moreno, M. and Lele, S. R. 2010.
 Improved estimation of site occupancy using penalized likelihood.

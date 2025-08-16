@@ -2,7 +2,7 @@
 
 * Use `Authors@R` field in `DESCRIPTION`.
 * Updated documentation.
-* Added SQPAD approach.
+* Added SQPAD approach: see `?sqpad`.
 
 # Version 0.4-6, March 8, 2023
 
@@ -31,8 +31,9 @@
 
 * Denes et al. 2017 paper added to documentation.
 * `inst/ChangeLog` is removed and replaced by `NEWS.md`.
-* cmulti models now have a `predict` method, see examples.
+* `cmulti` models now have a `predict` method, see examples.
 * `"fmix"`" model type with time varying rates added to `cmulti` models.
+* Added new data set: `paired`.
 
 # Version 0.4-0, March 2, 2016
 
