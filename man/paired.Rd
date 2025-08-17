@@ -1,6 +1,5 @@
 \name{paired}
 \alias{paired}
-\alias{paired-package}
 \docType{data}
 \title{
 Example point count data set with paired human and ARU data
@@ -22,8 +21,7 @@ Data set from Van Wilgenburg et al. 2017 <doi:10.5751/ACE-00975-120113>.
       \code{ARU} (automated recording unit) \code{HUM} (human observer)}
     \item{\code{NoiseLevel}}{Character with values \code{Heavy} \code{Light} \code{Moderate} \code{None} \code{Unusable}.}
     \item{\code{SPECIES}}{Character with values for species,
-      4-letter codes following the
-      \url{AOU alpha codes}{https://www.birdpop.org/pages/birdSpeciesCodes.php}}
+      4-letter codes following AOU alpha codes.}
     \item{\code{Count}}{A numeric vector, number of individuals counted.}
     \item{\code{TimeInterval}}{Character, original interval the
         individual was detected in.}

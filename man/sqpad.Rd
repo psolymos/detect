@@ -163,6 +163,7 @@ predict(m, type = "link")
 predict(m, newdata = df[1:10,], type = "response")
 predict(m, newdata = df[1:10,], type = "link")
 
+\dontrun{
 m0 <- sqpad(y ~ 1 | 1, data = df, dis = dis, dur = dur, type = "full", det = "joint", K = NULL)
 m1 <- sqpad(y ~ 1 | x, data = df, dis = dis, dur = dur, type = "full", det = "joint", K = NULL)
 m2 <- sqpad(y ~ x | x, data = df, dis = dis, dur = dur, type = "full", det = "joint", K = NULL)
@@ -232,6 +233,6 @@ Y <- sapply(dis, length)
 m4 <- sqpad.fit(Y = Y, dis = dis, dur = dur, dislist = dislist, 
     type = "conv", det = "joint", Nmax = 20)
 cbind(parameters = c(D = D, phi = phi, tau = tau), estimates = exp(m4$coef))
-
+}
 }
 \keyword{ htest }

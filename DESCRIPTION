@@ -28,9 +28,11 @@ Description: Models for analyzing site occupancy and count data models
   Moreno et al. 2010 <doi:10.1890/09-1073.1>,
   Solymos et al. 2012 <doi:10.1002/env.1149>,
   Denes et al. 2016 <doi:10.1111/1365-2664.12818>),
-  conditional distance sampling and time-removal models
+  conditional distance sampling and time-removal models (QPAD)
   (Solymos et al. 2013 <doi:10.1111/2041-210X.12106>,
-  Solymos et al. 2018 <doi:10.1650/CONDOR-18-32.1>).
+  Solymos et al. 2018 <doi:10.1650/CONDOR-18-32.1>),
+  and single bin QPAD (SQPAD) models
+  (Lele & Solymos 2025).
   Package development was supported by the
   Alberta Biodiversity Monitoring Institute
   and the Boreal Avian Modelling Project.
