@@ -362,6 +362,7 @@ sqpad.fit <- function(
     montecarlo = FALSE, np = 1000, distcorr = 2/3, dislist = NULL, ...) {
 
     Nmaxmax <- 100
+    type <- match.arg(type)
 
     if (type == "full" && is.null(init)) {
         qout <- .sqpad.fit(
