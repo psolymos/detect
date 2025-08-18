@@ -3,7 +3,7 @@
 * Use `Authors@R` field in `DESCRIPTION`.
 * Updated documentation.
 * Added SQPAD approach: see `?sqpad`.
-* Added new data sets: `paired`, `josm`, and `lhreg`.
+* Added new data sets: `paired`, `josm`.
 
 # Version 0.4-6, March 8, 2023
 
