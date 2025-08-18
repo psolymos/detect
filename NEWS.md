@@ -18,7 +18,6 @@
 
 * Using fully specified URLs in `DESCRIPTION` as per CRAN request.
 
-
 # Version 0.4-3, August 11, 2020
 
 * Namespace issue fixed for `scocc.fit` and `extractMLE` (#6).
