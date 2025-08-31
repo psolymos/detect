@@ -54,3 +54,5 @@ paste0(platforms, collapse=", "),
 pkgnews(news_text)))
 
 checks
+
+devtools::build()
