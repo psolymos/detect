@@ -2,7 +2,8 @@
 
 * Use `Authors@R` field in `DESCRIPTION`.
 * Updated documentation.
-* Adding SQPAD approach.
+* Added SQPAD approach: see `?sqpad`.
+* Added new data sets: `paired`, `josm`.
 
 # Version 0.4-6, March 8, 2023
 
@@ -17,7 +18,6 @@
 
 * Using fully specified URLs in `DESCRIPTION` as per CRAN request.
 
-
 # Version 0.4-3, August 11, 2020
 
 * Namespace issue fixed for `scocc.fit` and `extractMLE` (#6).
@@ -31,7 +31,7 @@
 
 * Denes et al. 2017 paper added to documentation.
 * `inst/ChangeLog` is removed and replaced by `NEWS.md`.
-* cmulti models now have a `predict` method, see examples.
+* `cmulti` models now have a `predict` method, see examples.
 * `"fmix"`" model type with time varying rates added to `cmulti` models.
 
 # Version 0.4-0, March 2, 2016

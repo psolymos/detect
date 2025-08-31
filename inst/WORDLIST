@@ -1,3 +1,5 @@
+AOU
+ARU
 BAM
 Bayne
 Beissinger
@@ -9,10 +11,14 @@ DOI
 Denes
 EDR
 Environmetrics
+FID
 Fontaine
+Kardynal
 Ligges
+Mahon
 Matsuoka
 Modelling
+Modis
 NegBin
 QPAD
 Royle
@@ -21,6 +27,7 @@ Schmiegelow
 Silveira
 Stralberg
 Uwe
+Wilgenburg
 ZI
 ZINB
 al
@@ -31,12 +38,18 @@ cAUC
 cmulti
 dcmle
 doi
+eap
 env
 et
+foreco
 jpe
+landbirds
 pbapply
 rtr
 solymos
+sqpad
+stressor
 svabu
 svocc
 ualberta
+zenodo
