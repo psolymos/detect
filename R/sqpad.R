@@ -69,10 +69,14 @@
     n <- length(Y)
     if (is.null(A))
         A <- dis^2 * pi
-    if (is.null(X))
+    if (is.null(X)) {
         X <- matrix(1, n, 1)
-    if (is.null(Z))
+        colnames(X) <- "(Intercept)"
+    }
+    if (is.null(Z)) {
         Z <- matrix(1, n, 1)
+        colnames(Z) <- "(Intercept)"
+    }
     mx <- NCOL(X)
     mz <- NCOL(Z)
     ix <- seq_len(mx)
