@@ -7,7 +7,7 @@
 
     <a class="navbar-brand me-2" href="../index.html">detect</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5-0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.5-1</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -216,11 +216,11 @@ clarification and extensions.
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">cbind</a></span><span class="op">(</span>truth<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.6</span>, <span class="fl">0.5</span>, <span class="fl">0.4</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="fl">0.3</span><span class="op">)</span>,</span></span>
 <span class="r-in"><span>mle<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m00</span><span class="op">)</span>, pmle<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="va">m01</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                 truth        mle        pmle</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sta_(Intercept)   0.6 -0.1322958  0.02430915</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sta_x1            0.5  0.1951644  0.25655519</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> det_(Intercept)   0.4  1.7158595  1.17728804</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> det_x1           -0.5 -0.8026997 -0.65455395</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> det_x3            0.3  0.6823315  0.48569843</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sta_(Intercept)   0.6 -0.1322958  0.02430913</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sta_x1            0.5  0.1951644  0.25655518</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> det_(Intercept)   0.4  1.7158595  1.17728810</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> det_x1           -0.5 -0.8026997 -0.65455396</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> det_x3            0.3  0.6823315  0.48569845</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## AIC, BIC</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/AIC.html" class="external-link">AIC</a></span><span class="op">(</span><span class="va">m00</span><span class="op">)</span></span></span>
@@ -233,43 +233,43 @@ clarification and extensions.
 <span class="r-in"><span><span class="co">## variance-covariance matrix</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">m00</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                 sta_(Intercept)      sta_x1 det_(Intercept)      det_x1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sta_(Intercept)      0.06115389  0.05059639     -0.24356451 -0.02790893</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sta_x1               0.05059639  0.07525105     -0.18873669 -0.12264430</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> det_(Intercept)     -0.24356451 -0.18873669      1.03655409  0.02910525</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> det_x1              -0.02790893 -0.12264430      0.02910525  0.42595958</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> det_x3              -0.10172898 -0.09312257      0.42897959  0.06620209</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sta_(Intercept)      0.06115388  0.05059638     -0.24356447 -0.02790892</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sta_x1               0.05059638  0.07525104     -0.18873666 -0.12264427</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> det_(Intercept)     -0.24356447 -0.18873666      1.03655393  0.02910523</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> det_x1              -0.02790892 -0.12264427      0.02910523  0.42595948</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> det_x3              -0.10172896 -0.09312255      0.42897952  0.06620207</span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                      det_x3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sta_(Intercept) -0.10172898</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sta_x1          -0.09312257</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> det_(Intercept)  0.42897959</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> det_x1           0.06620209</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> det_x3           0.21295780</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sta_(Intercept) -0.10172896</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sta_x1          -0.09312255</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> det_(Intercept)  0.42897952</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> det_x1           0.06620207</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> det_x3           0.21295777</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">m00</span>, model<span class="op">=</span><span class="st">"sta"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             (Intercept)         x1</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.06115389 0.05059639</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x1           0.05059639 0.07525105</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  0.06115388 0.05059638</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x1           0.05059638 0.07525104</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/vcov.html" class="external-link">vcov</a></span><span class="op">(</span><span class="va">m00</span>, model<span class="op">=</span><span class="st">"det"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>             (Intercept)         x1         x3</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  1.03655409 0.02910525 0.42897959</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x1           0.02910525 0.42595958 0.06620209</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x3           0.42897959 0.06620209 0.21295780</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept)  1.03655393 0.02910523 0.42897952</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x1           0.02910523 0.42595948 0.06620207</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x3           0.42897952 0.06620207 0.21295777</span>
 <span class="r-in"><span><span class="co">## confidence intervals</span></span></span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint</a></span><span class="op">(</span><span class="va">m00</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                       2.5%     97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sta_(Intercept) -0.6169815 0.3523898</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> sta_x1          -0.3424914 0.7328203</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> det_(Intercept) -0.2796054 3.7113243</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> det_x1          -2.0818816 0.4764821</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> det_x3          -0.2221399 1.5868030</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sta_(Intercept) -0.6169814 0.3523897</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> sta_x1          -0.3424914 0.7328202</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> det_(Intercept) -0.2796052 3.7113241</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> det_x1          -2.0818814 0.4764820</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> det_x3          -0.2221399 1.5868029</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint</a></span><span class="op">(</span><span class="va">m00</span>, model<span class="op">=</span><span class="st">"sta"</span><span class="op">)</span></span></span>
 <span class="r-out co"><span class="r-pr">#&gt;</span>                   2.5%     97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.6169815 0.3523898</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x1          -0.3424914 0.7328203</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.6169814 0.3523897</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x1          -0.3424914 0.7328202</span>
 <span class="r-in"><span><span class="fu"><a href="https://rdrr.io/r/stats/confint.html" class="external-link">confint</a></span><span class="op">(</span><span class="va">m00</span>, model<span class="op">=</span><span class="st">"det"</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>                   2.5%     97.5%</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.2796054 3.7113243</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x1          -2.0818816 0.4764821</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> x3          -0.2221399 1.5868030</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>                   2.5%    97.5%</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> (Intercept) -0.2796052 3.711324</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x1          -2.0818814 0.476482</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> x3          -0.2221399 1.586803</span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co">## fitted values</span></span></span>
 <span class="r-in"><span><span class="co">## (conditional probability of occurrence given detection history:</span></span></span>
@@ -351,7 +351,7 @@ clarification and extensions.
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer></div>

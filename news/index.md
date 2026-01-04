@@ -1,0 +1,142 @@
+# Changelog
+
+## Version 0.5-1, Jan 4, 2026
+
+- Add `rtriang` function to replace `extraDistr::rtriang` and remove
+  dependency on orphaned package extraDistr.
+- Added DOI for Lele and Solymos 2025.
+
+## Version 0.5-0, May 21, 2025
+
+CRAN release: 2025-09-01
+
+- Use `Authors@R` field in `DESCRIPTION`.
+- Updated documentation.
+- Added SQPAD approach: see
+  [`?sqpad`](https://peter.solymos.org/detec/reference/sqpad.md).
+- Added new data sets: `paired`, `josm`.
+
+## Version 0.4-6, March 8, 2023
+
+CRAN release: 2023-03-08
+
+- CRAN alert fixed: internal `update.formula.svisit` renamed to
+  `update_formula_svisit`
+  ([\#9](https://github.com/psolymos/detect/issues/9)).
+- Maintainer email changed to personal email.
+
+## Version 0.4-5, November 7, 2022
+
+CRAN release: 2022-11-07
+
+- Documentation updates
+  ([\#8](https://github.com/psolymos/detect/issues/8)).
+
+## Version 0.4-4, August 12, 2020
+
+CRAN release: 2020-08-12
+
+- Using fully specified URLs in `DESCRIPTION` as per CRAN request.
+
+## Version 0.4-3, August 11, 2020
+
+- Namespace issue fixed for `scocc.fit` and `extractMLE`
+  ([\#6](https://github.com/psolymos/detect/issues/6)).
+- Adding `na.rm=TRUE` to `cmulti` to avoid issues with `optimize`
+  interval.
+
+## Version 0.4-2, August 29, 2018
+
+CRAN release: 2018-08-30
+
+- Updated documentation, references.
+
+## Version 0.4-1, January 30, 2018
+
+CRAN release: 2018-01-31
+
+- Denes et al. 2017 paper added to documentation.
+- `inst/ChangeLog` is removed and replaced by `NEWS.md`.
+- `cmulti` models now have a `predict` method, see examples.
+- `"fmix"`” model type with time varying rates added to `cmulti` models.
+
+## Version 0.4-0, March 2, 2016
+
+CRAN release: 2016-03-03
+
+- `load_BAM_QPAD` function is deprecated (migrated to **QPAD** package).
+- `hbootindex` bugfix: [`sample()`](https://rdrr.io/r/base/sample.html)
+  behaviour when `length(x) == 1` is recognized when resampling from a
+  length 1 vector.
+- **pbapply** package is now a dependency.
+- Various minor fixes to satisfy R-devel checks.
+- Negative Binomial option added to `svabu`.
+- `cmulti` returns correct `nobs` (nonzero total counts).
+
+## Version 0.3-2, May 15, 2014
+
+CRAN release: 2014-05-16
+
+- Bugfix in `cmulti2.fit`: n was undefined (reported by Julie Hart).
+- Bugfix in `hbootindex`: n was not set when strata was missing.
+- Documentation fixes (comma separated lists of variable names inside
+  `\code`).
+
+## Version 0.3-1, Sept 25, 2013
+
+CRAN release: 2013-10-26
+
+- `hbootindex`: routine improved, now uses weights proportional to
+  groups sizes.
+- Cleanup to satisfy R 3.0.2 check: remove `:::`.
+- Bugfix: `svocc` returned k=1 object irrespective of the `n.clones`
+  option settings for MLE with `method = "dc"`.
+- Help page added for internal objects (e.g. `cmulti.fit0`).
+- `drop.scope.svisit` is no longer treated as a method because
+  `drop.scope` is not a generic.
+
+## Version 0.3-0, July 29, 2013
+
+CRAN release: 2013-07-30
+
+- `jags.engine` removed, replaced by **dcmle** dependency.
+- `dFormula` and `checkDesign` added with **Formula** dependency, this
+  will replace the old `svisitFormula` interface to allow handling of
+  more complex designs.
+- `logdmultinom`: simplified version of `dmultinom`.
+- `bymethod`: collapses (pools) observations by methodology.
+- `cmulti`: new function for conditional multinomial estimation.
+- `load_BAM_QPAD`: new function to load BAM QPAD parameter estimates and
+  support functions.
+- `hbootindex`: new function to sample indices with replacement for
+  grouped/stratified data.
+- `fitted.cmulti` added: get estimated singing rate or distance model
+  parameter (not available for `type = "mix"`)
+- `predict` methods: response (lhs) is dropped from formula when
+  `newdata` is provided.
+
+## Version 0.2-2, May 2, 2012
+
+CRAN release: 2012-05-03
+
+- `inst/COPYING` file removed (standard license).
+
+## Version 0.2-1, November 25, 2011
+
+CRAN release: 2011-11-26
+
+- Help pages edited.
+
+## Version 0.2-0, October 18, 2011
+
+CRAN release: 2011-10-19
+
+- `svabu` and related functions added.
+- summary: nobs was returned as NULL, so AIC was not printed. Now fixed.
+- R (\>= 2.13.0) added to `DESCRIPTION` (reported by Uwe Ligges).
+
+## Version 0.1-0, September 27, 2011
+
+CRAN release: 2011-09-29
+
+- First public release on CRAN.
