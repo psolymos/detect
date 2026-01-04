@@ -1,4 +1,10 @@
-# Version 0.5-0, May 21, 2024
+# Version 0.5-1, Jan 4, 2026
+
+* Add `rtriang` function to replace `extraDistr::rtriang` and
+  remove dependency on orphaned package extraDistr.
+* Added DOI for Lele and Solymos 2025.
+
+# Version 0.5-0, May 21, 2025
 
 * Use `Authors@R` field in `DESCRIPTION`.
 * Updated documentation.

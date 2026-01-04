@@ -1,4 +1,5 @@
 \name{sqpad}
+\alias{rtriang}
 \alias{sqpad}
 \alias{sqpad.fit}
 \alias{fitted.sqpad}
@@ -34,6 +35,8 @@ sqpad.fit(Y, dis, dur, X = NULL, Z = NULL,
 \method{print}{summary.sqpad}(x, digits, ...)
 \method{predict}{sqpad}(object, newdata = NULL, 
     type = c("link", "response"), ...)
+
+rtriang(n, r = 1)
 }
 \arguments{
   \item{formula}{
@@ -106,6 +109,13 @@ digits to use when providing summaries.
   \item{\dots}{
 additional options for \code{\link{optim}} or the methods.
 }
+  \item{n}{
+number of random variates to generate from the triangular distribution.
+}
+  \item{r}{
+maximum value for the triangular distribution.
+}
+
 }
 \details{
 Single bin QPAD (SQPAD) approach for robust analysis of point count data 
@@ -118,10 +128,11 @@ An object of class 'sqpad'.
 Solymos, P., Lele, S. R., 2025. Single bin QPAD (SQPAD) approach for robust 
 analysis of point count data with detection error.
 \emph{Ornithological Applications}, \bold{xx}, xx--xx.
+<doi:10.1093/ornithapp/duaf078>
 
 Supporting info for the SQPAD method:
 \url{https://github.com/psolymos/sqpad-paper},
-<doi:10.5281/zenodo.16172209>.
+<doi:10.5281/zenodo.16172209>
 }
 \author{
 Peter Solymos and Subhash Lele
@@ -190,7 +201,7 @@ Y <- rbinom(n, N, p)
 df <- data.frame(x = x, y = Y)
 
 np <- 1000
-dij <- extraDistr::rtriang(as.integer(np), 0, 1, 1)
+dij <- rtriang(as.integer(np), 1)
 dij <- matrix(dij, nrow = n, ncol = np, byrow = TRUE)
 p2 <- rowMeans(1 - exp(-dur * phi * exp(-(dis*dij)^2/tau^2)))
 Y2 <- rbinom(n, N, p2)
@@ -222,7 +233,7 @@ dis <- sample(seq(0.25, 2, 0.25), n, replace=TRUE)
 A <- dis^2 * pi
 N <- rpois(n, D*A)
 dislist <- lapply(seq_len(n), function(i) {
-    dij <- extraDistr::rtriang(N[i], 0, dis[i], dis[i])
+    dij <- rtriang(N[i], dis[i])
     # pij is based on time of 1st detection and distance at 1st detection
     pij <- 1 - exp(-dur[i] * phi * exp(-(dij)^2/tau^2))
     Yij <- rbinom(length(pij), 1, pij)
