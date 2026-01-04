@@ -1,11 +1,11 @@
 # SQPAD estimation
 
+# replacing extraDistr::rtriang(n, 0, r, r)
 rtriang <- function(n, r = 1) {
     o <- numeric(0L)
     while (length(o) < n) {
-        x <- runif(n * 1.3, 0, r)
-        y <- runif(n * 1.3, 0, r)
-        d <- sqrt(x^2 + y^2)
+        m <- n - length(o)
+        d <- sqrt(runif(m * 1.3, 0, r)^2 + runif(m * 1.3, 0, r)^2)
         d <- d[d <= r]
         o <- c(o, d)
     }
