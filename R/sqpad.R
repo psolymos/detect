@@ -951,8 +951,32 @@ print.sqpad <- function(x, digits, ...) {
     invisible(x)
 }
 
-vcov.sqpad <- function(object, ...) {
-    object$vcov
+coef.sqpad <- function(object, model = c("full", "sta", "det"), ...) {
+    model <- match.arg(model)
+    cf <- object$coefficients
+    switch(
+        model,
+        "full" = cf,
+        "sta" = cf[startsWith(names(cf), "log.D_")],
+        "det" = cf[startsWith(names(cf), "log.delta_")]
+    )
+}
+
+vcov.sqpad <- function(object, model = c("full", "sta", "det"), ...) {
+    model <- match.arg(model)
+    v <- object$vcov
+    switch(
+        model,
+        "full" = v,
+        "sta" = v[
+            startsWith(rownames(v), "log.D_"),
+            startsWith(colnames(v), "log.D_")
+        ],
+        "det" = v[
+            startsWith(rownames(v), "log.delta_"),
+            startsWith(colnames(v), "log.delta_")
+        ]
+    )
 }
 
 fitted.sqpad <- function(object, ...) {

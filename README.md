@@ -54,7 +54,8 @@ _Journal of Plant Ecology_, **5(1)**, 22--31.
 Lele, S. R., Solymos, P. 2025.
 Single bin QPAD (SQPAD) approach for robust analysis of point count data
 with detection error.
-_Ornithological Applications_, **xx**, xx--xx. (in press)
+_Ornithological Applications_, **128**, 1--14.
+[DOI: 10.1093/ornithapp/duaf078](https://doi.org/10.1093/ornithapp/duaf078)
 
 Moreno, M. and Lele, S. R. 2010.
 Improved estimation of site occupancy using penalized likelihood.
@@ -88,5 +89,7 @@ during point-count surveys: sample size requirements and model complexity.
 _Condor_, **120**, 765--786.
 [DOI: 10.1650/CONDOR-18-32.1](https://doi.org/10.1650/CONDOR-18-32.1)
 
-Supporting info, including a tutorial for the 
-[QPAD method](https://github.com/psolymos/QPAD/tree/master/inst/doc/v2).
+## See also
+
+_Analysing ecological data with detection error_ workshop materials:
+[psolymos/analysing-ecological-data-with-detection-error](https://github.com/psolymos/analysing-ecological-data-with-detection-error).

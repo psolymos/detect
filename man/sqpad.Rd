@@ -4,6 +4,7 @@
 \alias{sqpad.fit}
 \alias{fitted.sqpad}
 \alias{predict.sqpad}
+\alias{coef.sqpad}
 \alias{vcov.sqpad}
 \alias{logLik.sqpad}
 \alias{print.sqpad}
@@ -28,7 +29,8 @@ sqpad.fit(Y, dis, dur, X = NULL, Z = NULL,
     montecarlo = FALSE, np = 1000, distcorr = 2/3, dislist = NULL, ...)
 
 \method{print}{sqpad}(x, digits, ...)
-\method{vcov}{sqpad}(object, ...)
+\method{coef}{sqpad}(object, model = c("full", "sta", "det"), ...)
+\method{vcov}{sqpad}(object, model = c("full", "sta", "det"), ...)
 \method{fitted}{sqpad}(object, ...)
 \method{logLik}{sqpad}(object, ...)
 \method{summary}{sqpad}(object, ...)
@@ -99,6 +101,11 @@ logical, should the Hessian matrix be computed by \code{\link{optim}}.
   \item{object, x}{
 fitted model object.
 }
+  \item{model}{
+the part of the model for which the coefficients or variance-covariance matrix
+should be returned: \code{"full"} for the full model, \code{"sta"} for the state
+(density) model, and \code{"det"} for the detection model.
+}
   \item{newdata}{
 optionally, a data frame in which to look for variables with which to predict.
 If omitted, the fitted linear predictors are used.
@@ -127,7 +134,7 @@ An object of class 'sqpad'.
 \references{
 Solymos, P., Lele, S. R., 2025. Single bin QPAD (SQPAD) approach for robust 
 analysis of point count data with detection error.
-\emph{Ornithological Applications}, \bold{xx}, xx--xx.
+\emph{Ornithological Applications}, \bold{128}, 1--14.
 <doi:10.1093/ornithapp/duaf078>
 
 Supporting info for the SQPAD method:
@@ -155,14 +162,19 @@ Y <- rbinom(n, N, p)
 
 df <- data.frame(x = x, y = Y)
 
-m <- sqpad(y ~ x | 1, data = df, dis = dis, dur = dur, type = "full", det = "joint", K = NULL)
+m <- sqpad(y ~ x | 1, data = df, dis = dis, dur = dur, 
+  type = "full", det = "joint", K = NULL)
 
 print(m)
 summary(m)
 
 coef(m)
+coef(m, model = "sta")
+coef(m, model = "det")
 nobs(m)
 vcov(m)
+vcov(m, model = "sta")
+vcov(m, model = "det")
 confint(m)
 
 logLik(m)
@@ -175,9 +187,12 @@ predict(m, newdata = df[1:10,], type = "response")
 predict(m, newdata = df[1:10,], type = "link")
 
 \dontrun{
-m0 <- sqpad(y ~ 1 | 1, data = df, dis = dis, dur = dur, type = "full", det = "joint", K = NULL)
-m1 <- sqpad(y ~ 1 | x, data = df, dis = dis, dur = dur, type = "full", det = "joint", K = NULL)
-m2 <- sqpad(y ~ x | x, data = df, dis = dis, dur = dur, type = "full", det = "joint", K = NULL)
+m0 <- sqpad(y ~ 1 | 1, data = df, dis = dis, dur = dur, 
+  type = "full", det = "joint", K = NULL)
+m1 <- sqpad(y ~ 1 | x, data = df, dis = dis, dur = dur, 
+  type = "full", det = "joint", K = NULL)
+m2 <- sqpad(y ~ x | x, data = df, dis = dis, dur = dur, 
+  type = "full", det = "joint", K = NULL)
 
 AIC(m, m0, m1, m2) # m2 is best
 BIC(m, m0, m1, m2) # this is needed!
