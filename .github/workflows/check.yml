@@ -22,11 +22,11 @@ jobs:
 
       - name: Install dependencies
         run: |
-          Rscript -e 'install.packages(c("rmarkdown", "knitr", "pkgdown", "devtools"))'
-          Rscript -e 'devtools::install_dev_deps()'
+          Rscript -e 'install.packages(c("rmarkdown", "knitr", "pkgdown", "pak", "rcmdcheck"))'
+          Rscript -e 'pak::local_install_dev_deps()'
 
       - name: Check package
-        run: Rscript -e 'devtools::check()'
+        run: Rscript -e 'rcmdcheck::rcmdcheck()'
 
       - name: Build site
         run: Rscript -e 'pkgdown::build_site_github_pages(install=TRUE)'
