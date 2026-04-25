@@ -19,7 +19,9 @@ sqpad.fit(Y, dis, dur, X = NULL, Z = NULL,
 # S3 method for class 'sqpad'
 print(x, digits, ...)
 # S3 method for class 'sqpad'
-vcov(object, ...)
+coef(object, model = c("full", "sta", "det"), ...)
+# S3 method for class 'sqpad'
+vcov(object, model = c("full", "sta", "det"), ...)
 # S3 method for class 'sqpad'
 fitted(object, ...)
 # S3 method for class 'sqpad'
@@ -115,6 +117,13 @@ rtriang(n, r = 1)
 
   fitted model object.
 
+- model:
+
+  the part of the model for which the coefficients or
+  variance-covariance matrix should be returned: `"full"` for the full
+  model, `"sta"` for the state (density) model, and `"det"` for the
+  detection model.
+
 - newdata:
 
   optionally, a data frame in which to look for variables with which to
@@ -151,7 +160,7 @@ An object of class 'sqpad'.
 
 Solymos, P., Lele, S. R., 2025. Single bin QPAD (SQPAD) approach for
 robust analysis of point count data with detection error.
-*Ornithological Applications*, **xx**, xx–xx.
+*Ornithological Applications*, **128**, 1–14.
 \<doi:10.1093/ornithapp/duaf078\>
 
 Supporting info for the SQPAD method:
@@ -182,7 +191,8 @@ Y <- rbinom(n, N, p)
 
 df <- data.frame(x = x, y = Y)
 
-m <- sqpad(y ~ x | 1, data = df, dis = dis, dur = dur, type = "full", det = "joint", K = NULL)
+m <- sqpad(y ~ x | 1, data = df, dis = dis, dur = dur, 
+  type = "full", det = "joint", K = NULL)
 
 print(m)
 #> 
@@ -226,19 +236,31 @@ coef(m)
 #>            -2.6490003             0.5792880             0.6530735 
 #>               log.phi 
 #>            -0.2065773 
+coef(m, model = "sta")
+#> log.D_(Intercept)           log.D_x 
+#>         -2.649000          0.579288 
+coef(m, model = "det")
+#> log.delta_(Intercept) 
+#>             0.6530735 
 nobs(m)
 #> [1] 100
 vcov(m)
 #>                       log.D_(Intercept)      log.D_x log.delta_(Intercept)
 #> log.D_(Intercept)           0.065460969 -0.016823675           -0.11176285
 #> log.D_x                    -0.016823675  0.041119454           -0.01041559
-#> log.delta_(Intercept)      -0.111762852 -0.010415591            1.65946167
-#> log.phi                     0.005060442  0.002226058           -0.29981180
+#> log.delta_(Intercept)      -0.111762853 -0.010415590            1.65946169
+#> log.phi                     0.005060442  0.002226058           -0.29981181
 #>                            log.phi
 #> log.D_(Intercept)      0.005060442
 #> log.D_x                0.002226058
-#> log.delta_(Intercept) -0.299811804
-#> log.phi                0.066510636
+#> log.delta_(Intercept) -0.299811809
+#> log.phi                0.066510637
+vcov(m, model = "sta")
+#>                   log.D_(Intercept)     log.D_x
+#> log.D_(Intercept)        0.06546097 -0.01682367
+#> log.D_x                 -0.01682367  0.04111945
+vcov(m, model = "det")
+#> [1] 1.659462
 confint(m)
 #>                            2.5 %     97.5 %
 #> log.D_(Intercept)     -3.1504638 -2.1475368
@@ -323,9 +345,12 @@ predict(m, newdata = df[1:10,], type = "link")
 #> -2.652341 -1.256013 
 
 if (FALSE) { # \dontrun{
-m0 <- sqpad(y ~ 1 | 1, data = df, dis = dis, dur = dur, type = "full", det = "joint", K = NULL)
-m1 <- sqpad(y ~ 1 | x, data = df, dis = dis, dur = dur, type = "full", det = "joint", K = NULL)
-m2 <- sqpad(y ~ x | x, data = df, dis = dis, dur = dur, type = "full", det = "joint", K = NULL)
+m0 <- sqpad(y ~ 1 | 1, data = df, dis = dis, dur = dur, 
+  type = "full", det = "joint", K = NULL)
+m1 <- sqpad(y ~ 1 | x, data = df, dis = dis, dur = dur, 
+  type = "full", det = "joint", K = NULL)
+m2 <- sqpad(y ~ x | x, data = df, dis = dis, dur = dur, 
+  type = "full", det = "joint", K = NULL)
 
 AIC(m, m0, m1, m2) # m2 is best
 BIC(m, m0, m1, m2) # this is needed!

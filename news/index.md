@@ -1,6 +1,12 @@
 # Changelog
 
+## Version 0.5-2, April 23, 2026
+
+- Add `method` option to `coef` and `vcov` methods for `sqpad` objects.
+
 ## Version 0.5-1, Jan 4, 2026
+
+CRAN release: 2026-01-08
 
 - Add `rtriang` function to replace `extraDistr::rtriang` and remove
   dependency on orphaned package extraDistr.

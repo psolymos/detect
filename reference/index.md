@@ -42,6 +42,7 @@
 - [`sqpad()`](https://peter.solymos.org/detec/reference/sqpad.md)
   [`sqpad.fit()`](https://peter.solymos.org/detec/reference/sqpad.md)
   [`print(`*`<sqpad>`*`)`](https://peter.solymos.org/detec/reference/sqpad.md)
+  [`coef(`*`<sqpad>`*`)`](https://peter.solymos.org/detec/reference/sqpad.md)
   [`vcov(`*`<sqpad>`*`)`](https://peter.solymos.org/detec/reference/sqpad.md)
   [`fitted(`*`<sqpad>`*`)`](https://peter.solymos.org/detec/reference/sqpad.md)
   [`logLik(`*`<sqpad>`*`)`](https://peter.solymos.org/detec/reference/sqpad.md)

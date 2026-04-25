@@ -159,7 +159,7 @@ vv <- simfun1(n=n, phi=exp(-1.5))
 m1 <- cmulti(vv$Y | vv$D ~ 1, type="rem")
 coef(m1)
 #> log.phi_(Intercept) 
-#>           -1.424635 
+#>           -1.428654 
 ## mixture, constant (mix and fmix are identical)
 vv <- simfun1(n=n, phi=exp(-1.5), c=plogis(0.8))
 m2 <- cmulti(vv$Y | vv$D ~ 1, type="mix")
@@ -183,28 +183,28 @@ vv <- simfun1(n=n, phi=exp(cbind(log.phi, log.phi, log.phi)))
 m1 <- cmulti(vv$Y | vv$D ~ x, type="rem")
 coef(m1)
 #> log.phi_(Intercept)           log.phi_x 
-#>           -2.032171           -1.050125 
+#>           -1.948791           -0.989509 
 ## mixture, fixed phi, varying c
 logit.c <- crossprod(t(X), c(-2,1))
 vv <- simfun1(n=n, phi=exp(-1.5), c=plogis(cbind(logit.c, logit.c, logit.c)))
 m2 <- cmulti(vv$Y | vv$D ~ x, type="mix")
 coef(m2)
 #>             log.phi logit.c_(Intercept)           logit.c_x 
-#>           -1.448112           -1.872479            1.173636 
+#>           -1.178470           -1.921110            1.473748 
 ## mixture, varying phi, fixed c
 log.phi <- crossprod(t(X), c(-2,-1))
 vv <- simfun1(n=n, phi=exp(cbind(log.phi, log.phi, log.phi)), c=plogis(0.8))
 m2f <- cmulti(vv$Y | vv$D ~ x, type="fmix")
 coef(m2f)
 #> log.phi_(Intercept)           log.phi_x             logit.c 
-#>          -2.9816876           0.9971064           0.9536787 
+#>           -2.121427           -1.205123            1.066365 
 ## dist, not constant
 log.tau <- crossprod(t(X), c(-0.5,-0.2))
 vv <- simfun1(n=n, tau=exp(cbind(log.tau, log.tau, log.tau)), type="dis")
 m3 <- cmulti(vv$Y | vv$D ~ x, type="dis")
 coef(m3)
 #> log.tau_(Intercept)           log.tau_x 
-#>          -0.5123019          -0.2365973 
+#>          -0.5201389          -0.1978845 
 
 summary(m3)
 #> 
@@ -216,29 +216,29 @@ summary(m3)
 #> 
 #> Coefficients:
 #>                     Estimate Std. Error z value Pr(>|z|)    
-#> log.tau_(Intercept) -0.51230    0.02098  -24.42   <2e-16 ***
-#> log.tau_x           -0.23660    0.02286  -10.35   <2e-16 ***
+#> log.tau_(Intercept) -0.52014    0.01673  -31.10   <2e-16 ***
+#> log.tau_x           -0.19788    0.01673  -11.83   <2e-16 ***
 #> ---
 #> Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1 
 #> 
-#> Log-likelihood:  -287 
-#> BIC = 584.6 
+#> Log-likelihood:  -331 
+#> BIC = 672.6 
 #> 
 coef(m3)
 #> log.tau_(Intercept)           log.tau_x 
-#>          -0.5123019          -0.2365973 
+#>          -0.5201389          -0.1978845 
 vcov(m3)
 #>                     log.tau_(Intercept)     log.tau_x
-#> log.tau_(Intercept)        4.402095e-04 -5.688569e-05
-#> log.tau_x                 -5.688569e-05  5.224621e-04
+#> log.tau_(Intercept)        2.797469e-04 -2.232051e-05
+#> log.tau_x                 -2.232051e-05  2.799016e-04
 AIC(m3)
-#> [1] 578.05
+#> [1] 665.9889
 confint(m3)
 #>                          2.5 %     97.5 %
-#> log.tau_(Intercept) -0.5534242 -0.4711795
-#> log.tau_x           -0.2813970 -0.1917975
+#> log.tau_(Intercept) -0.5529205 -0.4873573
+#> log.tau_x           -0.2306752 -0.1650938
 logLik(m3)
-#> 'log Lik.' -287.025 (df=2)
+#> 'log Lik.' -330.9945 (df=2)
 
 ## fitted values
 plot(exp(log.tau), fitted(m3))
@@ -248,10 +248,10 @@ plot(exp(log.tau), fitted(m3))
 ndf <- data.frame(x=seq(-1, 1, by=0.1))
 summary(predict(m1, newdata=ndf, type="link"))
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#>  -3.082  -2.557  -2.032  -2.032  -1.507  -0.982 
+#> -2.9383 -2.4435 -1.9488 -1.9488 -1.4540 -0.9593 
 summary(pr1 <- predict(m1, newdata=ndf, type="response"))
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#> 0.04585 0.07752 0.13105 0.15919 0.22155 0.37454 
+#> 0.05296 0.08685 0.14245 0.16942 0.23363 0.38317 
 ## turing singing rates into probabilities requires total duration
 ## 5 minutes used here
 psing <- 1-exp(-5*pr1)
@@ -261,10 +261,10 @@ plot(ndf$x, psing, type="l", ylim=c(0,1))
 ## prediction for new locations (type = 'dis')
 summary(predict(m3, newdata=ndf, type="link"))
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#> -0.7489 -0.6306 -0.5123 -0.5123 -0.3940 -0.2757 
+#> -0.7180 -0.6191 -0.5201 -0.5201 -0.4212 -0.3223 
 summary(pr3 <- predict(m3, newdata=ndf, type="response"))
 #>    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-#>  0.4729  0.5323  0.5991  0.6053  0.6744  0.7590 
+#>  0.4877  0.5384  0.5944  0.5987  0.6563  0.7245 
 ## turing EDR into probabilities requires finite truncation distances
 ## r=0.5 used here (50 m)
 r <- 0.5
@@ -336,14 +336,14 @@ res2 <- cmulti.fit(vv$Y2, vv$D2, NULL, "dis")
 ## points estimates are identical
 cbind(res$coef, c(res1$coef, res2$coef))
 #>            [,1]       [,2]
-#> [1,] -1.4996597 -1.4996597
-#> [2,] -0.1685225 -0.1685225
+#> [1,] -1.5585857 -1.5585857
+#> [2,] -0.1938484 -0.1938484
 ## standard errors are identical
 cbind(sqrt(diag(res$vcov)),
     c(sqrt(diag(res1$vcov)),sqrt(diag(res2$vcov))))
 #>            [,1]       [,2]
-#> [1,] 0.07163496 0.07163496
-#> [2,] 0.02290083 0.02290083
+#> [1,] 0.05277396 0.05277396
+#> [2,] 0.01598005 0.01598005
 
 ## removal and distance, not constant
 vv <- simfun12(n=n,
@@ -356,16 +356,16 @@ res2 <- cmulti.fit(vv$Y2, vv$D2, X, "dis")
 ## points estimates are identical
 cbind(res$coef, c(res1$coef, res2$coef))
 #>            [,1]       [,2]
-#> [1,] -1.9852489 -1.9851998
-#> [2,] -1.0470136 -1.0471954
-#> [3,] -0.5047337 -0.5047734
-#> [4,] -0.1950491 -0.1949923
+#> [1,] -2.0066423 -2.0068100
+#> [2,] -1.0487341 -1.0487368
+#> [3,] -0.5196571 -0.5196118
+#> [4,] -0.1817182 -0.1817405
 ## standard errors are identical
 cbind(sqrt(diag(res$vcov)),
     c(sqrt(diag(res1$vcov)),sqrt(diag(res2$vcov))))
 #>            [,1]       [,2]
-#> [1,] 0.08249514 0.08249284
-#> [2,] 0.07603643 0.07603755
-#> [3,] 0.01354381 0.01354325
-#> [4,] 0.01396959 0.01396887
+#> [1,] 0.09184894 0.09186849
+#> [2,] 0.08071062 0.08072127
+#> [3,] 0.01472931 0.01472987
+#> [4,] 0.01473121 0.01473181
 ```

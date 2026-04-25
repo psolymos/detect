@@ -65,7 +65,8 @@ of Plant Ecology*, **5(1)**, 22–31. [DOI:
 
 Lele, S. R., Solymos, P. 2025. Single bin QPAD (SQPAD) approach for
 robust analysis of point count data with detection error.
-*Ornithological Applications*, **xx**, xx–xx. (in press)
+*Ornithological Applications*, **128**, 1–14. [DOI:
+10.1093/ornithapp/duaf078](https://doi.org/10.1093/ornithapp/duaf078)
 
 Moreno, M. and Lele, S. R. 2010. Improved estimation of site occupancy
 using penalized likelihood. *Ecology*, **91**, 341–346. [DOI:
@@ -96,8 +97,10 @@ birds during point-count surveys: sample size requirements and model
 complexity. *Condor*, **120**, 765–786. [DOI:
 10.1650/CONDOR-18-32.1](https://doi.org/10.1650/CONDOR-18-32.1)
 
-Supporting info, including a tutorial for the [QPAD
-method](https://github.com/psolymos/QPAD/tree/master/inst/doc/v2).
+## See also
+
+*Analysing ecological data with detection error* workshop materials:
+[psolymos/analysing-ecological-data-with-detection-error](https://github.com/psolymos/analysing-ecological-data-with-detection-error).
 
 # Package index
 
@@ -143,6 +146,7 @@ method](https://github.com/psolymos/QPAD/tree/master/inst/doc/v2).
 - [`sqpad()`](https://peter.solymos.org/detec/reference/sqpad.md)
   [`sqpad.fit()`](https://peter.solymos.org/detec/reference/sqpad.md)
   [`print(`*`<sqpad>`*`)`](https://peter.solymos.org/detec/reference/sqpad.md)
+  [`coef(`*`<sqpad>`*`)`](https://peter.solymos.org/detec/reference/sqpad.md)
   [`vcov(`*`<sqpad>`*`)`](https://peter.solymos.org/detec/reference/sqpad.md)
   [`fitted(`*`<sqpad>`*`)`](https://peter.solymos.org/detec/reference/sqpad.md)
   [`logLik(`*`<sqpad>`*`)`](https://peter.solymos.org/detec/reference/sqpad.md)
