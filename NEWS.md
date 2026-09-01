@@ -1,6 +1,7 @@
-# Version 0.5-2, April 23, 2026
+# Version 0.5-2, August 31, 2026
 
 * Add `method` option to `coef` and `vcov` methods for `sqpad` objects.
+* Fix `names` attributes.
 
 # Version 0.5-1, Jan 4, 2026
 
