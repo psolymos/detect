@@ -32,17 +32,11 @@ Main functions:
 
 Install CRAN release version (recommended):
 
-``` r
-
-install.packages("detect")
-```
+[`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(``"detect"``)`
 
 Development version:
 
-``` r
-
-install.packages("detect", repos = "https://psolymos.r-universe.dev")
-```
+[`install.packages`](https://rdrr.io/r/utils/install.packages.html)`(``"detect"``, repos ``=`` ``"https://psolymos.r-universe.dev"``)`
 
 User visible changes in the package are listed in the
 [NEWS](https://peter.solymos.org/detec/NEWS.md) file.
